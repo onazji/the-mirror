@@ -1,0 +1,30 @@
+﻿.group {
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.opt {
+  min-height: var(--tap);
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.active {
+  border-color: rgba(191, 164, 90, 0.85);
+  box-shadow: 0 0 0 1px rgba(191, 164, 90, 0.18) inset;
+}

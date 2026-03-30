@@ -1,0 +1,12 @@
+﻿.ta {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 15px;
+  line-height: 1.4;
+  resize: none;
+  outline: none;
+}

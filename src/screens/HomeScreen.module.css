@@ -1,0 +1,38 @@
+﻿.bigLine {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 12px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.k {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.v {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notice {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(191, 164, 90, 0.35);
+  background: rgba(191, 164, 90, 0.08);
+  color: var(--text);
+  line-height: 1.35;
+}
