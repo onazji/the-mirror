@@ -6,10 +6,10 @@
   if (min < 60) return `${min} min ago`;
 
   const hrs = Math.floor(min / 60);
-  if (hrs < 24) return '${hrs} hrs ago';
+  if (hrs < 24) return `${hrs} hrs ago`;
 
   const days = Math.floor(hrs / 24);
-  return '${days} days ago';
+  return `${days} days ago`;
 }
 
 export function missedDaysSince(nowMs: number, pastMs: number): number {

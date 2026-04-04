@@ -15,6 +15,8 @@ export function HomeScreen({ sessions, onStart }: Props) {
 
   const lastCheckText = last ? formatTimeAgo(now, last.timestamp) : "No check-ins yet";
   const missedDays = last ? missedDaysSince(now, last.timestamp) : 0;
+  //added history function
+  const history = [...sessions].reverse();
 
   return (
     <div className="container">
@@ -43,6 +45,54 @@ export function HomeScreen({ sessions, onStart }: Props) {
           {'No check-ins recorded for  days. State awareness resumes anytime.'}
         </div>
       ) : null}
+
+
+        {history.length > 0?(
+          <>
+            <div style={{height: 16}} />
+              <Card title = "History">
+  <div className={styles.historyList}>
+    {history.map((entry)=>(
+      <div key = {entry.id} className = {styles.historyRow}>
+        <div className = {styles.historyTime}>
+          {formatTimeAgo(now,entry.timestamp)}
+          </div>
+          <div className = {styles.historyValues}>
+
+          {entry.energy} / {entry.urgency} / {entry.body} / {entry.mind}
+          </div>
+</div>
+        ))}
+</div>
+</Card>
+</>
+): null}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <div style={{ height: 16 }} />
 

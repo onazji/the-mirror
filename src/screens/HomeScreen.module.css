@@ -36,3 +36,29 @@
   color: var(--text);
   line-height: 1.35;
 }
+.historyList{
+  display: flex;
+  flex-direction: column;
+  gap: 12;
+}
+.historyRow{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+}
+.historyRow:last-child{
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.historyTime{ 
+  font-size: 13px;
+  color:var(--muted);
+}
+.historyValues {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
