@@ -7,33 +7,46 @@ type Props = {
 sessions: MirrorSession[];
 onStart: () => void;
 };
+function getEnergyLine(current: string): string {
+if (current === "high") return "My energy feels higher";
+if (current === "low") return "My energy feels lower";
+return "My energy feels steady";
+}
+function getUrgencyLine(current: string): string {
+if (current === "high") return "My urgency feels higher";
+if (current === "low") return "My urgency feels lower";
+return "My urgency feels moderate";
+}
+function getBodyLine(current: string): string {
+if (current === "tense") return "My body feels more tense";
+if (current === "relaxed") return "My body feels more relaxed";
+return "My body feels balanced";
+}
+function getMindLine(current: string): string {
+if (current === "narrow") return "My focus feels narrower";
+if (current === "wide") return "My focus feels wider";
+if (current === "scattered") return "My thoughts feel more scattered";
+return "My mind feels steady";
+}
 function getPatternInsight(entries: MirrorSession[]): string | null {
-if (entries.length < 7) return null;
-const recent = entries.slice(-7);
-const latest = recent[recent.length - 1];
-const previous = recent[recent.length - 2];
-let familyMatches = 0;
-for (let i = 0; i < recent.length - 1; i++) {
-const entry = recent[i];
-let matches = 0;
-if (entry.energy === latest.energy) matches++;
-if (entry.urgency === latest.urgency) matches++;
-if (entry.body === latest.body) matches++;
-if (entry.mind === latest.mind) matches++;
-if (matches >= 2) {
-familyMatches++;
+if (entries.length < 2) return null;
+const latest = entries[entries.length - 1];
+const previous = entries[entries.length - 2];
+const changes: string[] = [];
+if (latest.energy !== previous.energy) {
+changes.push(getEnergyLine(latest.energy));
 }
+if (latest.urgency !== previous.urgency) {
+changes.push(getUrgencyLine(latest.urgency));
 }
-if (familyMatches >= 3) {
-return "This has been showing up a bit";
+if (latest.body !== previous.body) {
+changes.push(getBodyLine(latest.body));
 }
-let differences = 0;
-if (previous.energy !== latest.energy) differences++;
-if (previous.urgency !== latest.urgency) differences++;
-if (previous.body !== latest.body) differences++;
-if (previous.mind !== latest.mind) differences++;
-if (differences >= 2) {
-return "Something feels different";
+if (latest.mind !== previous.mind) {
+changes.push(getMindLine(latest.mind));
+}
+if (changes.length >= 2) {
+return changes[0];
 }
 return null;
 }
