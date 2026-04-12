@@ -12,7 +12,7 @@ type Props = {
 };
 
 const ENERGY: readonly Energy[] = ["low", "steady", "high"] as const;
-const URGENCY: readonly Urgency[] = ["low", "medium", "high"] as const;
+const URGENCY: readonly Urgency[] = ["low", "steady", "high"] as const;
 const BODY: readonly Body[] = ["relaxed", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 

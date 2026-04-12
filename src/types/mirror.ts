@@ -1,5 +1,5 @@
 ﻿export type Energy = "low" | "steady" | "high";
-export type Urgency = "low" | "medium" | "high";
+export type Urgency = "low" | "steady" | "high";
 export type Body = "relaxed" | "tense";
 export type Mind = "narrow" | "wide" | "scattered";
 

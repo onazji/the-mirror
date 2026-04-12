@@ -1,4 +1,5 @@
 import styles from "./StateMap.module.css";
+import { getBaseState, type BaseStateName } from "../services/stateEngine";
 type Level = "low" | "steady" | "high";
 type BodyState = "tense" | "relaxed";
 type MindState = "narrow" | "wide" | "scattered";
@@ -8,28 +9,28 @@ urgency?: Level;
 body?: BodyState;
 mind?: MindState;
 };
-const rowIndexMap: Record<Level, number> = {
-low: 0,
-steady: 1,
-high: 2,
-};
-const colIndexMap: Record<Level, number> = {
-low: 0,
-steady: 1,
-high: 2,
-};
 const bodyPositionMap: Record<BodyState, string> = {
 tense: "25%",
 relaxed: "75%",
 };
+const baseStateGrid: { energy: Level; urgency: Level; label: BaseStateName }[] = [
+{ energy: "high", urgency: "low", label: "Drift" },
+{ energy: "high", urgency: "steady", label: "Flow" },
+{ energy: "high", urgency: "high", label: "Overdrive" },
+{ energy: "steady", urgency: "low", label: "Idle" },
+{ energy: "steady", urgency: "steady", label: "Alignment" },
+{ energy: "steady", urgency: "high", label: "Pressure" },
+{ energy: "low", urgency: "low", label: "Stagnant" },
+{ energy: "low", urgency: "steady", label: "Patience" },
+{ energy: "low", urgency: "high", label: "Anxiety" },
+];
 export function StateMap({
 energy = "steady",
 urgency = "steady",
 body = "relaxed",
 mind = "wide",
 }: Props) {
-const row = rowIndexMap[energy];
-const col = colIndexMap[urgency];
+const activeBaseState = getBaseState(energy, urgency);
 return (
 <section className={styles.wrapper} aria-label="State map">
 <h2 className={styles.title}>The Mirror</h2>
@@ -46,19 +47,29 @@ return (
 <div className={styles.yAxisArea}>
 <div className={styles.yAxisTitle}>Energy</div>
 <div className={styles.rowLabels}>
-<div className={styles.rowLabel}>Low</div>
-<div className={styles.rowLabel}>Steady</div>
 <div className={styles.rowLabel}>High</div>
+<div className={styles.rowLabel}>Steady</div>
+<div className={styles.rowLabel}>Low</div>
 </div>
 </div>
-<div className={styles.grid} aria-hidden="true">
+<div className={styles.grid} aria-label="Energy and urgency state grid">
+{baseStateGrid.map((cell) => {
+const isActive = cell.label === activeBaseState;
+return (
 <div
-className={styles.dot}
-style={{
-gridRow: row + 1,
-gridColumn: col + 1,
-}}
-/>
+key={`${cell.energy}-${cell.urgency}`}
+className={`${styles.cell} ${isActive ? styles.cellActive : ""}`}
+>
+<span
+className={`${styles.cellLabel} ${
+isActive ? styles.cellLabelActive : ""
+}`}
+>
+{cell.label}
+</span>
+</div>
+);
+})}
 </div>
 </div>
 </div>
