@@ -202,8 +202,13 @@ export function HomeScreen({ sessions, onStart }: Props) {
                       {formatTimeAgo(now, entry.timestamp)}
                     </div>
                     <div className={styles.historyValues}>
-                      {entry.energy} / {entry.urgency} / {entry.body} / {entry.mind}
-                    </div>
+  <div style={{ fontWeight: 600 }}>
+    {getBaseState(entry.energy, entry.urgency)}
+  </div>
+  <div style={{ opacity: 0.7, fontSize: 13 }}>
+    {entry.body} • {entry.mind}
+  </div>
+</div>
                   </div>
                 ))}
               </div>
