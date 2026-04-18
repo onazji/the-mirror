@@ -5,7 +5,7 @@ type BodyState = "tense" | "relaxed";
 type MindState = "narrow" | "wide" | "scattered";
 type Props = {
 energy?: Level;
-urgency?: Level;
+pace?: Level;
 body?: BodyState;
 mind?: MindState;
 };
@@ -13,30 +13,30 @@ const bodyPositionMap: Record<BodyState, string> = {
 tense: "25%",
 relaxed: "75%",
 };
-const baseStateGrid: { energy: Level; urgency: Level; label: BaseStateName }[] = [
-{ energy: "high", urgency: "low", label: "Drift" },
-{ energy: "high", urgency: "steady", label: "Flow" },
-{ energy: "high", urgency: "high", label: "Overdrive" },
-{ energy: "steady", urgency: "low", label: "Idle" },
-{ energy: "steady", urgency: "steady", label: "Alignment" },
-{ energy: "steady", urgency: "high", label: "Pressure" },
-{ energy: "low", urgency: "low", label: "Stagnant" },
-{ energy: "low", urgency: "steady", label: "Patience" },
-{ energy: "low", urgency: "high", label: "Anxiety" },
+const baseStateGrid: { energy: Level; pace: Level; label: BaseStateName }[] = [
+{ energy: "high", pace: "low", label: "Drift" },
+{ energy: "high", pace: "steady", label: "Flow" },
+{ energy: "high", pace: "high", label: "Overdrive" },
+{ energy: "steady", pace: "low", label: "Idle" },
+{ energy: "steady", pace: "steady", label: "Alignment" },
+{ energy: "steady", pace: "high", label: "Pressure" },
+{ energy: "low", pace: "low", label: "Stagnant" },
+{ energy: "low", pace: "steady", label: "Patience" },
+{ energy: "low", pace: "high", label: "Anxiety" },
 ];
 export function StateMap({
 energy = "steady",
-urgency = "steady",
+pace = "steady",
 body = "relaxed",
 mind = "wide",
 }: Props) {
-const activeBaseState = getBaseState(energy, urgency);
+const activeBaseState = getBaseState(energy, pace);
 return (
 <section className={styles.wrapper} aria-label="State map">
 <h2 className={styles.title}>The Mirror</h2>
 <p className={styles.subtitle}>4 Signals. One State.</p>
 <div className={styles.matrixBlock}>
-<div className={styles.axisTopTitle}>Urgency</div>
+<div className={styles.axisTopTitle}>Pace</div>
 <div className={styles.colLabels}>
 <div className={styles.cornerSpacer} />
 <div className={styles.colLabel}>Low</div>
@@ -52,12 +52,12 @@ return (
 <div className={styles.rowLabel}>Low</div>
 </div>
 </div>
-<div className={styles.grid} aria-label="Energy and urgency state grid">
+<div className={styles.grid} aria-label="Energy and pace state grid">
 {baseStateGrid.map((cell) => {
 const isActive = cell.label === activeBaseState;
 return (
 <div
-key={`${cell.energy}-${cell.urgency}`}
+key={`${cell.energy}-${cell.pace}`}
 className={`${styles.cell} ${isActive ? styles.cellActive : ""}`}
 >
 <span

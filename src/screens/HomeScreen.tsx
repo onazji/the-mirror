@@ -19,10 +19,10 @@ function getEnergyLine(current: string): string {
   return "My energy feels steady";
 }
 
-function getUrgencyLine(current: string): string {
-  if (current === "high") return "My urgency feels higher";
-  if (current === "low") return "My urgency feels lower";
-  return "My urgency feels steady";
+function getPaceLine(current: string): string {
+  if (current === "high") return "My pace feels higher";
+  if (current === "low") return "My pace feels lower";
+  return "My pace feels steady";
 }
 
 function getBodyLine(current: string): string {
@@ -67,10 +67,10 @@ function getPatternInsight(entries: MirrorSession[]): string | null {
     });
   }
 
-  if (latest.urgency !== previous.urgency) {
+  if (latest.pace !== previous.pace) {
     changes.push({
       priority: 4,
-      line: getUrgencyLine(latest.urgency),
+      line: getPaceLine(latest.pace),
     });
   }
 
@@ -97,7 +97,7 @@ export function HomeScreen({ sessions, onStart }: Props) {
   const history = [...sessions].reverse();
   const insight = getPatternInsight(sessions);
 
-  const baseState = last ? getBaseState(last.energy, last.urgency) : null;
+  const baseState = last ? getBaseState(last.energy, last.pace) : null;
   const fieldLine = baseState ? fieldLines[baseState] : null;
 
   return (
@@ -146,8 +146,8 @@ export function HomeScreen({ sessions, onStart }: Props) {
                   <span className={styles.v}>{last.energy}</span>
                 </div>
                 <div className={styles.item}>
-                  <span className={styles.k}>Urgency</span>
-                  <span className={styles.v}>{last.urgency}</span>
+                  <span className={styles.k}>Pace</span>
+                  <span className={styles.v}>{last.pace}</span>
                 </div>
                 <div className={styles.item}>
                   <span className={styles.k}>Body</span>
@@ -203,7 +203,7 @@ export function HomeScreen({ sessions, onStart }: Props) {
                     </div>
                     <div className={styles.historyValues}>
   <div style={{ fontWeight: 600 }}>
-    {getBaseState(entry.energy, entry.urgency)}
+    {getBaseState(entry.energy, entry.pace)}
   </div>
   <div style={{ opacity: 0.7, fontSize: 13 }}>
     {entry.body} • {entry.mind}
@@ -274,7 +274,7 @@ export function HomeScreen({ sessions, onStart }: Props) {
 
             <StateMap
               energy={(last?.energy as "low" | "steady" | "high") ?? "steady"}
-              urgency={(last?.urgency as "low" | "steady" | "high") ?? "steady"}
+              pace={(last?.pace as "low" | "steady" | "high") ?? "steady"}
               body={(last?.body as "tense" | "relaxed") ?? "relaxed"}
               mind={(last?.mind as "narrow" | "wide" | "scattered") ?? "wide"}
             />

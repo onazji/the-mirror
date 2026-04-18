@@ -31,11 +31,11 @@ test("weekly trigger fires on multiples of 7 and not otherwise", () => {
 test("weekly summary uses last 7 sessions consistently", () => {
   const base = 1700000000000;
 
-  const mk = (i: number, energy: MirrorSession["energy"], urgency: MirrorSession["urgency"]): MirrorSession => ({
-    id: s,
+  const mk = (i: number, energy: MirrorSession["energy"], pace: MirrorSession["pace"]): MirrorSession => ({
+    id: `session-${i}`,
     timestamp: base + i,
     energy,
-    urgency,
+    pace,
     body: "relaxed",
     mind: "wide"
   });
@@ -43,18 +43,18 @@ test("weekly summary uses last 7 sessions consistently", () => {
   const sessions: MirrorSession[] = [
     mk(1, "low", "low"),
     mk(2, "low", "low"),
-    mk(3, "steady", "medium"),
-    mk(4, "steady", "medium"),
+    mk(3, "steady", "steady"),
+    mk(4, "steady", "steady"),
     mk(5, "steady", "high"),
     mk(6, "high", "high"),
-    mk(7, "steady", "medium"),
-    mk(8, "steady", "medium"),
-    mk(9, "low", "medium")
+    mk(7, "steady", "steady"),
+    mk(8, "steady", "steady"),
+    mk(9, "low", "steady")
   ];
 
   const sum = computeWeeklySummaryLast7(sessions);
   expect(sum.energyMostFrequent).toBe("steady");
-  expect(sum.urgencyMostFrequent).toBe("medium");
+  expect(sum.paceMostFrequent).toBe("medium");
   expect(sum.mismatchMostCommon.combo).toBe("steady+medium");
   expect(sum.rangeCount).toBe(7);
 });
@@ -62,12 +62,12 @@ test("weekly summary uses last 7 sessions consistently", () => {
 describe("edge cases", () => {
   test("summary handles fewer than 7 sessions", () => {
     const sessions: MirrorSession[] = [
-      { id: "a", timestamp: 1, energy: "low", urgency: "high", body: "tense", mind: "scattered" }
+      { id: "a", timestamp: 1, energy: "low", pace: "high", body: "tense", mind: "scattered" }
     ];
     const sum = computeWeeklySummaryLast7(sessions);
     expect(sum.rangeCount).toBe(1);
     expect(sum.energyMostFrequent).toBe("low");
-    expect(sum.urgencyMostFrequent).toBe("high");
+    expect(sum.paceMostFrequent).toBe("high");
     expect(sum.mismatchMostCommon.combo).toBe("low+high");
   });
 });

@@ -18,31 +18,31 @@ export type StateName =
 | "Undefined";
 export function getBaseState(
 energy: "low" | "steady" | "high",
-urgency: "low" | "steady" | "high"
+pace: "low" | "steady" | "high"
 ): BaseStateName {
-if (energy === "low" && urgency === "low") return "Stagnant";
-if (energy === "low" && urgency === "steady") return "Patience";
-if (energy === "low" && urgency === "high") return "Anxiety";
-if (energy === "steady" && urgency === "low") return "Idle";
-if (energy === "steady" && urgency === "steady") return "Alignment";
-if (energy === "steady" && urgency === "high") return "Pressure";
-if (energy === "high" && urgency === "low") return "Drift";
-if (energy === "high" && urgency === "steady") return "Flow";
+if (energy === "low" && pace === "low") return "Stagnant";
+if (energy === "low" && pace === "steady") return "Patience";
+if (energy === "low" && pace === "high") return "Anxiety";
+if (energy === "steady" && pace === "low") return "Idle";
+if (energy === "steady" && pace === "steady") return "Alignment";
+if (energy === "steady" && pace === "high") return "Pressure";
+if (energy === "high" && pace === "low") return "Drift";
+if (energy === "high" && pace === "steady") return "Flow";
 return "Overdrive";
 }
 export function classifyState(s: MirrorSession): StateName {
-const { urgency, mind, body, energy } = s;
-if (urgency === "high" && mind === "scattered" && body === "tense") {
+const { pace, mind, body, energy } = s;
+if (pace === "high" && mind === "scattered" && body === "tense") {
 return "Loop State";
 }
-if (urgency === "high" && mind === "narrow") {
+if (pace === "high" && mind === "narrow") {
 return "Impulse State";
 }
-if (urgency === "high" && mind === "wide" && body === "relaxed") {
+if (pace === "high" && mind === "wide" && body === "relaxed") {
 return "Decision Under Pressure";
 }
 if (
-urgency === "steady" &&
+pace === "steady" &&
 mind === "narrow" &&
 body === "relaxed" &&
 energy === "high"
@@ -50,7 +50,7 @@ energy === "high"
 return "Flow State";
 }
 if (
-urgency === "low" &&
+pace === "low" &&
 mind === "wide" &&
 body === "relaxed" &&
 energy === "low"

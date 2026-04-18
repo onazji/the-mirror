@@ -23,18 +23,18 @@ export function saveSessions(store: KeyValueStore, sessions: MirrorSession[]): v
 }
 
 export function createSessionFromDraft(draft: MirrorDraft, timestamp: number): MirrorSession {
-  if (!draft.energy || !draft.urgency || !draft.body || !draft.mind) {
+  if (!draft.energy || !draft.pace || !draft.body || !draft.mind) {
     throw new Error("Draft incomplete");
   }
 
-  const id = crypto.randomUUID?.() ?? s__;
+  const id = crypto.randomUUID?.() ?? String(timestamp);
 
   const note = draft.note.trim();
   return {
     id,
     timestamp,
     energy: draft.energy,
-    urgency: draft.urgency,
+    pace: draft.pace,
     body: draft.body,
     mind: draft.mind,
     ...(note ? { note } : {})

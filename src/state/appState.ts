@@ -9,7 +9,7 @@ export type AppModel = {
 
 export const createEmptyDraft = (): MirrorDraft => ({
   energy: null,
-  urgency: null,
+  pace: null,
   body: null,
   mind: null,
   note: ""

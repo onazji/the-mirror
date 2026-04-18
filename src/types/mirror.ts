@@ -1,5 +1,5 @@
 ﻿export type Energy = "low" | "steady" | "high";
-export type Urgency = "low" | "steady" | "high";
+export type Pace = "low" | "steady" | "high";
 export type Body = "relaxed" | "tense";
 export type Mind = "narrow" | "wide" | "scattered";
 
@@ -7,7 +7,7 @@ export type MirrorSession = {
   id: string;
   timestamp: number;
   energy: Energy;
-  urgency: Urgency;
+  pace: Pace;
   body: Body;
   mind: Mind;
   note?: string;
@@ -15,7 +15,7 @@ export type MirrorSession = {
 
 export type MirrorDraft = {
   energy: Energy | null;
-  urgency: Urgency | null;
+  pace: Pace | null;
   body: Body | null;
   mind: Mind | null;
   note: string;
@@ -23,9 +23,9 @@ export type MirrorDraft = {
 
 export type WeeklySummary = {
   energyMostFrequent: Energy | null;
-  urgencyMostFrequent: Urgency | null;
+  paceMostFrequent: Pace | null;
   mismatchMostCommon: {
-    combo: string | null; // "energy+urgency"
+    combo: string | null; // "energy+pace"
     count: number;
   };
   rangeCount: number; // how many sessions included (e.g. 7)
