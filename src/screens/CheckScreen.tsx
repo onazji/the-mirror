@@ -3,6 +3,9 @@ import { Button } from "../components/Button";
 import { OptionGroup } from "../components/OptionGroup";
 import type { MirrorDraft, Energy, Pace, Body, Mind } from "../types/mirror";
 import styles from "./CheckScreen.module.css";
+import { SeerSection } from "../components/SeerSection";
+import { WorkSection } from "../components/WorkSection";
+import { AttentionSection } from "../components/AttentionSection";
 
 type Props = {
   draft: MirrorDraft;
@@ -12,7 +15,7 @@ type Props = {
 };
 
 const ENERGY: readonly Energy[] = ["low", "steady", "high"] as const;
-const URGENCY: readonly Pace[] = ["low", "steady", "high"] as const;
+const PACE: readonly Pace[] = ["low", "steady", "high"] as const;
 const BODY: readonly Body[] = ["relaxed", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 
@@ -24,10 +27,73 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
       <h1>Check</h1>
 
       <Card>
-        <OptionGroup label="Energy" options={ENERGY} value={draft.energy} onChange={(v) => onChange({ ...draft, energy: v })} />
-        <OptionGroup label="Pace" options={URGENCY} value={draft.pace} onChange={(v) => onChange({ ...draft, pace: v })} />
-        <OptionGroup label="Body" options={BODY} value={draft.body} onChange={(v) => onChange({ ...draft, body: v })} />
-        <OptionGroup label="Mind" options={MIND} value={draft.mind} onChange={(v) => onChange({ ...draft, mind: v })} />
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>SEER</h3>
+          <SeerSection
+            value={draft.seer}
+            onChange={(seer) => onChange({ ...draft, seer })}
+          />
+        </div>
+      </Card>
+
+      <div style={{ height: 16 }} />
+
+      <Card>
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Mirror</h3>
+
+          <OptionGroup
+            label="Energy"
+            options={ENERGY}
+            value={draft.energy}
+            onChange={(v) => onChange({ ...draft, energy: v })}
+          />
+
+          <OptionGroup
+            label="Pace"
+            options={PACE}
+            value={draft.pace}
+            onChange={(v) => onChange({ ...draft, pace: v })}
+          />
+
+          <OptionGroup
+            label="Body"
+            options={BODY}
+            value={draft.body}
+            onChange={(v) => onChange({ ...draft, body: v })}
+          />
+
+          <OptionGroup
+            label="Mind"
+            options={MIND}
+            value={draft.mind}
+            onChange={(v) => onChange({ ...draft, mind: v })}
+          />
+        </div>
+      </Card>
+
+      <div style={{ height: 16 }} />
+
+      <Card>
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Work</h3>
+          <WorkSection
+            value={draft.work}
+            onChange={(work) => onChange({ ...draft, work })}
+          />
+        </div>
+      </Card>
+
+      <div style={{ height: 16 }} />
+
+      <Card>
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Attention</h3>
+          <AttentionSection
+            value={draft.attention}
+            onChange={(attention) => onChange({ ...draft, attention })}
+          />
+        </div>
       </Card>
 
       <div className={styles.row}>
@@ -37,7 +103,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
       </div>
 
       <div className="small" style={{ marginTop: 10 }}>
-        Tap to choose. No sliders.
+        One vertical flow. Reflect, don’t overthink.
       </div>
     </div>
   );

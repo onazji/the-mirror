@@ -1,16 +1,24 @@
-﻿export type Energy = "low" | "steady" | "high";
+﻿import type { SeerCheck } from "./seer";
+import type { WorkLog } from "./work";
+
+export type Energy = "low" | "steady" | "high";
 export type Pace = "low" | "steady" | "high";
 export type Body = "relaxed" | "tense";
 export type Mind = "narrow" | "wide" | "scattered";
+export type AttentionTag = "waste" | "bugs" | "features" | "brainstorm";
 
 export type MirrorSession = {
   id: string;
   timestamp: number;
+
   energy: Energy;
   pace: Pace;
   body: Body;
   mind: Mind;
-  note?: string;
+
+  seer: SeerCheck;
+  work: WorkLog;
+  attention: AttentionTag;
 };
 
 export type MirrorDraft = {
@@ -18,15 +26,16 @@ export type MirrorDraft = {
   pace: Pace | null;
   body: Body | null;
   mind: Mind | null;
-  note: string;
+
+  seer: SeerCheck;
+  work: WorkLog;
+  attention: AttentionTag;
 };
 
 export type WeeklySummary = {
-  energyMostFrequent: Energy | null;
-  paceMostFrequent: Pace | null;
-  mismatchMostCommon: {
-    combo: string | null; // "energy+pace"
-    count: number;
-  };
-  rangeCount: number; // how many sessions included (e.g. 7)
+  energy: Energy;
+  pace: Pace;
+  body: Body;
+  mind: Mind;
+  count: number;
 };

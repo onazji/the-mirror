@@ -12,11 +12,25 @@ export const createEmptyDraft = (): MirrorDraft => ({
   pace: null,
   body: null,
   mind: null,
-  note: ""
+
+  seer: {
+    anchor: false,
+    integrity: false,
+  },
+
+  work: {
+    app: false,
+    game: false,
+    output: false,
+    sessions: 1,
+    note: "",
+  },
+
+  attention: "features",
 });
 
 export const initialAppModel: AppModel = {
   screen: Screen.HOME,
   draft: createEmptyDraft(),
-  lastSavedSession: null
+  lastSavedSession: null,
 };
