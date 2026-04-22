@@ -27,9 +27,10 @@ export function createSessionFromDraft(draft: MirrorDraft, timestamp: number): M
     throw new Error("Draft incomplete");
   }
 
-  const id = crypto.randomUUID?.() ?? String(timestamp);
+  const id = crypto.randomUUID?.() ?? `session-${timestamp}`;
 
-  const note = draft.note.trim();
+  const note = draft.work.note.trim();
+
   return {
     id,
     timestamp,
@@ -37,7 +38,12 @@ export function createSessionFromDraft(draft: MirrorDraft, timestamp: number): M
     pace: draft.pace,
     body: draft.body,
     mind: draft.mind,
-    ...(note ? { note } : {})
+    seer: draft.seer,
+    work: {
+      ...draft.work,
+      note,
+    },
+    attention: draft.attention,
   };
 }
 

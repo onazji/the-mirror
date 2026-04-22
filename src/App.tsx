@@ -3,7 +3,11 @@ import { Screen } from "./state/screens";
 import { createEmptyDraft } from "./state/appState";
 import type { MirrorDraft, MirrorSession } from "./types/mirror";
 import { LocalStorageStore } from "./storage/localStorageStore";
-import { loadSessions,createSessionFromDraft,appendSession } from "./services/sessionService";
+import {
+  loadSessions,
+  createSessionFromDraft,
+  appendSession,
+} from "./services/sessionService";
 
 import { HomeScreen } from "./screens/HomeScreen";
 import { CheckScreen } from "./screens/CheckScreen";
@@ -21,19 +25,33 @@ export default function App() {
     setScreen(Screen.HOME);
   };
 
-  ///updated 3/15/26 save to local  stoarge
-  const saveDraftNow = ()=> {
-    const session = createSessionFromDraft(draft,Date.now());
-    appendSession(store,session);
-    goHome();
+  const saveDraftNow = () => {
+    const session = createSessionFromDraft(draft, Date.now());
+    const nextSessions = appendSession(store, session);
+
+    setSessions(nextSessions);
+    setDraft(createEmptyDraft());
+    setScreen(Screen.HOME);
   };
 
   switch (screen) {
     case Screen.HOME:
-      return <HomeScreen sessions={sessions} onStart={() => setScreen(Screen.CHECK)} />;
+      return (
+        <HomeScreen
+          sessions={sessions}
+          onStart={() => setScreen(Screen.CHECK)}
+        />
+      );
 
     case Screen.CHECK:
-      return <CheckScreen draft={draft} onChange={setDraft} onBack={goHome} onNext={saveDraftNow} />;
+      return (
+        <CheckScreen
+          draft={draft}
+          onChange={setDraft}
+          onBack={goHome}
+          onNext={saveDraftNow}
+        />
+      );
 
     default:
       return null;
