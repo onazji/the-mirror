@@ -86,6 +86,17 @@ function getPatternInsight(entries: MirrorSession[]): string | null {
   return changes[0].line;
 }
 
+function renderWorkSummary(work: MirrorSession["work"]): string {
+  const parts = [
+    work.app ? "App" : null,
+    work.game ? "Game" : null,
+    work.output ? "Output" : null,
+  ].filter(Boolean);
+
+  const summary = parts.length > 0 ? parts.join(" · ") : "None";
+  return `${summary} (${work.sessions})`;
+}
+
 export function HomeScreen({ sessions, onStart }: Props) {
   const [showInfo, setShowInfo] = useState(false);
 
@@ -159,6 +170,30 @@ export function HomeScreen({ sessions, onStart }: Props) {
                 </div>
               </div>
 
+              <div className="hr" />
+
+              <div style={{ display: "grid", gap: 8 }}>
+                <div>
+                  <strong>SEER:</strong>{" "}
+                  {last.seer.anchor ? "Anchor ✓" : "Anchor ✗"} ·{" "}
+                  {last.seer.integrity ? "Integrity ✓" : "Integrity ✗"}
+                </div>
+
+                <div>
+                  <strong>Work:</strong> {renderWorkSummary(last.work)}
+                </div>
+
+                {last.work.note ? (
+                  <div style={{ fontSize: 13, opacity: 0.7 }}>
+                    {last.work.note}
+                  </div>
+                ) : null}
+
+                <div>
+                  <strong>Attention:</strong> {last.attention}
+                </div>
+              </div>
+
               {insight || fieldLine ? (
                 <>
                   <div className="hr" />
@@ -201,14 +236,36 @@ export function HomeScreen({ sessions, onStart }: Props) {
                     <div className={styles.historyTime}>
                       {formatTimeAgo(now, entry.timestamp)}
                     </div>
+
                     <div className={styles.historyValues}>
-  <div style={{ fontWeight: 600 }}>
-    {getBaseState(entry.energy, entry.pace)}
-  </div>
-  <div style={{ opacity: 0.7, fontSize: 13 }}>
-    {entry.body} • {entry.mind}
-  </div>
-</div>
+                      <div style={{ fontWeight: 600 }}>
+                        {getBaseState(entry.energy, entry.pace)}
+                      </div>
+
+                      <div style={{ opacity: 0.7, fontSize: 13 }}>
+                        {entry.body} • {entry.mind}
+                      </div>
+
+                      <div style={{ marginTop: 4, fontSize: 13 }}>
+                        <strong>SEER:</strong>{" "}
+                        {entry.seer.anchor ? "A✓" : "A✗"} ·{" "}
+                        {entry.seer.integrity ? "I✓" : "I✗"}
+                      </div>
+
+                      <div style={{ fontSize: 13 }}>
+                        <strong>Work:</strong> {renderWorkSummary(entry.work)}
+                      </div>
+
+                      {entry.work.note ? (
+                        <div style={{ fontSize: 12, opacity: 0.7 }}>
+                          {entry.work.note}
+                        </div>
+                      ) : null}
+
+                      <div style={{ fontSize: 13 }}>
+                        <strong>Attention:</strong> {entry.attention}
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
