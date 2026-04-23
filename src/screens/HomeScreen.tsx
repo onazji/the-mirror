@@ -4,87 +4,14 @@ import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
 import type { MirrorSession } from "../types/mirror";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
-import { getBaseState } from "../services/stateEngine";
-import { fieldLines } from "../types/fieldLines";
+import { getMirrorCard } from "../services/cardEngine";
+import { buildWeeklyLayer } from "../services/weeklyLayer";
 import styles from "./HomeScreen.module.css";
 
 type Props = {
   sessions: MirrorSession[];
   onStart: () => void;
 };
-
-function getEnergyLine(current: string): string {
-  if (current === "high") return "My energy feels higher";
-  if (current === "low") return "My energy feels lower";
-  return "My energy feels steady";
-}
-
-function getPaceLine(current: string): string {
-  if (current === "high") return "My pace feels higher";
-  if (current === "low") return "My pace feels lower";
-  return "My pace feels steady";
-}
-
-function getBodyLine(current: string): string {
-  if (current === "tense") return "My body feels more tense";
-  if (current === "relaxed") return "My body feels more relaxed";
-  return "My body feels different";
-}
-
-function getMindLine(current: string): string {
-  if (current === "narrow") return "My focus feels narrower";
-  if (current === "wide") return "My focus feels wider";
-  if (current === "scattered") return "My thoughts feel more scattered";
-  return "My mind feels different";
-}
-
-function getPatternInsight(entries: MirrorSession[]): string | null {
-  if (entries.length < 2) return null;
-
-  const latest = entries[entries.length - 1];
-  const previous = entries[entries.length - 2];
-
-  const changes: { priority: number; line: string }[] = [];
-
-  if (latest.body !== previous.body) {
-    changes.push({
-      priority: 1,
-      line: getBodyLine(latest.body),
-    });
-  }
-
-  if (latest.mind !== previous.mind) {
-    changes.push({
-      priority: 2,
-      line: getMindLine(latest.mind),
-    });
-  }
-
-  if (latest.energy !== previous.energy) {
-    changes.push({
-      priority: 3,
-      line: getEnergyLine(latest.energy),
-    });
-  }
-
-  if (latest.pace !== previous.pace) {
-    changes.push({
-      priority: 4,
-      line: getPaceLine(latest.pace),
-    });
-  }
-
-  if (changes.length === 0) {
-    return null;
-  }
-
-  if (changes.length === 1) {
-    return changes[0].line;
-  }
-
-  changes.sort((a, b) => a.priority - b.priority);
-  return changes[0].line;
-}
 
 function renderWorkSummary(work: MirrorSession["work"]): string {
   const parts = [
@@ -106,10 +33,9 @@ export function HomeScreen({ sessions, onStart }: Props) {
   const lastCheckText = last ? formatTimeAgo(now, last.timestamp) : "No check-ins yet";
   const missedDays = last ? missedDaysSince(now, last.timestamp) : 0;
   const history = [...sessions].reverse();
-  const insight = getPatternInsight(sessions);
 
-  const baseState = last ? getBaseState(last.energy, last.pace) : null;
-  const fieldLine = baseState ? fieldLines[baseState] : null;
+  const card = last ? getMirrorCard(last.energy, last.pace) : null;
+  const weekly = buildWeeklyLayer(sessions, now);
 
   return (
     <>
@@ -170,6 +96,16 @@ export function HomeScreen({ sessions, onStart }: Props) {
                 </div>
               </div>
 
+              {card ? (
+                <>
+                  <div className="hr" />
+                  <div className={styles.insight}>
+                    <div style={{ fontWeight: 700 }}>{card.title}</div>
+                    <div style={{ marginTop: 6 }}>{card.line}</div>
+                  </div>
+                </>
+              ) : null}
+
               <div className="hr" />
 
               <div style={{ display: "grid", gap: 8 }}>
@@ -193,25 +129,6 @@ export function HomeScreen({ sessions, onStart }: Props) {
                   <strong>Attention:</strong> {last.attention}
                 </div>
               </div>
-
-              {insight || fieldLine ? (
-                <>
-                  <div className="hr" />
-                  {insight ? <div className={styles.insight}>{insight}</div> : null}
-                  {fieldLine ? (
-                    <div
-                      style={{
-                        marginTop: insight ? 8 : 0,
-                        fontSize: 14,
-                        lineHeight: 1.5,
-                        color: "var(--muted)",
-                      }}
-                    >
-                      {fieldLine}
-                    </div>
-                  ) : null}
-                </>
-              ) : null}
             </>
           ) : (
             <div className="small" style={{ marginTop: 10 }}>
@@ -226,48 +143,95 @@ export function HomeScreen({ sessions, onStart }: Props) {
           </div>
         ) : null}
 
+        {weekly.totalEntries > 0 ? (
+          <>
+            <div style={{ height: 16 }} />
+
+            <Card title="Weekly">
+              <div style={{ display: "grid", gap: 8 }}>
+                <div>
+                  <strong>Entries:</strong> {weekly.totalEntries}
+                </div>
+
+                <div>
+                  <strong>SEER:</strong>{" "}
+                  Held {weekly.seerHeld} · Partial {weekly.seerPartial} · Missed{" "}
+                  {weekly.seerMissed}
+                </div>
+
+                <div>
+                  <strong>Work:</strong>{" "}
+                  App {weekly.appSessions} · Game {weekly.gameSessions} · Output{" "}
+                  {weekly.outputSessions}
+                </div>
+
+                <div>
+                  <strong>Most common state:</strong>{" "}
+                  {weekly.mostCommonCard ?? "None"}
+                </div>
+
+                <div>
+                  <strong>Attention:</strong>{" "}
+                  Waste {weekly.attentionCounts.waste} · Bugs{" "}
+                  {weekly.attentionCounts.bugs} · Features{" "}
+                  {weekly.attentionCounts.features} · Brainstorm{" "}
+                  {weekly.attentionCounts.brainstorm}
+                </div>
+
+                <div style={{ marginTop: 6, opacity: 0.75 }}>
+                  {weekly.finalLine}
+                </div>
+              </div>
+            </Card>
+          </>
+        ) : null}
+
         {history.length > 0 ? (
           <>
             <div style={{ height: 16 }} />
             <Card title="History">
               <div className={styles.historyList}>
-                {history.map((entry) => (
-                  <div key={entry.id} className={styles.historyRow}>
-                    <div className={styles.historyTime}>
-                      {formatTimeAgo(now, entry.timestamp)}
-                    </div>
+                {history.map((entry) => {
+                  const entryCard = getMirrorCard(entry.energy, entry.pace);
 
-                    <div className={styles.historyValues}>
-                      <div style={{ fontWeight: 600 }}>
-                        {getBaseState(entry.energy, entry.pace)}
+                  return (
+                    <div key={entry.id} className={styles.historyRow}>
+                      <div className={styles.historyTime}>
+                        {formatTimeAgo(now, entry.timestamp)}
                       </div>
 
-                      <div style={{ opacity: 0.7, fontSize: 13 }}>
-                        {entry.body} • {entry.mind}
-                      </div>
-
-                      <div style={{ marginTop: 4, fontSize: 13 }}>
-                        <strong>SEER:</strong>{" "}
-                        {entry.seer.anchor ? "A✓" : "A✗"} ·{" "}
-                        {entry.seer.integrity ? "I✓" : "I✗"}
-                      </div>
-
-                      <div style={{ fontSize: 13 }}>
-                        <strong>Work:</strong> {renderWorkSummary(entry.work)}
-                      </div>
-
-                      {entry.work.note ? (
-                        <div style={{ fontSize: 12, opacity: 0.7 }}>
-                          {entry.work.note}
+                      <div className={styles.historyValues}>
+                        <div style={{ fontWeight: 600 }}>
+                          {entryCard.title}
                         </div>
-                      ) : null}
 
-                      <div style={{ fontSize: 13 }}>
-                        <strong>Attention:</strong> {entry.attention}
+                        <div style={{ opacity: 0.7, fontSize: 13 }}>
+                          {entry.body} • {entry.mind}
+                        </div>
+
+                        <div style={{ marginTop: 4, fontSize: 13 }}>
+                          <strong>SEER:</strong>{" "}
+                          {entry.seer.anchor ? "A✓" : "A✗"} ·{" "}
+                          {entry.seer.integrity ? "I✓" : "I✗"}
+                        </div>
+
+                        <div style={{ fontSize: 13 }}>
+                          <strong>Work:</strong> {renderWorkSummary(entry.work)}
+                        </div>
+
+                        {entry.work.note ? (
+                          <div style={{ fontSize: 12, opacity: 0.7 }}>
+                            {entry.work.note}
+                          </div>
+                        ) : null}
+
+                        <div style={{ fontSize: 13 }}>
+                          <strong>Attention:</strong> {entry.attention}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </Card>
           </>
