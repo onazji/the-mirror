@@ -2,6 +2,7 @@
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
+import { CardRevealOverlay } from "../components/CardRevealOverlay";
 import type { MirrorSession } from "../types/mirror";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
 import { getMirrorCard } from "../services/cardEngine";
@@ -26,6 +27,7 @@ function renderWorkSummary(work: MirrorSession["work"]): string {
 
 export function HomeScreen({ sessions, onStart }: Props) {
   const [showInfo, setShowInfo] = useState(false);
+  const [showCardReveal, setShowCardReveal] = useState(false);
 
   const last = sessions.length ? sessions[sessions.length - 1] : null;
   const now = Date.now();
@@ -40,6 +42,7 @@ export function HomeScreen({ sessions, onStart }: Props) {
   return (
     <>
       <div className="container">
+        {/* HEADER */}
         <div
           style={{
             display: "flex",
@@ -70,6 +73,7 @@ export function HomeScreen({ sessions, onStart }: Props) {
           </button>
         </div>
 
+        {/* LAST CHECK-IN */}
         <Card title="Last check-in">
           <div className={styles.bigLine}>{lastCheckText}</div>
 
@@ -96,13 +100,37 @@ export function HomeScreen({ sessions, onStart }: Props) {
                 </div>
               </div>
 
+              {/* 🔥 CARD TRIGGER (instead of showing card directly) */}
               {card ? (
                 <>
                   <div className="hr" />
-                  <div className={styles.insight}>
-                    <div style={{ fontWeight: 700 }}>{card.title}</div>
-                    <div style={{ marginTop: 6 }}>{card.line}</div>
-                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowCardReveal(true)}
+                    style={{
+                      width: "100%",
+                      border: "1px solid rgba(255,255,255,0.16)",
+                      background: "rgba(255,255,255,0.06)",
+                      color: "var(--text)",
+                      borderRadius: 16,
+                      padding: "14px 16px",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 4 }}>
+                      Reflection
+                    </div>
+
+                    <div style={{ fontWeight: 700 }}>
+                      {card.title}
+                    </div>
+
+                    <div style={{ marginTop: 4, fontSize: 14, opacity: 0.75 }}>
+                      See the card
+                    </div>
+                  </button>
                 </>
               ) : null}
 
@@ -137,12 +165,14 @@ export function HomeScreen({ sessions, onStart }: Props) {
           )}
         </Card>
 
+        {/* MISSED DAYS */}
         {last && missedDays >= 1 ? (
           <div className={styles.notice}>
             {`No check-ins recorded for ${missedDays} days. State awareness resumes anytime.`}
           </div>
         ) : null}
 
+        {/* WEEKLY */}
         {weekly.totalEntries > 0 ? (
           <>
             <div style={{ height: 16 }} />
@@ -178,6 +208,26 @@ export function HomeScreen({ sessions, onStart }: Props) {
                   {weekly.attentionCounts.brainstorm}
                 </div>
 
+                {weekly.stateInsight ||
+                weekly.attentionInsight ||
+                weekly.seerInsight ? (
+                  <>
+                    <div className="hr" />
+
+                    {weekly.stateInsight ? (
+                      <div style={{ fontSize: 14 }}>{weekly.stateInsight}</div>
+                    ) : null}
+
+                    {weekly.attentionInsight ? (
+                      <div style={{ fontSize: 14 }}>{weekly.attentionInsight}</div>
+                    ) : null}
+
+                    {weekly.seerInsight ? (
+                      <div style={{ fontSize: 14 }}>{weekly.seerInsight}</div>
+                    ) : null}
+                  </>
+                ) : null}
+
                 <div style={{ marginTop: 6, opacity: 0.75 }}>
                   {weekly.finalLine}
                 </div>
@@ -186,6 +236,7 @@ export function HomeScreen({ sessions, onStart }: Props) {
           </>
         ) : null}
 
+        {/* HISTORY */}
         {history.length > 0 ? (
           <>
             <div style={{ height: 16 }} />
@@ -240,11 +291,21 @@ export function HomeScreen({ sessions, onStart }: Props) {
         <div style={{ height: 16 }} />
 
         <Button label="Check State" onClick={onStart} kind="primary" />
+
         <div className="small" style={{ marginTop: 10 }}>
           On-device only. Stored in localStorage.
         </div>
       </div>
 
+      {/* 🔥 CARD REVEAL OVERLAY */}
+      {showCardReveal && card ? (
+        <CardRevealOverlay
+          card={card}
+          onClose={() => setShowCardReveal(false)}
+        />
+      ) : null}
+
+      {/* STATE MAP OVERLAY */}
       {showInfo ? (
         <div
           onClick={() => setShowInfo(false)}

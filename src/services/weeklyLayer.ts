@@ -11,6 +11,9 @@ export type WeeklyLayer = {
   outputSessions: number;
   mostCommonCard: string | null;
   attentionCounts: Record<AttentionTag, number>;
+  stateInsight: string | null;
+  attentionInsight: string;
+  seerInsight: string;
   finalLine: string;
 };
 
@@ -20,6 +23,50 @@ const ATTENTION_TAGS: AttentionTag[] = [
   "features",
   "brainstorm",
 ];
+
+function getStateInsight(card: string | null): string | null {
+  if (!card) return null;
+
+  if (card === "Flow") return "I sustained forward motion without pressure.";
+  if (card === "Alignment") return "I operated without internal resistance.";
+  if (card === "Overdrive") return "I pushed with intensity.";
+  if (card === "Drift") return "Energy was present, but direction was loose.";
+  if (card === "Stagnant") return "Movement was minimal.";
+  if (card === "Pressure") return "Effort was applied under weight.";
+  if (card === "Anxiety") return "Movement carried tension and instability.";
+  if (card === "Patience") return "Progress was slow, but controlled.";
+  if (card === "Idle") return "Capacity was present, but unused.";
+
+  return null;
+}
+
+function getAttentionInsight(attentionCounts: Record<AttentionTag, number>): string {
+  const entries = Object.entries(attentionCounts) as [AttentionTag, number][];
+  const top = entries.sort((a, b) => b[1] - a[1])[0];
+
+  if (!top || top[1] === 0) return "No dominant attention pattern was detected.";
+
+  const [key] = top;
+
+  if (key === "features") return "My attention leaned toward building.";
+  if (key === "bugs") return "My attention leaned toward fixing and stability.";
+  if (key === "waste") return "Some attention drifted away from intention.";
+  if (key === "brainstorm") return "My attention leaned toward exploration.";
+
+  return "Attention was distributed.";
+}
+
+function getSeerInsight(held: number, partial: number, missed: number): string {
+  if (held > partial && held > missed) {
+    return "I showed up for myself consistently.";
+  }
+
+  if (missed > held) {
+    return "There were gaps in staying with myself.";
+  }
+
+  return "My consistency was mixed this week.";
+}
 
 export function buildWeeklyLayer(
   sessions: MirrorSession[],
@@ -74,6 +121,10 @@ export function buildWeeklyLayer(
   const mostCommonCard =
     Object.entries(cardCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
+  const stateInsight = getStateInsight(mostCommonCard);
+  const attentionInsight = getAttentionInsight(attentionCounts);
+  const seerInsight = getSeerInsight(seerHeld, seerPartial, seerMissed);
+
   return {
     totalEntries: recent.length,
     seerHeld,
@@ -84,6 +135,9 @@ export function buildWeeklyLayer(
     outputSessions,
     mostCommonCard,
     attentionCounts,
+    stateInsight,
+    attentionInsight,
+    seerInsight,
     finalLine: "This is how I showed up for myself.",
   };
 }
