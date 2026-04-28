@@ -20,17 +20,28 @@ const BODY: readonly Body[] = ["relaxed", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 
 export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
-  const complete = !!(draft.energy && draft.pace && draft.body && draft.mind);
+  const complete = !!(
+    draft.energy &&
+    draft.pace &&
+    draft.body &&
+    draft.mind &&
+    draft.seer &&
+    draft.seer.anchor !== null &&
+    draft.seer.integrity !== null
+  );
 
   return (
     <div className="container">
       <h1>Check</h1>
 
+      {/* SHOW UP (formerly SEER) */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
-          <h3 style={{ margin: 0 }}>SEER</h3>
+          <h3 style={{ margin: 0 }}>Show Up</h3>
+
           <SeerSection
-            value={draft.seer}
+            anchor={draft.seer?.anchor ?? null}
+            integrity={draft.seer?.integrity ?? null}
             onChange={(seer) => onChange({ ...draft, seer })}
           />
         </div>
@@ -38,6 +49,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
+      {/* MIRROR */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Mirror</h3>
@@ -74,6 +86,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
+      {/* WORK */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Work</h3>
@@ -86,6 +99,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
+      {/* ATTENTION */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Attention</h3>
@@ -96,11 +110,24 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
         </div>
       </Card>
 
+      {/* ACTION ROW */}
       <div className={styles.row}>
         <Button label="Back" onClick={onBack} kind="secondary" />
         <div style={{ width: 10 }} />
-        <Button label="Next" onClick={onNext} kind="primary" disabled={!complete} />
+        <Button
+          label="Next"
+          onClick={onNext}
+          kind="primary"
+          disabled={!complete}
+        />
       </div>
+
+      {/* NEXT CLARITY */}
+      {!complete ? (
+        <div className="small" style={{ marginTop: 8 }}>
+          Answer all questions to continue
+        </div>
+      ) : null}
 
       <div className="small" style={{ marginTop: 10 }}>
         One vertical flow. Reflect, don’t overthink.

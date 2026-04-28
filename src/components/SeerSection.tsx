@@ -1,36 +1,75 @@
+import { Button } from "./Button";
+
 type Props = {
-  value: {
-    anchor: boolean;
-    integrity: boolean;
-  };
-  onChange: (value: Props["value"]) => void;
+  anchor: boolean | null;
+  integrity: boolean | null;
+  onChange: (next: { anchor: boolean; integrity: boolean }) => void;
 };
 
-export function SeerSection({ value, onChange }: Props) {
+export function SeerSection({ anchor, integrity, onChange }: Props) {
   return (
-    <section style={{ display: "grid", gap: 12 }}>
+    <div style={{ display: "grid", gap: 16 }}>
+      {/* QUESTION 1 */}
+      <div>
+        <div style={{ marginBottom: 6 }}>
+          Did you show up for what matters to you today?
+        </div>
 
-      <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <input
-          type="checkbox"
-          checked={value.anchor}
-          onChange={(e) =>
-            onChange({ ...value, anchor: e.target.checked })
-          }
-        />
-        <span>I touched the builder path</span>
-      </label>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button
+            label="Yes"
+            kind={anchor === true ? "primary" : "secondary"}
+            onClick={() =>
+              onChange({
+                anchor: true,
+                integrity: integrity ?? false,
+              })
+            }
+          />
 
-      <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <input
-          type="checkbox"
-          checked={value.integrity}
-          onChange={(e) =>
-            onChange({ ...value, integrity: e.target.checked })
-          }
-        />
-        <span>I held the line</span>
-      </label>
-    </section>
+          <Button
+            label="No"
+            kind={anchor === false ? "primary" : "secondary"}
+            onClick={() =>
+              onChange({
+                anchor: false,
+                integrity: integrity ?? false,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      {/* QUESTION 2 */}
+      <div>
+        <div style={{ marginBottom: 6 }}>
+          Did you stay true to yourself today?
+        </div>
+
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button
+            label="Yes"
+            kind={integrity === true ? "primary" : "secondary"}
+            onClick={() =>
+              onChange({
+                anchor: anchor ?? false,
+                integrity: true,
+              })
+            }
+          />
+
+          <Button
+            label="No"
+            kind={integrity === false ? "primary" : "secondary"}
+            onClick={() =>
+              onChange({
+                anchor: anchor ?? false,
+                integrity: false,
+              })
+            }
+          />
+        </div>
+      </div>
+    </div>
   );
 }
