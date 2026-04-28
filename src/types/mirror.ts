@@ -33,9 +33,11 @@ export type MirrorDraft = {
 };
 
 export type WeeklySummary = {
-  energy: Energy;
-  pace: Pace;
-  body: Body;
-  mind: Mind;
-  count: number;
+  energyMostFrequent: Energy | null;
+  paceMostFrequent: Pace | null;
+  mismatchMostCommon: {
+    combo: string | null;
+    count: number;
+  };
+  rangeCount: number;
 };
