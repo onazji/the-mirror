@@ -7,6 +7,8 @@ export type Body = "relaxed" | "tense";
 export type Mind = "narrow" | "wide" | "scattered";
 export type AttentionTag = "waste" | "bugs" | "features" | "brainstorm";
 
+export type PreviousStartResult = "yes" | "partial" | "no";
+
 export type MirrorSession = {
   id: string;
   timestamp: number;
@@ -19,6 +21,11 @@ export type MirrorSession = {
   seer: SeerCheck;
   work: WorkLog;
   attention: AttentionTag;
+
+  todaySignal: string;
+  blocker: string;
+  tomorrowStart: string;
+  previousStartResult?: PreviousStartResult;
 };
 
 export type MirrorDraft = {
@@ -30,6 +37,11 @@ export type MirrorDraft = {
   seer: SeerCheck;
   work: WorkLog;
   attention: AttentionTag;
+
+  todaySignal: string;
+  blocker: string;
+  tomorrowStart: string;
+  previousStartResult?: PreviousStartResult;
 };
 
 export type WeeklySummary = {

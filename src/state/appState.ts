@@ -27,6 +27,10 @@ export const createEmptyDraft = (): MirrorDraft => ({
   },
 
   attention: "features",
+
+  todaySignal: "",
+  blocker: "",
+  tomorrowStart: "",
 });
 
 export const initialAppModel: AppModel = {

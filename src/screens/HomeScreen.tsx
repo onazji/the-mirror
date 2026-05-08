@@ -3,15 +3,17 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
 import { CardRevealOverlay } from "../components/CardRevealOverlay";
-import type { MirrorSession } from "../types/mirror";
+import type { MirrorSession, PreviousStartResult } from "../types/mirror";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
 import { getMirrorCard } from "../services/cardEngine";
 import { buildWeeklyLayer } from "../services/weeklyLayer";
+import { buildResetLine } from "../services/nextStepEngine";
 import styles from "./HomeScreen.module.css";
 
 type Props = {
   sessions: MirrorSession[];
   onStart: () => void;
+  onResult: (sessionId: string, result: PreviousStartResult) => void;
 };
 
 function renderWorkSummary(work: MirrorSession["work"]): string {
@@ -25,14 +27,23 @@ function renderWorkSummary(work: MirrorSession["work"]): string {
   return `${summary} (${work.sessions})`;
 }
 
-export function HomeScreen({ sessions, onStart }: Props) {
+function renderResultLabel(result: PreviousStartResult): string {
+  if (result === "yes") return "Yes";
+  if (result === "partial") return "Partially";
+  return "No";
+}
+
+export function HomeScreen({ sessions, onStart, onResult }: Props) {
   const [showInfo, setShowInfo] = useState(false);
   const [showCardReveal, setShowCardReveal] = useState(false);
 
   const last = sessions.length ? sessions[sessions.length - 1] : null;
   const now = Date.now();
 
-  const lastCheckText = last ? formatTimeAgo(now, last.timestamp) : "No check-ins yet";
+  const lastCheckText = last
+    ? formatTimeAgo(now, last.timestamp)
+    : "No check-ins yet";
+
   const missedDays = last ? missedDaysSince(now, last.timestamp) : 0;
   const history = [...sessions].reverse();
 
@@ -42,7 +53,6 @@ export function HomeScreen({ sessions, onStart }: Props) {
   return (
     <>
       <div className="container">
-        {/* HEADER */}
         <div
           style={{
             display: "flex",
@@ -73,9 +83,60 @@ export function HomeScreen({ sessions, onStart }: Props) {
           </button>
         </div>
 
-        {/* LAST CHECK-IN */}
         <Card title="Last check-in">
           <div className={styles.bigLine}>{lastCheckText}</div>
+
+          {last?.tomorrowStart ? (
+            <>
+              <div className="hr" />
+
+              <div style={{ display: "grid", gap: 6 }}>
+                <div className="small">Tomorrow starts here</div>
+
+                <div style={{ fontWeight: 700 }}>→ {last.tomorrowStart}</div>
+
+                <div style={{ fontSize: 14, opacity: 0.75 }}>
+                  {buildResetLine(last.energy, last.pace, last.tomorrowStart)}
+                </div>
+              </div>
+
+              <div style={{ marginTop: 10 }}>
+                <div className="small">Did you do this?</div>
+
+                <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
+                  <button
+                    type="button"
+                    className={styles.chip}
+                    onClick={() => onResult(last.id, "yes")}
+                  >
+                    Yes
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.chip}
+                    onClick={() => onResult(last.id, "partial")}
+                  >
+                    Partially
+                  </button>
+
+                  <button
+                    type="button"
+                    className={styles.chip}
+                    onClick={() => onResult(last.id, "no")}
+                  >
+                    No
+                  </button>
+                </div>
+
+                {last.previousStartResult ? (
+                  <div style={{ marginTop: 6, fontSize: 13, opacity: 0.7 }}>
+                    Last result: {renderResultLabel(last.previousStartResult)}
+                  </div>
+                ) : null}
+              </div>
+            </>
+          ) : null}
 
           {last ? (
             <>
@@ -86,21 +147,23 @@ export function HomeScreen({ sessions, onStart }: Props) {
                   <span className={styles.k}>Energy</span>
                   <span className={styles.v}>{last.energy}</span>
                 </div>
+
                 <div className={styles.item}>
                   <span className={styles.k}>Pace</span>
                   <span className={styles.v}>{last.pace}</span>
                 </div>
+
                 <div className={styles.item}>
                   <span className={styles.k}>Body</span>
                   <span className={styles.v}>{last.body}</span>
                 </div>
+
                 <div className={styles.item}>
                   <span className={styles.k}>Mind</span>
                   <span className={styles.v}>{last.mind}</span>
                 </div>
               </div>
 
-              {/* 🔥 CARD TRIGGER (instead of showing card directly) */}
               {card ? (
                 <>
                   <div className="hr" />
@@ -119,13 +182,17 @@ export function HomeScreen({ sessions, onStart }: Props) {
                       textAlign: "left",
                     }}
                   >
-                    <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 4 }}>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        opacity: 0.65,
+                        marginBottom: 4,
+                      }}
+                    >
                       Reflection
                     </div>
 
-                    <div style={{ fontWeight: 700 }}>
-                      {card.title}
-                    </div>
+                    <div style={{ fontWeight: 700 }}>{card.title}</div>
 
                     <div style={{ marginTop: 4, fontSize: 14, opacity: 0.75 }}>
                       See the card
@@ -156,6 +223,18 @@ export function HomeScreen({ sessions, onStart }: Props) {
                 <div>
                   <strong>Attention:</strong> {last.attention}
                 </div>
+
+                {last.todaySignal ? (
+                  <div>
+                    <strong>Signal:</strong> {last.todaySignal}
+                  </div>
+                ) : null}
+
+                {last.blocker ? (
+                  <div>
+                    <strong>Friction:</strong> {last.blocker}
+                  </div>
+                ) : null}
               </div>
             </>
           ) : (
@@ -165,14 +244,12 @@ export function HomeScreen({ sessions, onStart }: Props) {
           )}
         </Card>
 
-        {/* MISSED DAYS */}
         {last && missedDays >= 1 ? (
           <div className={styles.notice}>
             {`No check-ins recorded for ${missedDays} days. State awareness resumes anytime.`}
           </div>
         ) : null}
 
-        {/* WEEKLY */}
         {weekly.totalEntries > 0 ? (
           <>
             <div style={{ height: 16 }} />
@@ -184,15 +261,13 @@ export function HomeScreen({ sessions, onStart }: Props) {
                 </div>
 
                 <div>
-                  <strong>SEER:</strong>{" "}
-                  Held {weekly.seerHeld} · Partial {weekly.seerPartial} · Missed{" "}
-                  {weekly.seerMissed}
+                  <strong>SEER:</strong> Held {weekly.seerHeld} · Partial{" "}
+                  {weekly.seerPartial} · Missed {weekly.seerMissed}
                 </div>
 
                 <div>
-                  <strong>Work:</strong>{" "}
-                  App {weekly.appSessions} · Game {weekly.gameSessions} · Output{" "}
-                  {weekly.outputSessions}
+                  <strong>Work:</strong> App {weekly.appSessions} · Game{" "}
+                  {weekly.gameSessions} · Output {weekly.outputSessions}
                 </div>
 
                 <div>
@@ -201,8 +276,8 @@ export function HomeScreen({ sessions, onStart }: Props) {
                 </div>
 
                 <div>
-                  <strong>Attention:</strong>{" "}
-                  Waste {weekly.attentionCounts.waste} · Bugs{" "}
+                  <strong>Attention:</strong> Waste{" "}
+                  {weekly.attentionCounts.waste} · Bugs{" "}
                   {weekly.attentionCounts.bugs} · Features{" "}
                   {weekly.attentionCounts.features} · Brainstorm{" "}
                   {weekly.attentionCounts.brainstorm}
@@ -219,7 +294,9 @@ export function HomeScreen({ sessions, onStart }: Props) {
                     ) : null}
 
                     {weekly.attentionInsight ? (
-                      <div style={{ fontSize: 14 }}>{weekly.attentionInsight}</div>
+                      <div style={{ fontSize: 14 }}>
+                        {weekly.attentionInsight}
+                      </div>
                     ) : null}
 
                     {weekly.seerInsight ? (
@@ -236,10 +313,10 @@ export function HomeScreen({ sessions, onStart }: Props) {
           </>
         ) : null}
 
-        {/* HISTORY */}
         {history.length > 0 ? (
           <>
             <div style={{ height: 16 }} />
+
             <Card title="History">
               <div className={styles.historyList}>
                 {history.map((entry) => {
@@ -259,6 +336,19 @@ export function HomeScreen({ sessions, onStart }: Props) {
                         <div style={{ opacity: 0.7, fontSize: 13 }}>
                           {entry.body} • {entry.mind}
                         </div>
+
+                        {entry.tomorrowStart ? (
+                          <div style={{ marginTop: 4, fontSize: 13 }}>
+                            <strong>Next:</strong> {entry.tomorrowStart}
+                          </div>
+                        ) : null}
+
+                        {entry.previousStartResult ? (
+                          <div style={{ fontSize: 13 }}>
+                            <strong>Result:</strong>{" "}
+                            {renderResultLabel(entry.previousStartResult)}
+                          </div>
+                        ) : null}
 
                         <div style={{ marginTop: 4, fontSize: 13 }}>
                           <strong>SEER:</strong>{" "}
@@ -297,7 +387,6 @@ export function HomeScreen({ sessions, onStart }: Props) {
         </div>
       </div>
 
-      {/* 🔥 CARD REVEAL OVERLAY */}
       {showCardReveal && card ? (
         <CardRevealOverlay
           card={card}
@@ -305,7 +394,6 @@ export function HomeScreen({ sessions, onStart }: Props) {
         />
       ) : null}
 
-      {/* STATE MAP OVERLAY */}
       {showInfo ? (
         <div
           onClick={() => setShowInfo(false)}

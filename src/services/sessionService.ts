@@ -22,9 +22,16 @@ export function saveSessions(store: KeyValueStore, sessions: MirrorSession[]): v
   store.setString(SESSIONS_KEY, JSON.stringify(sessions));
 }
 
-export function createSessionFromDraft(draft: MirrorDraft, timestamp: number): MirrorSession {
-  if (!draft.energy || !draft.pace || !draft.body || !draft.mind) {
+export function createSessionFromDraft(
+  draft: MirrorDraft,
+  timestamp: number
+): MirrorSession {
+  if (!draft.energy || !draft.pace) {
     throw new Error("Draft incomplete");
+  }
+
+  if (!draft.tomorrowStart.trim()) {
+    throw new Error("Tomorrow start required");
   }
 
   const id = crypto.randomUUID?.() ?? `session-${timestamp}`;
@@ -34,27 +41,44 @@ export function createSessionFromDraft(draft: MirrorDraft, timestamp: number): M
   return {
     id,
     timestamp,
+
     energy: draft.energy,
     pace: draft.pace,
-    body: draft.body,
-    mind: draft.mind,
+
+    // keep legacy fields safe
+    body: draft.body ?? "relaxed",
+    mind: draft.mind ?? "wide",
+
     seer: draft.seer,
+
     work: {
       ...draft.work,
       note,
     },
+
     attention: draft.attention,
+
+    // 🔥 V2 fields
+    todaySignal: draft.todaySignal.trim(),
+    blocker: draft.blocker.trim(),
+    tomorrowStart: draft.tomorrowStart.trim(),
+    previousStartResult: draft.previousStartResult,
   };
 }
 
-export function appendSession(store: KeyValueStore, session: MirrorSession): MirrorSession[] {
+export function appendSession(
+  store: KeyValueStore,
+  session: MirrorSession
+): MirrorSession[] {
   const sessions = loadSessions(store);
   const next = [...sessions, session];
   saveSessions(store, next);
   return next;
 }
 
-export function getLastSession(sessions: MirrorSession[]): MirrorSession | null {
+export function getLastSession(
+  sessions: MirrorSession[]
+): MirrorSession | null {
   if (sessions.length === 0) return null;
   return sessions[sessions.length - 1] ?? null;
 }

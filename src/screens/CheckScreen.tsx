@@ -1,7 +1,10 @@
 ﻿import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { OptionGroup } from "../components/OptionGroup";
+import { TextPromptSection } from "../components/TextPromptSection";
+
 import type { MirrorDraft, Energy, Pace, Body, Mind } from "../types/mirror";
+
 import styles from "./CheckScreen.module.css";
 import { SeerSection } from "../components/SeerSection";
 import { WorkSection } from "../components/WorkSection";
@@ -20,21 +23,18 @@ const BODY: readonly Body[] = ["relaxed", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 
 export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
+  // 🔥 V2 completion rule
   const complete = !!(
     draft.energy &&
     draft.pace &&
-    draft.body &&
-    draft.mind &&
-    draft.seer &&
-    draft.seer.anchor !== null &&
-    draft.seer.integrity !== null
+    draft.tomorrowStart.trim()
   );
 
   return (
     <div className="container">
-      <h1>Check</h1>
+      <h1>Quick check-in</h1>
 
-      {/* SHOW UP (formerly SEER) */}
+      {/* SHOW UP */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Show Up</h3>
@@ -68,6 +68,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
             onChange={(v) => onChange({ ...draft, pace: v })}
           />
 
+          {/* keep legacy but optional */}
           <OptionGroup
             label="Body"
             options={BODY}
@@ -80,6 +81,55 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
             options={MIND}
             value={draft.mind}
             onChange={(v) => onChange({ ...draft, mind: v })}
+          />
+        </div>
+      </Card>
+
+      <div style={{ height: 16 }} />
+
+      {/* SIGNAL */}
+      <Card>
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Signal</h3>
+
+          <TextPromptSection
+            label="What mattered today?"
+            placeholder="one line is enough"
+            value={draft.todaySignal}
+            onChange={(v) => onChange({ ...draft, todaySignal: v })}
+          />
+        </div>
+      </Card>
+
+      <div style={{ height: 16 }} />
+
+      {/* FRICTION */}
+      <Card>
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Friction</h3>
+
+          <TextPromptSection
+            label="What got in the way?"
+            placeholder="optional"
+            value={draft.blocker}
+            onChange={(v) => onChange({ ...draft, blocker: v })}
+          />
+        </div>
+      </Card>
+
+      <div style={{ height: 16 }} />
+
+      {/* 🔥 CORE OUTPUT */}
+      <Card>
+        <div style={{ display: "grid", gap: 12 }}>
+          <h3 style={{ margin: 0 }}>Tomorrow</h3>
+
+          <TextPromptSection
+            label="What’s the smallest thing you’ll do first tomorrow?"
+            placeholder="start with something small"
+            value={draft.tomorrowStart}
+            onChange={(v) => onChange({ ...draft, tomorrowStart: v })}
+            required
           />
         </div>
       </Card>
@@ -122,15 +172,14 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
         />
       </div>
 
-      {/* NEXT CLARITY */}
       {!complete ? (
         <div className="small" style={{ marginTop: 8 }}>
-          Answer all questions to continue
+          Energy, Pace, and tomorrow start required
         </div>
       ) : null}
 
       <div className="small" style={{ marginTop: 10 }}>
-        One vertical flow. Reflect, don’t overthink.
+        Make tomorrow easier in under a minute.
       </div>
     </div>
   );
