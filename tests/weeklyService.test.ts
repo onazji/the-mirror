@@ -49,6 +49,9 @@ sessions: 1,
 note: "",
 },
 attention: "features",
+todaySignal: "",
+blocker: "",
+tomorrowStart: "test tomorrow start",
 };
 }
 test("weekly trigger fires on multiples of 7 and not otherwise", () => {
