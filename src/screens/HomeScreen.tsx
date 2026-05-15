@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
@@ -42,7 +42,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
 
   const lastCheckText = last
     ? formatTimeAgo(now, last.timestamp)
-    : "No check-ins yet";
+    : "No reflections yet";
 
   const missedDays = last ? missedDaysSince(now, last.timestamp) : 0;
   const history = [...sessions].reverse();
@@ -83,7 +83,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
           </button>
         </div>
 
-        <Card title="Last check-in">
+        <Card title="Last reflection">
           <div className={styles.bigLine}>{lastCheckText}</div>
 
           {last?.tomorrowStart ? (
@@ -149,17 +149,17 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                 </div>
 
                 <div className={styles.item}>
-                  <span className={styles.k}>Pace</span>
+                  <span className={styles.k}>Momentum</span>
                   <span className={styles.v}>{last.pace}</span>
                 </div>
 
                 <div className={styles.item}>
-                  <span className={styles.k}>Body</span>
+                  <span className={styles.k}>Presence</span>
                   <span className={styles.v}>{last.body}</span>
                 </div>
 
                 <div className={styles.item}>
-                  <span className={styles.k}>Mind</span>
+                  <span className={styles.k}>Focus</span>
                   <span className={styles.v}>{last.mind}</span>
                 </div>
               </div>
@@ -239,14 +239,14 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             </>
           ) : (
             <div className="small" style={{ marginTop: 10 }}>
-              No state recorded yet.
+              No reflection recorded yet.
             </div>
           )}
         </Card>
 
         {last && missedDays >= 1 ? (
           <div className={styles.notice}>
-            {`No check-ins recorded for ${missedDays} days. State awareness resumes anytime.`}
+            {`No reflections recorded for ${missedDays} days. You can return anytime.`}
           </div>
         ) : null}
 
@@ -380,7 +380,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
 
         <div style={{ height: 16 }} />
 
-        <Button label="Check State" onClick={onStart} kind="primary" />
+        <Button label="Step Into the Mirror" onClick={onStart} kind="primary" />
 
         <div className="small" style={{ marginTop: 10 }}>
           On-device only. Stored in localStorage.

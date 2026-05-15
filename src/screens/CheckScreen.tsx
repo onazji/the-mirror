@@ -1,4 +1,4 @@
-﻿import { Card } from "../components/Card";
+import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { OptionGroup } from "../components/OptionGroup";
 import { TextPromptSection } from "../components/TextPromptSection";
@@ -23,7 +23,6 @@ const BODY: readonly Body[] = ["relaxed", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 
 export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
-  // 🔥 V2 completion rule
   const complete = !!(
     draft.energy &&
     draft.pace &&
@@ -32,7 +31,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
   return (
     <div className="container">
-      <h1>Quick check-in</h1>
+      <h1>Mirror</h1>
 
       {/* SHOW UP */}
       <Card>
@@ -52,7 +51,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
       {/* MIRROR */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
-          <h3 style={{ margin: 0 }}>Mirror</h3>
+          <h3 style={{ margin: 0 }}>State</h3>
 
           <OptionGroup
             label="Energy"
@@ -62,22 +61,21 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
           />
 
           <OptionGroup
-            label="Pace"
+            label="Momentum"
             options={PACE}
             value={draft.pace}
             onChange={(v) => onChange({ ...draft, pace: v })}
           />
 
-          {/* keep legacy but optional */}
           <OptionGroup
-            label="Body"
+            label="Presence"
             options={BODY}
             value={draft.body}
             onChange={(v) => onChange({ ...draft, body: v })}
           />
 
           <OptionGroup
-            label="Mind"
+            label="Focus"
             options={MIND}
             value={draft.mind}
             onChange={(v) => onChange({ ...draft, mind: v })}
@@ -119,7 +117,7 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* 🔥 CORE OUTPUT */}
+      {/* CORE OUTPUT */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Tomorrow</h3>
@@ -160,12 +158,11 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
         </div>
       </Card>
 
-      {/* ACTION ROW */}
       <div className={styles.row}>
         <Button label="Back" onClick={onBack} kind="secondary" />
         <div style={{ width: 10 }} />
         <Button
-          label="Next"
+          label="Record Reflection"
           onClick={onNext}
           kind="primary"
           disabled={!complete}
@@ -174,12 +171,12 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       {!complete ? (
         <div className="small" style={{ marginTop: 8 }}>
-          Energy, Pace, and tomorrow start required
+          Energy, Momentum, and tomorrow start required
         </div>
       ) : null}
 
       <div className="small" style={{ marginTop: 10 }}>
-        Make tomorrow easier in under a minute.
+        Clarify tomorrow. Return consistently.
       </div>
     </div>
   );
