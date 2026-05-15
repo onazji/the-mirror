@@ -379,12 +379,10 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             </Card>
           </>
         ) : null}
+        <div className="small" style={{ marginTop: 10 }}>
+          On-device only. Stored in localStorage.
+        </div>
       </div>
-
-      <div className="small" style={{ marginTop: 10 }}>
-        On-device only. Stored in localStorage.
-      </div>
-
       {showCardReveal && card ? (
         <CardRevealOverlay
           card={card}
