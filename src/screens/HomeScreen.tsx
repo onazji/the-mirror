@@ -248,10 +248,6 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
           )}
         </Card>
 
-        <div className="small" style={{ marginTop: 10 }}>
-          On-device only. Stored in localStorage.
-        </div>
-
         {last && missedDays >= 1 ? (
           <div className={styles.notice}>
             {`No reflections recorded for ${missedDays} days. You can return anytime.`}
@@ -383,6 +379,10 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             </Card>
           </>
         ) : null}
+      </div>
+
+      <div className="small" style={{ marginTop: 10 }}>
+        On-device only. Stored in localStorage.
       </div>
 
       {showCardReveal && card ? (
