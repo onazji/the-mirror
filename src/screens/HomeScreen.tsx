@@ -82,6 +82,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             ⓘ
           </button>
         </div>
+
         <div style={{ height: 16 }} />
 
         <Button label="Step Into the Mirror" onClick={onStart} kind="primary" />
@@ -89,7 +90,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
         <div className="small" style={{ marginTop: 10 }}>
           On-device only. Stored in localStorage.
         </div>
-
+        
         <Card title="Last reflection">
           <div className={styles.bigLine}>{lastCheckText}</div>
 
@@ -251,7 +252,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
           )}
         </Card>
 
-        
+       
 
         {last && missedDays >= 1 ? (
           <div className={styles.notice}>
