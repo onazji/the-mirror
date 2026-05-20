@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Screen } from "./state/screens";
 import { createEmptyDraft } from "./state/appState";
 import type {
@@ -26,19 +26,30 @@ export default function App() {
     loadSessions(store)
   );
 
+  const [submitting, setSubmitting] = useState(false);
+
   const goHome = () => {
     setSessions(loadSessions(store));
     setDraft(createEmptyDraft());
     setScreen(Screen.HOME);
   };
 
-  const saveDraftNow = () => {
+  const saveDraftNow = async () => {
+    if (submitting) return;
+
+    setSubmitting(true);
+
     const session = createSessionFromDraft(draft, Date.now());
     const nextSessions = appendSession(store, session);
 
     setSessions(nextSessions);
+
+    await new Promise((resolve) => setTimeout(resolve, 650));
+
     setDraft(createEmptyDraft());
     setScreen(Screen.HOME);
+
+    setSubmitting(false);
   };
 
   const updatePreviousStartResult = (
@@ -75,6 +86,7 @@ export default function App() {
           onChange={setDraft}
           onBack={goHome}
           onNext={saveDraftNow}
+          submitting={submitting}
         />
       );
 

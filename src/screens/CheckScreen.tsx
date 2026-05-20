@@ -15,6 +15,7 @@ type Props = {
   onChange: (next: MirrorDraft) => void;
   onNext: () => void;
   onBack: () => void;
+  submitting: boolean;
 };
 
 const ENERGY: readonly Energy[] = ["low", "steady", "high"] as const;
@@ -22,7 +23,13 @@ const PACE: readonly Pace[] = ["low", "steady", "high"] as const;
 const BODY: readonly Body[] = ["relaxed", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 
-export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
+export function CheckScreen({
+  draft,
+  onChange,
+  onNext,
+  onBack,
+  submitting,
+}: Props) {
   const complete = !!(
     draft.energy &&
     draft.pace &&
@@ -33,7 +40,6 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
     <div className="container">
       <h1>Mirror</h1>
 
-      {/* SHOW UP */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Show Up</h3>
@@ -48,7 +54,6 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* MIRROR */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>State</h3>
@@ -85,7 +90,6 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* SIGNAL */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Signal</h3>
@@ -101,7 +105,6 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* FRICTION */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Friction</h3>
@@ -117,7 +120,6 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* CORE OUTPUT */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Tomorrow</h3>
@@ -134,10 +136,10 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* WORK */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Work</h3>
+
           <WorkSection
             value={draft.work}
             onChange={(work) => onChange({ ...draft, work })}
@@ -147,10 +149,10 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
 
       <div style={{ height: 16 }} />
 
-      {/* ATTENTION */}
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
           <h3 style={{ margin: 0 }}>Attention</h3>
+
           <AttentionSection
             value={draft.attention}
             onChange={(attention) => onChange({ ...draft, attention })}
@@ -159,13 +161,20 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
       </Card>
 
       <div className={styles.row}>
-        <Button label="Back" onClick={onBack} kind="secondary" />
-        <div style={{ width: 10 }} />
         <Button
-          label="Record Reflection"
+          label="Back"
+          onClick={onBack}
+          kind="secondary"
+          disabled={submitting}
+        />
+
+        <div style={{ width: 10 }} />
+
+        <Button
+          label={submitting ? "Reflecting..." : "Record Reflection"}
           onClick={onNext}
           kind="primary"
-          disabled={!complete}
+          disabled={!complete || submitting}
         />
       </div>
 
@@ -175,8 +184,17 @@ export function CheckScreen({ draft, onChange, onNext, onBack }: Props) {
         </div>
       ) : null}
 
-      <div className="small" style={{ marginTop: 10 }}>
-        Clarify tomorrow. Return consistently.
+      <div
+        className="small"
+        style={{
+          marginTop: 10,
+          opacity: submitting ? 1 : 0.7,
+          transition: "opacity 300ms ease",
+        }}
+      >
+        {submitting
+          ? "Reflection recorded. Returning to the mirror..."
+          : "Clarify tomorrow. Return consistently."}
       </div>
     </div>
   );
