@@ -20,7 +20,7 @@ function renderWorkSummary(work: MirrorSession["work"]): string {
   const parts = [
     work.app ? "App" : null,
     work.game ? "Game" : null,
-    work.output ? "Output" : null,
+    work.output ? "Other" : null,
   ].filter(Boolean);
 
   const summary = parts.length > 0 ? parts.join(" · ") : "None";
@@ -271,7 +271,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
 
                 <div>
                   <strong>Work:</strong> App {weekly.appSessions} · Game{" "}
-                  {weekly.gameSessions} · Output {weekly.outputSessions}
+                  {weekly.gameSessions} · Other {weekly.outputSessions}
                 </div>
 
                 <div>
@@ -379,10 +379,12 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             </Card>
           </>
         ) : null}
+
         <div className="small" style={{ marginTop: 10 }}>
           On-device only. Stored in localStorage.
         </div>
       </div>
+
       {showCardReveal && card ? (
         <CardRevealOverlay
           card={card}

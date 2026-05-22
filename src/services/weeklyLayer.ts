@@ -9,6 +9,7 @@ export type WeeklyLayer = {
   appSessions: number;
   gameSessions: number;
   outputSessions: number;
+  otherSessions: number;
   mostCommonCard: string | null;
   attentionCounts: Record<AttentionTag, number>;
   stateInsight: string | null;
@@ -133,6 +134,7 @@ export function buildWeeklyLayer(
     appSessions,
     gameSessions,
     outputSessions,
+    otherSessions: outputSessions,
     mostCommonCard,
     attentionCounts,
     stateInsight,

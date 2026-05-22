@@ -12,7 +12,6 @@ type Props = {
 export function WorkSection({ value, onChange }: Props) {
   return (
     <section style={{ display: "grid", gap: 12 }}>
-
       <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <input
           type="checkbox"
@@ -37,7 +36,7 @@ export function WorkSection({ value, onChange }: Props) {
           checked={value.output}
           onChange={(e) => onChange({ ...value, output: e.target.checked })}
         />
-        <span>Output</span>
+        <span>Other</span>
       </label>
 
       <div style={{ display: "grid", gap: 8 }}>
@@ -55,7 +54,9 @@ export function WorkSection({ value, onChange }: Props) {
                 borderRadius: 10,
                 border: "1px solid rgba(255,255,255,0.16)",
                 background:
-                  value.sessions === n ? "rgba(255,255,255,0.12)" : "transparent",
+                  value.sessions === n
+                    ? "rgba(255,255,255,0.12)"
+                    : "transparent",
                 color: "var(--text)",
                 cursor: "pointer",
               }}
@@ -71,7 +72,7 @@ export function WorkSection({ value, onChange }: Props) {
         <textarea
           value={value.note}
           onChange={(e) => onChange({ ...value, note: e.target.value })}
-          placeholder="What did I actually produce?"
+          placeholder="What did I actually do?"
           rows={3}
           style={{
             width: "100%",
