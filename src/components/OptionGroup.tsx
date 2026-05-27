@@ -1,4 +1,4 @@
-﻿import styles from "./OptionGroup.module.css";
+import styles from "./OptionGroup.module.css";
 
 type Props<T extends string> = {
   label: string;
@@ -7,19 +7,28 @@ type Props<T extends string> = {
   onChange: (v: T) => void;
 };
 
-export function OptionGroup<T extends string>({ label, options, value, onChange }: Props<T>) {
+export function OptionGroup<T extends string>({
+  label,
+  options,
+  value,
+  onChange,
+}: Props<T>) {
   return (
     <div className={styles.group}>
       <div className={styles.label}>{label}</div>
+
       <div className={styles.row}>
-        {options.map(opt => {
+        {options.map((opt) => {
           const active = value === opt;
+
           return (
             <button
               key={opt}
-              className={'${styles.opt} ${active ? styles.active : ""}' }
-              onClick={() => onChange(opt)}
               type="button"
+              className={`${styles.opt} ${
+                active ? styles.active : ""
+              }`}
+              onClick={() => onChange(opt)}
             >
               {opt}
             </button>

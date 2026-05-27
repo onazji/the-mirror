@@ -1,4 +1,4 @@
-﻿.group {
+.group {
   margin-bottom: 14px;
 }
 
@@ -16,15 +16,44 @@
 
 .opt {
   min-height: var(--tap);
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 14px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.03);
+
+  color: rgba(255, 255, 255, 0.78);
+
   font-size: 15px;
+  font-weight: 500;
+
+  transition:
+    background 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 90ms ease,
+    box-shadow 140ms ease;
+
+  cursor: pointer;
+}
+
+.opt:hover {
+  border-color: rgba(191, 164, 90, 0.4);
+}
+
+.opt:active {
+  transform: scale(0.97);
 }
 
 .active {
-  border-color: rgba(191, 164, 90, 0.85);
-  box-shadow: 0 0 0 1px rgba(191, 164, 90, 0.18) inset;
+  background: rgba(191, 164, 90, 0.18);
+
+  border-color: rgba(191, 164, 90, 0.95);
+
+  color: #f6e7b8;
+
+  box-shadow:
+    0 0 0 1px rgba(191, 164, 90, 0.22) inset,
+    0 0 18px rgba(191, 164, 90, 0.12);
 }
