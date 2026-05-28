@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
@@ -108,29 +109,40 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                 <div className="small">Did you do this?</div>
 
                 <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
-                  <button
-                    type="button"
-                    className={styles.chip}
-                    onClick={() => onResult(last.id, "yes")}
-                  >
-                    Yes
-                  </button>
+                  {(["yes", "partial", "no"] as const).map((result) => {
+                    const active = last.previousStartResult === result;
 
-                  <button
-                    type="button"
-                    className={styles.chip}
-                    onClick={() => onResult(last.id, "partial")}
-                  >
-                    Partially
-                  </button>
-
-                  <button
-                    type="button"
-                    className={styles.chip}
-                    onClick={() => onResult(last.id, "no")}
-                  >
-                    No
-                  </button>
+                    return (
+                      <button
+                        key={result}
+                        type="button"
+                        onClick={() => onResult(last.id, result)}
+                        style={{
+                          minHeight: 44,
+                          padding: "10px 14px",
+                          borderRadius: 14,
+                          border: active
+                            ? "1px solid rgba(191, 164, 90, 0.85)"
+                            : "1px solid rgba(255,255,255,0.12)",
+                          background: active
+                            ? "rgba(191, 164, 90, 0.12)"
+                            : "transparent",
+                          color: "var(--text)",
+                          boxShadow: active
+                            ? "0 0 0 1px rgba(191, 164, 90, 0.18) inset"
+                            : "none",
+                          cursor: "pointer",
+                          transition: "all 120ms ease",
+                        }}
+                      >
+                        {result === "yes"
+                          ? "Yes"
+                          : result === "partial"
+                          ? "Partially"
+                          : "No"}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {last.previousStartResult ? (
