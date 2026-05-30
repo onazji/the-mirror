@@ -64,6 +64,35 @@
   z-index: 1;
 }
 
+.cardHidden {
+  opacity: 0;
+  transform: translateY(8px) scale(0.975);
+  filter: blur(4px);
+}
+
+.cardVisible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+  transition:
+    opacity 520ms ease-out,
+    transform 520ms ease-out,
+    filter 520ms ease-out;
+}
+
+.cardImage {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 18px;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 0 1px rgba(191, 164, 90, 0.18),
+    0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
 .footer {
   margin-top: 14px;
   font-size: 13px;
@@ -81,12 +110,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes riseIn {
