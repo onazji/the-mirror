@@ -31,7 +31,7 @@ body {
 
   background:
     #000
-    url("./assets/THE-MIRROR-BG.png");
+    url("./assets/THE-MIRROR-BG.png")
     center / cover
     fixed
     no-repeat;
