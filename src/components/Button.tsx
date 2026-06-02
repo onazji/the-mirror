@@ -1,4 +1,4 @@
-﻿import styles from "./Button.module.css";
+import styles from "./Button.module.css";
 import { useState } from "react";
 
 type Props = {
@@ -25,10 +25,11 @@ export function Button({ label, onClick, kind = "primary", disabled }: Props) {
       style={{
         transform: pressed ? "scale(0.97)" : "scale(1)",
         transition: "transform 0.08s ease",
-        opacity: disabled ? 0.5 : 1,
+        opacity: disabled ? 0.45 : 1,
       }}
     >
-      {label}
+      <span>{label}</span>
+      <span className={styles.chevron}>›</span>
     </button>
   );
 }
