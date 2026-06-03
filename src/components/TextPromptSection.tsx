@@ -15,24 +15,15 @@ export function TextPromptSection({
 }: Props) {
   return (
     <div style={{ display: "grid", gap: 8 }}>
-      <label style={{ fontWeight: 700 }}>
-        {label} {required ? "*" : ""}
+      <label style={{ fontSize: 14, fontWeight: 600, color: "var(--muted)" }}>
+        {label}{required ? <span style={{ color: "var(--gold)", marginLeft: 3 }}>*</span> : null}
       </label>
-
-      <input
+      <textarea
+        className="mirrorTextarea"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        style={{
-          width: "100%",
-          boxSizing: "border-box",
-          padding: "12px 14px",
-          borderRadius: 12,
-          border: "1px solid rgba(255,255,255,0.16)",
-          background: "rgba(255,255,255,0.06)",
-          color: "var(--text)",
-          outline: "none",
-        }}
+        rows={3}
       />
     </div>
   );

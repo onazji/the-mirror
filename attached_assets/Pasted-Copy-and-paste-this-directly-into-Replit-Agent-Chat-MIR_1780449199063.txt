@@ -1,0 +1,223 @@
+Copy and paste this directly into Replit Agent/Chat:
+
+---
+
+# MIRROR INPUT SYSTEM UPGRADE
+
+The Mirror now has a cohesive visual identity with:
+
+* Opal Horizon background
+* Frosted glass cards
+* Dawn Glow selected buttons
+* Glass button system
+
+The remaining inconsistency is that text inputs and textareas still look like default browser controls.
+
+I want all inputs and textareas upgraded into a reusable **Mirror Input System** that matches the button doctrine and card doctrine.
+
+---
+
+## GOAL
+
+Inputs should feel like they are made from the same material as:
+
+* Mirror buttons
+* Mirror cards
+* Mirror UI surfaces
+
+The user should feel like they are placing a thought into a reflective surface.
+
+NOT typing into a form.
+
+---
+
+## CREATE REUSABLE CLASSES
+
+Create reusable classes:
+
+```css
+.mirrorInput
+```
+
+and
+
+```css
+.mirrorTextarea
+```
+
+Apply them everywhere in the application.
+
+Replace existing inline styles where appropriate.
+
+---
+
+## UNFOCUSED STATE
+
+Visual style:
+
+* Frosted opal glass
+* Soft white interior
+* Slight translucency
+* Subtle glass depth
+
+Use:
+
+```css
+background: rgba(255,255,255,0.30);
+
+backdrop-filter: blur(18px);
+-webkit-backdrop-filter: blur(18px);
+
+border: 1px solid rgba(255,255,255,0.50);
+
+border-radius: 18px;
+
+padding: 16px;
+
+color: #1B1B2D;
+```
+
+Add subtle depth:
+
+```css
+box-shadow:
+  0 8px 24px rgba(255,255,255,0.10),
+  inset 0 1px 0 rgba(255,255,255,0.60);
+```
+
+---
+
+## FOCUS STATE
+
+When the user taps an input:
+
+The mirror becomes attentive.
+
+NOT orange.
+
+NOT selected.
+
+Use Horizon Blue.
+
+```css
+border-color: #B0C8F0;
+
+box-shadow:
+  0 0 16px rgba(176,200,240,0.35),
+  0 8px 24px rgba(255,255,255,0.10);
+```
+
+No aggressive animation.
+
+No pulsing.
+
+No glowing neon effects.
+
+---
+
+## TEXT ENTERED STATE
+
+If text exists:
+
+Add a very subtle warmth to the background.
+
+Not enough to look selected.
+
+Just enough to suggest:
+
+"A thought has been placed here."
+
+Example:
+
+```css
+background:
+linear-gradient(
+180deg,
+rgba(255,255,255,0.45),
+rgba(255,248,235,0.50)
+);
+```
+
+Use this gently.
+
+Keep readability high.
+
+---
+
+## PLACEHOLDER STYLE
+
+Placeholder text should feel quiet.
+
+Use:
+
+```css
+color: rgba(40,40,60,0.35);
+```
+
+Do not use bright placeholder text.
+
+---
+
+## TEXTAREA RULES
+
+All major reflection fields should use the Mirror textarea style:
+
+Examples:
+
+* What mattered today?
+* What got in the way?
+* What's the smallest thing you'll do first tomorrow?
+* 1-line proof
+
+Requirements:
+
+```css
+resize: vertical;
+min-height: 96px;
+```
+
+Keep spacing comfortable.
+
+---
+
+## SEARCH THE PROJECT
+
+Find every:
+
+```tsx
+<input
+```
+
+and
+
+```tsx
+<textarea
+```
+
+and migrate them to the reusable Mirror Input System.
+
+Do not leave any browser-default styling behind.
+
+---
+
+## IMPORTANT
+
+Do NOT change:
+
+* Button system
+* Dawn Glow selection color
+* Card styling
+* Background image
+* Layout structure
+
+This task is ONLY about creating a unified Mirror Input System that visually matches the rest of the app.
+
+After implementation, show me:
+
+1. Which files were modified.
+2. Which reusable classes were created.
+3. Any inputs/textareas that could not be migrated automatically.
+
+---
+
+That prompt should give the Replit agent enough context to actually make the changes instead of giving design advice.

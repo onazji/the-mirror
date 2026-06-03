@@ -65,26 +65,11 @@ export function WorkSection({ value, onChange }: Props) {
       <label style={{ display: "grid", gap: 6 }}>
         <span style={{ fontSize: 14, color: "var(--muted)", fontWeight: 500 }}>1-line proof</span>
         <textarea
+          className="mirrorTextarea"
           value={value.note}
           onChange={(e) => onChange({ ...value, note: e.target.value })}
           placeholder="What did I actually do?"
           rows={3}
-          style={{
-            width: "100%",
-            borderRadius: 14,
-            padding: "12px 14px",
-            background: "linear-gradient(160deg, rgba(255,255,255,0.60) 0%, rgba(255,255,255,0.38) 100%)",
-            color: "var(--text)",
-            border: "1px solid rgba(255,255,255,0.75)",
-            resize: "vertical",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.85), 0 2px 8px rgba(80,80,140,0.06)",
-            fontSize: 15,
-            fontFamily: "inherit",
-            lineHeight: 1.4,
-            outline: "none",
-          }}
         />
       </label>
     </section>
