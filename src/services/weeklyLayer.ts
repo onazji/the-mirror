@@ -1,4 +1,4 @@
-import type { AttentionTag, MirrorSession } from "../types/mirror";
+import type { MirrorSession } from "../types/mirror";
 import { getMirrorCard } from "./cardEngine";
 
 export type WeeklyLayer = {
@@ -11,19 +11,10 @@ export type WeeklyLayer = {
   outputSessions: number;
   otherSessions: number;
   mostCommonCard: string | null;
-  attentionCounts: Record<AttentionTag, number>;
   stateInsight: string | null;
-  attentionInsight: string;
   seerInsight: string;
   finalLine: string;
 };
-
-const ATTENTION_TAGS: AttentionTag[] = [
-  "waste",
-  "bugs",
-  "features",
-  "brainstorm",
-];
 
 function getStateInsight(card: string | null): string | null {
   if (!card) return null;
@@ -39,22 +30,6 @@ function getStateInsight(card: string | null): string | null {
   if (card === "Idle") return "Capacity was present, but unused.";
 
   return null;
-}
-
-function getAttentionInsight(attentionCounts: Record<AttentionTag, number>): string {
-  const entries = Object.entries(attentionCounts) as [AttentionTag, number][];
-  const top = entries.sort((a, b) => b[1] - a[1])[0];
-
-  if (!top || top[1] === 0) return "No dominant attention pattern was detected.";
-
-  const [key] = top;
-
-  if (key === "features") return "My attention leaned toward building.";
-  if (key === "bugs") return "My attention leaned toward fixing and stability.";
-  if (key === "waste") return "Some attention drifted away from intention.";
-  if (key === "brainstorm") return "My attention leaned toward exploration.";
-
-  return "Attention was distributed.";
 }
 
 function getSeerInsight(held: number, partial: number, missed: number): string {
@@ -76,13 +51,6 @@ export function buildWeeklyLayer(
   const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
 
   const recent = sessions.filter((session) => session.timestamp >= sevenDaysAgo);
-
-  const attentionCounts: Record<AttentionTag, number> = {
-    waste: 0,
-    bugs: 0,
-    features: 0,
-    brainstorm: 0,
-  };
 
   const cardCounts: Record<string, number> = {};
 
@@ -110,11 +78,6 @@ export function buildWeeklyLayer(
     if (session.work?.game) gameSessions += session.work.sessions ?? 1;
     if (session.work?.output) outputSessions += session.work.sessions ?? 1;
 
-    const attention = session.attention;
-    if (ATTENTION_TAGS.includes(attention)) {
-      attentionCounts[attention] += 1;
-    }
-
     const card = getMirrorCard(session.energy, session.pace);
     cardCounts[card.title] = (cardCounts[card.title] ?? 0) + 1;
   }
@@ -123,7 +86,6 @@ export function buildWeeklyLayer(
     Object.entries(cardCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 
   const stateInsight = getStateInsight(mostCommonCard);
-  const attentionInsight = getAttentionInsight(attentionCounts);
   const seerInsight = getSeerInsight(seerHeld, seerPartial, seerMissed);
 
   return {
@@ -136,9 +98,7 @@ export function buildWeeklyLayer(
     outputSessions,
     otherSessions: outputSessions,
     mostCommonCard,
-    attentionCounts,
     stateInsight,
-    attentionInsight,
     seerInsight,
     finalLine: "This is how I showed up for myself.",
   };

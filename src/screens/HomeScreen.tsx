@@ -173,10 +173,6 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                     <span style={{ fontSize: 12, color: "var(--muted)", fontStyle: "italic" }}>{last.work.note}</span>
                   </div>
                 ) : null}
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Attention</span>
-                  <span className={styles.detailValue}>{last.attention}</span>
-                </div>
                 {last.todaySignal ? (
                   <div className={styles.detailRow}>
                     <span className={styles.detailLabel}>Signal</span>
@@ -227,17 +223,10 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                   <span className={styles.weeklyLabel}>Top state</span>
                   <span className={styles.weeklyValue}>{weekly.mostCommonCard ?? "—"}</span>
                 </div>
-                <div className={styles.weeklyRow}>
-                  <span className={styles.weeklyLabel}>Attention</span>
-                  <span className={styles.weeklyValue} style={{ textTransform: "capitalize" }}>
-                    {weekly.attentionCounts.waste} waste · {weekly.attentionCounts.bugs} bugs · {weekly.attentionCounts.features} features · {weekly.attentionCounts.brainstorm} brainstorm
-                  </span>
-                </div>
-
-                {(weekly.stateInsight || weekly.attentionInsight || weekly.seerInsight) ? (
+                {(weekly.stateInsight || weekly.seerInsight) ? (
                   <>
                     <div className="hr" />
-                    {[weekly.stateInsight, weekly.attentionInsight, weekly.seerInsight]
+                    {[weekly.stateInsight, weekly.seerInsight]
                       .filter(Boolean)
                       .map((insight, i) => (
                         <div key={i} className={styles.insightText}>{insight}</div>

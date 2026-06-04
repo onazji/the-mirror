@@ -8,7 +8,6 @@ import type { MirrorDraft, Energy, Pace, Body, Mind } from "../types/mirror";
 import styles from "./CheckScreen.module.css";
 import { SeerSection } from "../components/SeerSection";
 import { WorkSection } from "../components/WorkSection";
-import { AttentionSection } from "../components/AttentionSection";
 
 type Props = {
   draft: MirrorDraft;
@@ -143,19 +142,6 @@ export function CheckScreen({
           <WorkSection
             value={draft.work}
             onChange={(work) => onChange({ ...draft, work })}
-          />
-        </div>
-      </Card>
-
-      <div style={{ height: 16 }} />
-
-      <Card>
-        <div style={{ display: "grid", gap: 12 }}>
-          <h3 style={{ margin: 0 }}>Attention</h3>
-
-          <AttentionSection
-            value={draft.attention}
-            onChange={(attention) => onChange({ ...draft, attention })}
           />
         </div>
       </Card>
