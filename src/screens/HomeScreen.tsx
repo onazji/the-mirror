@@ -210,7 +210,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                 <div className={styles.weeklyRow}>
                   <span className={styles.weeklyLabel}>Show Up</span>
                   <span className={styles.weeklyValue}>
-                    {weekly.seerHeld} held · {weekly.seerPartial} partial · {weekly.seerMissed} missed
+                    {weekly.seerHeld} yes · {weekly.seerPartial} partial · {weekly.seerMissed} no
                   </span>
                 </div>
                 <div className={styles.weeklyRow}>
