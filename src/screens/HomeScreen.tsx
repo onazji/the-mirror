@@ -154,13 +154,13 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
               <div className="hr" />
               <div className={styles.detailGrid}>
                 <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>SEER</span>
+                  <span className={styles.detailLabel}>Show Up</span>
                   <div className={styles.seerPills}>
                     <span className={`${styles.seerPill} ${last.seer.anchor ? styles.seerPillHeld : styles.seerPillMissed}`}>
-                      {last.seer.anchor ? "Anchor ✓" : "Anchor ✗"}
+                      {last.seer.anchor ? "What mattered ✓" : "What mattered ✗"}
                     </span>
                     <span className={`${styles.seerPill} ${last.seer.integrity ? styles.seerPillHeld : styles.seerPillMissed}`}>
-                      {last.seer.integrity ? "Integrity ✓" : "Integrity ✗"}
+                      {last.seer.integrity ? "Stayed true ✓" : "Stayed true ✗"}
                     </span>
                   </div>
                 </div>
@@ -208,7 +208,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                   <span className={styles.weeklyValue}>{weekly.totalEntries}</span>
                 </div>
                 <div className={styles.weeklyRow}>
-                  <span className={styles.weeklyLabel}>SEER</span>
+                  <span className={styles.weeklyLabel}>Show Up</span>
                   <span className={styles.weeklyValue}>
                     {weekly.seerHeld} held · {weekly.seerPartial} partial · {weekly.seerMissed} missed
                   </span>
