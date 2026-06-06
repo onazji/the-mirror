@@ -1,0 +1,226 @@
+This is exactly the kind of prompt Replit excels at now because you're no longer asking it to invent a feature—you're giving it a precise UI specification.
+
+Copy/paste:
+
+---
+
+# V4 Feature — Living Mirror Artifact (Home Screen)
+
+The Mirror Artifact is now the first V4 feature.
+
+## Goal
+
+Add a small decorative mirror widget to the Home Screen that visually represents accumulated reflections.
+
+This is **not** a streak system.
+
+This is **not** gamification.
+
+This is a symbolic artifact representing experience, memory, and accumulated returns.
+
+The mirror never regresses.
+
+It only evolves.
+
+---
+
+## Placement
+
+Current layout:
+
+```text
+[Title Area]                     [Info Button]
+
+The Mirror
+Pause. Reflect. Choose your direction.
+```
+
+Update layout to:
+
+```text
+[Mirror Artifact]   The Mirror                 [Info Button]
+                    Pause. Reflect. Choose your direction.
+```
+
+The artifact should occupy the empty top-left space.
+
+The title/subtitle should remain visually centered.
+
+The information modal button remains top-right.
+
+The result should feel balanced:
+
+```text
+Artifact      Title Area      Info
+```
+
+---
+
+## Artifact Size
+
+Match the visual footprint of the existing information button.
+
+Do NOT make it dominant.
+
+It should feel like a small trinket or keepsake.
+
+Target:
+
+* similar diameter to info button
+* slightly larger is acceptable
+* immediately visible
+* not attention-seeking
+
+---
+
+## Assets
+
+Create a new public asset folder:
+
+```text
+public/artifacts/
+```
+
+Use these images:
+
+```text
+mirror-tier-0.png
+mirror-tier-1.png
+mirror-tier-2.png
+mirror-tier-3.png
+mirror-tier-4.png
+mirror-tier-5.png
+mirror-tier-6.png
+mirror-tier-7.png
+```
+
+(Use the uploaded mirror assets.)
+
+---
+
+## Temporary Evolution Logic
+
+For V4 testing only:
+
+Use total reflection count.
+
+Example:
+
+0 reflections      -> tier 0
+1 reflection       -> tier 1
+2 reflections      -> tier 2
+3 reflections      -> tier 3
+4 reflections      -> tier 4
+5 reflections      -> tier 5
+6 reflections      -> tier 6
+7+ reflections     -> tier 7
+
+This is temporary testing logic.
+
+Do NOT build a permanent progression system yet.
+
+Just make it easy to verify that the mirror changes after submitting reflections.
+
+---
+
+## Interaction
+
+Artifact should be clickable.
+
+Clicking opens a simple modal.
+
+Use the same modal sizing philosophy as the information modal.
+
+Current modal dimensions:
+
+```css
+width: min(92vw, 820px);
+max-height: 90vh;
+```
+
+Reuse those dimensions.
+
+---
+
+## Artifact Modal Content (V4 Prototype)
+
+Title:
+
+```text
+Living Mirror
+```
+
+Body:
+
+```text
+The mirror has witnessed:
+
+• X reflections
+• Y days since first return
+• Most reflected state: Z
+```
+
+Example:
+
+```text
+The mirror has witnessed:
+
+• 37 reflections
+• 64 days since first return
+• Most reflected state: Patience
+```
+
+Do not add extra text.
+
+Do not add coaching.
+
+Do not add motivational language.
+
+Keep it observational.
+
+The mirror is witnessing, not advising.
+
+---
+
+## Design Rules
+
+The artifact should communicate:
+
+* memory
+* experience
+* accumulated returns
+* continuity
+
+It should NOT communicate:
+
+* streaks
+* rewards
+* punishment
+* productivity
+* achievements
+
+Missing days should not damage the artifact.
+
+Evolution is lifetime-based.
+
+Once unlocked, tiers remain unlocked.
+
+---
+
+## Deliverable
+
+Implement:
+
+1. Home Screen artifact placement
+2. Tier image display
+3. Temporary reflection-count evolution logic
+4. Clickable artifact modal
+5. Lifetime reflection count
+6. Days since first reflection
+7. Most reflected state
+
+Build and verify no TypeScript or build errors.
+
+---
+
+This prompt is specific enough that Replit should be able to wire up the first Living Mirror prototype without you touching files manually.

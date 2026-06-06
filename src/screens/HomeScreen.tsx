@@ -3,11 +3,13 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
 import { CardRevealOverlay } from "../components/CardRevealOverlay";
+import { LivingMirrorArtifact } from "../components/LivingMirrorArtifact";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
 import { getMirrorCard } from "../services/cardEngine";
 import { buildWeeklyLayer } from "../services/weeklyLayer";
 import { buildResetLine } from "../services/nextStepEngine";
+import { computeArtifactStats } from "../services/artifactEngine";
 import styles from "./HomeScreen.module.css";
 
 type Props = {
@@ -44,6 +46,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
   const history = [...sessions].reverse();
   const card = last ? getMirrorCard(last.energy, last.pace) : null;
   const weekly = buildWeeklyLayer(sessions, now);
+  const artifact = computeArtifactStats(sessions, now);
 
   return (
     <>
@@ -51,6 +54,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
 
         {/* ── Header ── */}
         <div className={styles.header}>
+          <LivingMirrorArtifact stats={artifact} />
           <div className={styles.titleBlock}>
             <h1 className={styles.title}>The Mirror</h1>
             <div className={styles.tagline}>Pause. Reflect. Choose your direction.</div>
