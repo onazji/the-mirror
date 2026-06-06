@@ -1,13 +1,20 @@
 import { useState } from "react";
 import type { ArtifactStats } from "../services/artifactEngine";
+import { TIER_IMAGES } from "../services/artifactEngine";
 import styles from "./LivingMirrorArtifact.module.css";
 
 type Props = {
   stats: ArtifactStats;
 };
 
+const ALL_TIERS = [0, 1, 2, 3, 4, 5, 6, 7, 8] as const;
+
 export function LivingMirrorArtifact({ stats }: Props) {
   const [open, setOpen] = useState(false);
+  const [tierOverride, setTierOverride] = useState<number | null>(null);
+
+  const activeTierImage =
+    tierOverride !== null ? TIER_IMAGES[tierOverride] : stats.tierImage;
 
   return (
     <>
@@ -18,8 +25,8 @@ export function LivingMirrorArtifact({ stats }: Props) {
         onClick={() => setOpen(true)}
       >
         <img
-          src={stats.tierImage}
-          alt={`Mirror tier ${stats.tier}`}
+          src={activeTierImage}
+          alt={`Mirror tier ${tierOverride ?? stats.tier}`}
           className={styles.artifactImg}
         />
       </button>
@@ -38,8 +45,8 @@ export function LivingMirrorArtifact({ stats }: Props) {
 
             <div className={styles.modalBody}>
               <img
-                src={stats.tierImage}
-                alt={`Mirror tier ${stats.tier}`}
+                src={activeTierImage}
+                alt={`Mirror tier ${tierOverride ?? stats.tier}`}
                 className={styles.tierImage}
               />
 
@@ -54,6 +61,31 @@ export function LivingMirrorArtifact({ stats }: Props) {
                   <li>Most reflected state: {stats.mostReflectedState ?? "—"}</li>
                 </ul>
               </div>
+
+              {import.meta.env.DEV ? (
+                <div className={styles.devPanel}>
+                  <div className={styles.devLabel}>Artifact Tier Test</div>
+                  <div className={styles.devBtns}>
+                    {ALL_TIERS.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        className={`${styles.devTierBtn} ${tierOverride === t ? styles.devTierBtnActive : ""}`}
+                        onClick={() => setTierOverride(t)}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      className={styles.devResetBtn}
+                      onClick={() => setTierOverride(null)}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

@@ -115,3 +115,69 @@
   content: "• ";
   color: var(--gold);
 }
+
+/* ── Dev testing panel (DEV only, never in prod) ── */
+.devPanel {
+  width: 100%;
+  border-top: 1px dashed rgba(28, 27, 53, 0.15);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.devLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.devBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.devTierBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(28, 27, 53, 0.18);
+  background: rgba(255, 255, 255, 0.60);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.devTierBtn:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(28, 27, 53, 0.32);
+}
+
+.devTierBtnActive {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+
+.devResetBtn {
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px dashed rgba(28, 27, 53, 0.25);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.devResetBtn:hover {
+  background: rgba(255, 255, 255, 0.60);
+}

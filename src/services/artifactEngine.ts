@@ -1,7 +1,7 @@
 import type { MirrorSession } from "../types/mirror";
 import { getMirrorCard } from "./cardEngine";
 
-const TIER_IMAGES: readonly string[] = [
+export const TIER_IMAGES: readonly string[] = [
   "/artifacts/mirror-tier-0.png",
   "/artifacts/mirror-tier-1.png",
   "/artifacts/mirror-tier-2.png",
