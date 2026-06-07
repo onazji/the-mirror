@@ -10,7 +10,6 @@ export const TIER_IMAGES: readonly string[] = [
   "/artifacts/mirror-tier-5.png",
   "/artifacts/mirror-tier-6.png",
   "/artifacts/mirror-tier-7.png",
-  "/artifacts/mirror-tier-8.png",
 ];
 
 export type ArtifactStats = {
@@ -26,7 +25,7 @@ export function computeArtifactStats(
   now: number = Date.now()
 ): ArtifactStats {
   const totalReflections = sessions.length;
-  const tier = Math.min(totalReflections, 8);
+  const tier = Math.min(totalReflections, 7);
   const tierImage = TIER_IMAGES[tier];
 
   const daysSinceFirst =
