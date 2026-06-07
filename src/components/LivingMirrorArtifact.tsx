@@ -1,20 +1,21 @@
 import { useState } from "react";
 import type { ArtifactStats } from "../services/artifactEngine";
-import { TIER_IMAGES } from "../services/artifactEngine";
+import { TIER_IMAGES, TIER_NAMES } from "../services/artifactEngine";
 import styles from "./LivingMirrorArtifact.module.css";
 
 type Props = {
   stats: ArtifactStats;
 };
 
-const ALL_TIERS = [0, 1, 2, 3, 4, 5, 6, 7] as const;
+const ALL_TIERS = [0, 1, 2, 3, 4, 5] as const;
 
 export function LivingMirrorArtifact({ stats }: Props) {
   const [open, setOpen] = useState(false);
   const [tierOverride, setTierOverride] = useState<number | null>(null);
 
-  const activeTierImage =
-    tierOverride !== null ? TIER_IMAGES[tierOverride] : stats.tierImage;
+  const activeTier = tierOverride ?? stats.tier;
+  const activeTierImage = TIER_IMAGES[activeTier];
+  const activeTierName = TIER_NAMES[activeTier];
 
   return (
     <>
@@ -26,7 +27,7 @@ export function LivingMirrorArtifact({ stats }: Props) {
       >
         <img
           src={activeTierImage}
-          alt={`Mirror tier ${tierOverride ?? stats.tier}`}
+          alt={`Living Mirror — ${activeTierName}`}
           className={styles.artifactImg}
         />
       </button>
@@ -46,7 +47,7 @@ export function LivingMirrorArtifact({ stats }: Props) {
             <div className={styles.modalBody}>
               <img
                 src={activeTierImage}
-                alt={`Mirror tier ${tierOverride ?? stats.tier}`}
+                alt={`Living Mirror — ${activeTierName}`}
                 className={styles.tierImage}
               />
 
@@ -72,6 +73,7 @@ export function LivingMirrorArtifact({ stats }: Props) {
                         type="button"
                         className={`${styles.devTierBtn} ${tierOverride === t ? styles.devTierBtnActive : ""}`}
                         onClick={() => setTierOverride(t)}
+                        title={TIER_NAMES[t]}
                       >
                         {t}
                       </button>
@@ -83,6 +85,9 @@ export function LivingMirrorArtifact({ stats }: Props) {
                     >
                       Reset
                     </button>
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>
+                    {activeTierName}
                   </div>
                 </div>
               ) : null}
