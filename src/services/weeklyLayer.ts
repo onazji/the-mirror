@@ -8,6 +8,8 @@ export type WeeklyLayer = {
   seerMissed: number;
   appSessions: number;
   gameSessions: number;
+  creativeSessions: number;
+  physicalSessions: number;
   outputSessions: number;
   otherSessions: number;
   mostCommonCard: string | null;
@@ -60,6 +62,8 @@ export function buildWeeklyLayer(
 
   let appSessions = 0;
   let gameSessions = 0;
+  let creativeSessions = 0;
+  let physicalSessions = 0;
   let outputSessions = 0;
 
   for (const session of recent) {
@@ -76,6 +80,8 @@ export function buildWeeklyLayer(
 
     if (session.work?.app) appSessions += session.work.sessions ?? 1;
     if (session.work?.game) gameSessions += session.work.sessions ?? 1;
+    if (session.work?.creative) creativeSessions += session.work.sessions ?? 1;
+    if (session.work?.physical) physicalSessions += session.work.sessions ?? 1;
     if (session.work?.output) outputSessions += session.work.sessions ?? 1;
 
     const card = getMirrorCard(session.energy, session.pace);
@@ -95,6 +101,8 @@ export function buildWeeklyLayer(
     seerMissed,
     appSessions,
     gameSessions,
+    creativeSessions,
+    physicalSessions,
     outputSessions,
     otherSessions: outputSessions,
     mostCommonCard,

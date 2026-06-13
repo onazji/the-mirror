@@ -3,6 +3,8 @@ type Props = {
     app: boolean;
     game: boolean;
     output: boolean;
+    creative?: boolean;
+    physical?: boolean;
     sessions: 1 | 2 | 3;
     note: string;
   };
@@ -36,10 +38,16 @@ export function WorkSection({ value, onChange }: Props) {
     <section style={{ display: "grid", gap: 12 }}>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         <button type="button" onClick={() => onChange({ ...value, app: !value.app })} style={pillStyle(value.app)}>
-          App
+          Personal
         </button>
         <button type="button" onClick={() => onChange({ ...value, game: !value.game })} style={pillStyle(value.game)}>
-          Game
+          Professional
+        </button>
+        <button type="button" onClick={() => onChange({ ...value, creative: !value.creative })} style={pillStyle(!!value.creative)}>
+          Creative
+        </button>
+        <button type="button" onClick={() => onChange({ ...value, physical: !value.physical })} style={pillStyle(!!value.physical)}>
+          Physical
         </button>
         <button type="button" onClick={() => onChange({ ...value, output: !value.output })} style={pillStyle(value.output)}>
           Other

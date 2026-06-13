@@ -20,8 +20,10 @@ type Props = {
 
 function renderWorkSummary(work: MirrorSession["work"]): string {
   const parts = [
-    work.app ? "App" : null,
-    work.game ? "Game" : null,
+    work.app ? "Personal" : null,
+    work.game ? "Professional" : null,
+    work.creative ? "Creative" : null,
+    work.physical ? "Physical" : null,
     work.output ? "Other" : null,
   ].filter(Boolean);
   const summary = parts.length > 0 ? parts.join(" · ") : "None";
@@ -220,7 +222,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
                 <div className={styles.weeklyRow}>
                   <span className={styles.weeklyLabel}>Work</span>
                   <span className={styles.weeklyValue}>
-                    App {weekly.appSessions} · Game {weekly.gameSessions} · Other {weekly.outputSessions}
+                    Personal {weekly.appSessions} · Professional {weekly.gameSessions} · Creative {weekly.creativeSessions} · Physical {weekly.physicalSessions} · Other {weekly.outputSessions}
                   </span>
                 </div>
                 <div className={styles.weeklyRow}>

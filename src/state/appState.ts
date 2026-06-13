@@ -22,6 +22,8 @@ export const createEmptyDraft = (): MirrorDraft => ({
     app: false,
     game: false,
     output: false,
+    creative: false,
+    physical: false,
     sessions: 1,
     note: "",
   },
