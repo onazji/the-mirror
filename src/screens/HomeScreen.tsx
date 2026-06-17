@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
@@ -39,6 +39,10 @@ function renderResultLabel(result: PreviousStartResult): string {
 export function HomeScreen({ sessions, onStart, onResult }: Props) {
   const [showInfo, setShowInfo] = useState(false);
   const [showCardReveal, setShowCardReveal] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const last = sessions.length ? sessions[sessions.length - 1] : null;
   const now = Date.now();
