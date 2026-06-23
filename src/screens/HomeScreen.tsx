@@ -350,7 +350,7 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             <StateMap
               energy={(last?.energy as "low" | "steady" | "high") ?? "steady"}
               pace={(last?.pace as "low" | "steady" | "high") ?? "steady"}
-              body={(last?.body as "tense" | "relaxed") ?? "relaxed"}
+              body={(last?.body as "tense" | "content" | "relaxed") ?? "relaxed"}
               mind={(last?.mind as "narrow" | "wide" | "scattered") ?? "wide"}
             />
           </div>

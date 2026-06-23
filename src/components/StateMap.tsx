@@ -1,7 +1,7 @@
 import styles from "./StateMap.module.css";
 import { getBaseState, type BaseStateName } from "../services/stateEngine";
 type Level = "low" | "steady" | "high";
-type BodyState = "tense" | "relaxed";
+type BodyState = "tense" | "content" | "relaxed";
 type MindState = "narrow" | "wide" | "scattered";
 type Props = {
 energy?: Level;
@@ -11,6 +11,7 @@ mind?: MindState;
 };
 const bodyPositionMap: Record<BodyState, string> = {
 tense: "25%",
+content: "50%",
 relaxed: "75%",
 };
 const baseStateGrid: { energy: Level; pace: Level; label: BaseStateName }[] = [

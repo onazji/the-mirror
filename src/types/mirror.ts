@@ -3,7 +3,7 @@ import type { WorkLog } from "./work";
 
 export type Energy = "low" | "steady" | "high";
 export type Pace = "low" | "steady" | "high";
-export type Body = "relaxed" | "tense";
+export type Body = "relaxed" | "content" | "tense";
 export type Mind = "narrow" | "wide" | "scattered";
 export type AttentionTag = "waste" | "bugs" | "features" | "brainstorm";
 

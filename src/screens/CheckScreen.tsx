@@ -19,7 +19,7 @@ type Props = {
 
 const ENERGY: readonly Energy[] = ["low", "steady", "high"] as const;
 const PACE: readonly Pace[] = ["low", "steady", "high"] as const;
-const BODY: readonly Body[] = ["relaxed", "tense"] as const;
+const BODY: readonly Body[] = ["relaxed", "content", "tense"] as const;
 const MIND: readonly Mind[] = ["narrow", "wide", "scattered"] as const;
 
 export function CheckScreen({
