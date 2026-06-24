@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { OptionGroup } from "../components/OptionGroup";
@@ -29,6 +30,8 @@ export function CheckScreen({
   onBack,
   submitting,
 }: Props) {
+  const [showStateInfo, setShowStateInfo] = useState(false);
+
   const complete = !!(
     draft.energy &&
     draft.pace &&
@@ -55,7 +58,32 @@ export function CheckScreen({
 
       <Card>
         <div style={{ display: "grid", gap: 12 }}>
-          <h3 style={{ margin: 0 }}>State</h3>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <h3 style={{ margin: 0 }}>State</h3>
+            <button
+              type="button"
+              aria-label="What is State?"
+              onClick={() => setShowStateInfo(true)}
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 999,
+                border: "1px solid rgba(28,27,53,0.20)",
+                background: "rgba(255,255,255,0.60)",
+                color: "var(--muted)",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                lineHeight: 1,
+              }}
+            >
+              ⓘ
+            </button>
+          </div>
 
           <OptionGroup
             label="Energy"
@@ -182,6 +210,130 @@ export function CheckScreen({
           ? "Reflection recorded. Returning to the mirror..."
           : "Clarify tomorrow. Return consistently."}
       </div>
+
+      {/* ── State info modal ── */}
+      {showStateInfo ? (
+        <div
+          onClick={() => setShowStateInfo(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(28,27,53,0.35)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 16,
+            zIndex: 1000,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(92vw, 480px)",
+              maxHeight: "90vh",
+              overflow: "auto",
+              borderRadius: 24,
+              background: "rgba(255,255,255,0.88)",
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              border: "1px solid rgba(255,255,255,0.90)",
+              boxShadow: "0 24px 64px rgba(28,27,53,0.18)",
+              position: "relative",
+              padding: "32px 28px 28px",
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Close state info"
+              onClick={() => setShowStateInfo(false)}
+              style={{
+                position: "absolute",
+                top: 14,
+                right: 14,
+                width: 36,
+                height: 36,
+                borderRadius: 999,
+                border: "1px solid rgba(28,27,53,0.15)",
+                background: "rgba(255,255,255,0.80)",
+                color: "var(--text)",
+                fontSize: 18,
+                fontWeight: 700,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              ×
+            </button>
+
+            <h2 style={{ margin: "0 0 20px", fontSize: 20, color: "var(--text)" }}>
+              Understanding State
+            </h2>
+
+            {(
+              [
+                {
+                  heading: "Energy",
+                  description: "How much energy you have available today.",
+                  items: [
+                    { label: "Low", detail: "Running on limited energy." },
+                    { label: "Steady", detail: "Sustainable energy." },
+                    { label: "High", detail: "Energized and active." },
+                  ],
+                },
+                {
+                  heading: "Momentum",
+                  description: "How easily you're moving through today.",
+                  items: [
+                    { label: "Low", detail: "Progress feels difficult." },
+                    { label: "Steady", detail: "Progress feels manageable." },
+                    { label: "High", detail: "Progress feels effortless." },
+                  ],
+                },
+                {
+                  heading: "Presence",
+                  description: "How your body feels as you move through today.",
+                  items: [
+                    { label: "Relaxed", detail: "Calm and at ease." },
+                    { label: "Content", detail: "Present and carrying today comfortably." },
+                    { label: "Tense", detail: "Carrying pressure or anticipation." },
+                  ],
+                },
+                {
+                  heading: "Focus",
+                  description: "Where your attention naturally settles today.",
+                  items: [
+                    { label: "Narrow", detail: "Concentrated on one thing." },
+                    { label: "Wide", detail: "Spread across multiple things." },
+                    { label: "Scattered", detail: "Pulled in many directions." },
+                  ],
+                },
+              ] as const
+            ).map((section) => (
+              <div key={section.heading} style={{ marginBottom: 20 }}>
+                <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text)", marginBottom: 4 }}>
+                  {section.heading}
+                </div>
+                <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 8 }}>
+                  {section.description}
+                </div>
+                <ul style={{ margin: 0, padding: "0 0 0 4px", listStyle: "none", display: "grid", gap: 4 }}>
+                  {section.items.map((item) => (
+                    <li key={item.label} style={{ fontSize: 13, color: "var(--text)" }}>
+                      <span style={{ fontWeight: 600 }}>{item.label}</span>
+                      {" → "}
+                      {item.detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
