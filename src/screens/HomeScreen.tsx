@@ -24,7 +24,7 @@ function renderWorkSummary(work: MirrorSession["work"]): string {
     work.game ? "Professional" : null,
     work.creative ? "Creative" : null,
     work.physical ? "Physical" : null,
-    work.output ? "Other" : null,
+    work.output ? (work.customActivity?.trim() || "Other") : null,
   ].filter(Boolean);
   const summary = parts.length > 0 ? parts.join(" · ") : "None";
   return `${summary} · ${work.sessions} session${work.sessions !== 1 ? "s" : ""}`;

@@ -4,6 +4,7 @@ export type WorkLog = {
   output: boolean;
   creative?: boolean;
   physical?: boolean;
+  customActivity?: string;
   sessions: 1 | 2 | 3;
   note: string;
 };
