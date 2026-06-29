@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { modalHaptic } from "../utils/haptics";
 import type { ArtifactStats } from "../services/artifactEngine";
 import { TIER_IMAGES, TIER_NAMES } from "../services/artifactEngine";
 import styles from "./LivingMirrorArtifact.module.css";
@@ -23,7 +24,7 @@ export function LivingMirrorArtifact({ stats }: Props) {
         type="button"
         className={styles.artifactBtn}
         aria-label="Open Living Mirror"
-        onClick={() => setOpen(true)}
+        onClick={() => { modalHaptic(); setOpen(true); }}
       >
         <img
           src={activeTierImage}

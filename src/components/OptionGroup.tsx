@@ -1,4 +1,5 @@
 import styles from "./OptionGroup.module.css";
+import { lightHaptic } from "../utils/haptics";
 
 type Props<T extends string> = {
   label: string;
@@ -28,7 +29,7 @@ export function OptionGroup<T extends string>({
               className={`${styles.opt} ${
                 active ? styles.active : ""
               }`}
-              onClick={() => onChange(opt)}
+              onClick={() => { lightHaptic(); onChange(opt); }}
             >
               {opt}
             </button>

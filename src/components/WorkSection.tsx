@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { lightHaptic } from "../utils/haptics";
 
 type Props = {
   value: {
@@ -52,6 +53,7 @@ export function WorkSection({ value, onChange }: Props) {
   }, [otherMode]);
 
   function openEditing() {
+    lightHaptic();
     setOtherMode("editing");
     onChange({ ...value, output: true });
   }
@@ -59,6 +61,7 @@ export function WorkSection({ value, onChange }: Props) {
   function confirm() {
     const trimmed = inputDraft.trim();
     if (trimmed) {
+      lightHaptic();
       setOtherMode("confirmed");
       onChange({ ...value, output: true, customActivity: trimmed });
     } else {
@@ -138,16 +141,16 @@ export function WorkSection({ value, onChange }: Props) {
   return (
     <section style={{ display: "grid", gap: 12 }}>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-        <button type="button" onClick={() => onChange({ ...value, app: !value.app })} style={pillStyle(value.app)}>
+        <button type="button" onClick={() => { lightHaptic(); onChange({ ...value, app: !value.app }); }} style={pillStyle(value.app)}>
           Personal
         </button>
-        <button type="button" onClick={() => onChange({ ...value, game: !value.game })} style={pillStyle(value.game)}>
+        <button type="button" onClick={() => { lightHaptic(); onChange({ ...value, game: !value.game }); }} style={pillStyle(value.game)}>
           Professional
         </button>
-        <button type="button" onClick={() => onChange({ ...value, creative: !value.creative })} style={pillStyle(!!value.creative)}>
+        <button type="button" onClick={() => { lightHaptic(); onChange({ ...value, creative: !value.creative }); }} style={pillStyle(!!value.creative)}>
           Creative
         </button>
-        <button type="button" onClick={() => onChange({ ...value, physical: !value.physical })} style={pillStyle(!!value.physical)}>
+        <button type="button" onClick={() => { lightHaptic(); onChange({ ...value, physical: !value.physical }); }} style={pillStyle(!!value.physical)}>
           Physical
         </button>
         {otherSlot}

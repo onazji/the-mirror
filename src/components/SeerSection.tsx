@@ -1,4 +1,5 @@
 import { Button } from "./Button";
+import { lightHaptic } from "../utils/haptics";
 
 type Props = {
   anchor: boolean | null;
@@ -19,23 +20,19 @@ export function SeerSection({ anchor, integrity, onChange }: Props) {
           <Button
             label="Yes"
             kind={anchor === true ? "primary" : "secondary"}
-            onClick={() =>
-              onChange({
-                anchor: true,
-                integrity: integrity ?? false,
-              })
-            }
+            onClick={() => {
+              lightHaptic();
+              onChange({ anchor: true, integrity: integrity ?? false });
+            }}
           />
 
           <Button
             label="No"
             kind={anchor === false ? "primary" : "secondary"}
-            onClick={() =>
-              onChange({
-                anchor: false,
-                integrity: integrity ?? false,
-              })
-            }
+            onClick={() => {
+              lightHaptic();
+              onChange({ anchor: false, integrity: integrity ?? false });
+            }}
           />
         </div>
       </div>
@@ -50,23 +47,19 @@ export function SeerSection({ anchor, integrity, onChange }: Props) {
           <Button
             label="Yes"
             kind={integrity === true ? "primary" : "secondary"}
-            onClick={() =>
-              onChange({
-                anchor: anchor ?? false,
-                integrity: true,
-              })
-            }
+            onClick={() => {
+              lightHaptic();
+              onChange({ anchor: anchor ?? false, integrity: true });
+            }}
           />
 
           <Button
             label="No"
             kind={integrity === false ? "primary" : "secondary"}
-            onClick={() =>
-              onChange({
-                anchor: anchor ?? false,
-                integrity: false,
-              })
-            }
+            onClick={() => {
+              lightHaptic();
+              onChange({ anchor: anchor ?? false, integrity: false });
+            }}
           />
         </div>
       </div>

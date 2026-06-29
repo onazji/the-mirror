@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { mediumHaptic, modalHaptic } from "../utils/haptics";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { OptionGroup } from "../components/OptionGroup";
@@ -63,7 +64,7 @@ export function CheckScreen({
             <button
               type="button"
               aria-label="What is State?"
-              onClick={() => setShowStateInfo(true)}
+              onClick={() => { modalHaptic(); setShowStateInfo(true); }}
               style={{
                 width: 22,
                 height: 22,
@@ -186,7 +187,7 @@ export function CheckScreen({
 
         <Button
           label={submitting ? "Reflecting..." : "Record Reflection"}
-          onClick={onNext}
+          onClick={() => { mediumHaptic(); onNext(); }}
           kind="primary"
           disabled={!complete || submitting}
         />
