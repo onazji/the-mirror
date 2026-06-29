@@ -30,13 +30,13 @@ function vibrate(pattern: number | number[], name: string): void {
 }
 
 export function lightHaptic(): void {
-  vibrate(8, "lightHaptic");
+  vibrate([50], "lightHaptic");
 }
 
 export function mediumHaptic(): void {
-  vibrate(30, "mediumHaptic");
+  vibrate([100], "mediumHaptic");
 }
 
 export function modalHaptic(): void {
-  vibrate(12, "modalHaptic");
+  vibrate([40, 40, 40], "modalHaptic");
 }
