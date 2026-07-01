@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { lightHaptic } from "../utils/haptics";
+import { LocalStorageStore } from "../storage/localStorageStore";
+import { loadCustomActivities, saveCustomActivity } from "../services/customActivitiesService";
+
+const activityStore = new LocalStorageStore();
 
 type Props = {
   value: {
@@ -56,13 +60,24 @@ const pillStyle = (active: boolean): React.CSSProperties => ({
   transition: "background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease",
 });
 
-type OtherMode = "off" | "editing" | "confirmed";
+type OtherMode = "off" | "editing";
+
+function isActiveCustomActivity(
+  value: Pick<Props["value"], "output" | "customActivity">,
+  activity: string
+): boolean {
+  return (
+    value.output &&
+    (value.customActivity ?? "").trim().toLowerCase() === activity.trim().toLowerCase()
+  );
+}
 
 export function WorkSection({ value, onChange }: Props) {
-  const [otherMode, setOtherMode] = useState<OtherMode>(() =>
-    value.output && value.customActivity?.trim() ? "confirmed" : "off"
+  const [customActivities, setCustomActivities] = useState<string[]>(() =>
+    loadCustomActivities(activityStore)
   );
-  const [inputDraft, setInputDraft] = useState(value.customActivity ?? "");
+  const [otherMode, setOtherMode] = useState<OtherMode>("off");
+  const [inputDraft, setInputDraft] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -73,26 +88,34 @@ export function WorkSection({ value, onChange }: Props) {
 
   function openEditing() {
     lightHaptic();
+    setInputDraft("");
     setOtherMode("editing");
-    onChange({ ...value, output: true });
   }
 
   function confirm() {
     const trimmed = inputDraft.trim();
     if (trimmed) {
       lightHaptic();
-      setOtherMode("confirmed");
+      const nextActivities = saveCustomActivity(activityStore, trimmed);
+      setCustomActivities(nextActivities);
       onChange({ ...value, output: true, customActivity: trimmed });
-    } else {
-      setOtherMode("off");
-      onChange({ ...value, output: false, customActivity: "" });
     }
-  }
-
-  function deselect() {
     setOtherMode("off");
     setInputDraft("");
-    onChange({ ...value, output: false, customActivity: "" });
+  }
+
+  function cancelEditing() {
+    setOtherMode("off");
+    setInputDraft("");
+  }
+
+  function selectCustomActivity(activity: string) {
+    lightHaptic();
+    if (isActiveCustomActivity(value, activity)) {
+      onChange({ ...value, output: false, customActivity: "" });
+    } else {
+      onChange({ ...value, output: true, customActivity: activity });
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -101,9 +124,20 @@ export function WorkSection({ value, onChange }: Props) {
       confirm();
     }
     if (e.key === "Escape") {
-      deselect();
+      cancelEditing();
     }
   }
+
+  const savedActivityPills = customActivities.map((activity) => (
+    <button
+      key={activity}
+      type="button"
+      onClick={() => selectCustomActivity(activity)}
+      style={pillStyle(isActiveCustomActivity(value, activity))}
+    >
+      {activity}
+    </button>
+  ));
 
   let otherSlot: React.ReactNode;
 
@@ -135,16 +169,6 @@ export function WorkSection({ value, onChange }: Props) {
         }}
       />
     );
-  } else if (otherMode === "confirmed") {
-    otherSlot = (
-      <button
-        type="button"
-        onClick={deselect}
-        style={pillStyle(true)}
-      >
-        {value.customActivity?.trim() || "Other"}
-      </button>
-    );
   } else {
     otherSlot = (
       <button
@@ -172,6 +196,7 @@ export function WorkSection({ value, onChange }: Props) {
         <button type="button" onClick={() => { lightHaptic(); onChange({ ...value, physical: !value.physical }); }} style={pillStyle(!!value.physical)}>
           Physical
         </button>
+        {savedActivityPills}
         {otherSlot}
       </div>
 
