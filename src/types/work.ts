@@ -6,5 +6,7 @@ export type WorkLog = {
   physical?: boolean;
   customActivity?: string;
   sessions: 1 | 2 | 3;
+  hours?: number;
+  minutes?: number;
   note: string;
 };

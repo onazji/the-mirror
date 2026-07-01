@@ -10,9 +10,28 @@ type Props = {
     physical?: boolean;
     customActivity?: string;
     sessions: 1 | 2 | 3;
+    hours?: number;
+    minutes?: number;
     note: string;
   };
   onChange: (value: Props["value"]) => void;
+};
+
+const numberInputStyle: React.CSSProperties = {
+  minHeight: 44,
+  width: 64,
+  padding: "10px 12px",
+  borderRadius: 14,
+  fontSize: 15,
+  fontWeight: 500,
+  color: "var(--text)",
+  border: "1px solid rgba(255,255,255,0.78)",
+  background: "linear-gradient(160deg, rgba(255,255,255,0.68) 0%, rgba(255,255,255,0.42) 100%)",
+  boxShadow: "inset 0 1.5px 0 rgba(255,255,255,0.88), 0 2px 12px rgba(80,80,140,0.08)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  outline: "none",
+  textAlign: "center",
 };
 
 const pillStyle = (active: boolean): React.CSSProperties => ({
@@ -157,18 +176,39 @@ export function WorkSection({ value, onChange }: Props) {
       </div>
 
       <div style={{ display: "grid", gap: 8 }}>
-        <div style={{ fontSize: 14, color: "var(--muted)", fontWeight: 500 }}>Sessions</div>
-        <div style={{ display: "flex", gap: 8 }}>
-          {([1, 2, 3] as const).map((n) => (
-            <button
-              key={n}
-              type="button"
-              onClick={() => onChange({ ...value, sessions: n })}
-              style={pillStyle(value.sessions === n)}
-            >
-              {n}
-            </button>
-          ))}
+        <div style={{ fontSize: 14, color: "var(--muted)", fontWeight: 500 }}>Time Invested</div>
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={23}
+              value={value.hours ?? 0}
+              onChange={(e) => {
+                const n = Math.max(0, Math.min(23, Number(e.target.value) || 0));
+                onChange({ ...value, hours: n });
+              }}
+              style={numberInputStyle}
+            />
+            <span style={{ fontSize: 14, color: "var(--muted)" }}>hrs</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={0}
+              max={59}
+              value={value.minutes ?? 0}
+              onChange={(e) => {
+                const n = Math.max(0, Math.min(59, Number(e.target.value) || 0));
+                onChange({ ...value, minutes: n });
+              }}
+              style={numberInputStyle}
+            />
+            <span style={{ fontSize: 14, color: "var(--muted)" }}>min</span>
+          </div>
         </div>
       </div>
 
