@@ -18,6 +18,20 @@ type Props = {
   onResult: (sessionId: string, result: PreviousStartResult) => void;
 };
 
+function formatTimeInvested(work: MirrorSession["work"]): string | null {
+  const hours = work.hours ?? 0;
+  const minutes = work.minutes ?? 0;
+
+  if (hours <= 0 && minutes <= 0) return null;
+
+  const parts = [
+    hours > 0 ? `${hours} hr` : null,
+    minutes > 0 ? `${minutes} min` : null,
+  ].filter(Boolean);
+
+  return parts.join(" ");
+}
+
 function renderWorkSummary(work: MirrorSession["work"]): string {
   const parts = [
     work.app ? "Personal" : null,
@@ -27,7 +41,12 @@ function renderWorkSummary(work: MirrorSession["work"]): string {
     work.output ? (work.customActivity?.trim() || "Other") : null,
   ].filter(Boolean);
   const summary = parts.length > 0 ? parts.join(" · ") : "None";
-  return `${summary} · ${work.sessions} session${work.sessions !== 1 ? "s" : ""}`;
+
+  const timeInvested = formatTimeInvested(work);
+  const detail =
+    timeInvested ?? `${work.sessions} session${work.sessions !== 1 ? "s" : ""}`;
+
+  return `${summary} · ${detail}`;
 }
 
 function renderResultLabel(result: PreviousStartResult): string {
