@@ -1,0 +1,150 @@
+I am attaching the approved canonical Mirror avatar PNGs.
+Integrate these assets into the existing application.
+This workspace is the canonical Mirror project. Preserve the existing UI, styling, glassmorphism, backgrounds, animations, spacing, and interaction model.
+This is an additive feature—not a redesign.
+Goal
+Implement Mirror Avatar System v1.0.
+Replace the existing reveal artwork with the approved canonical Mirror avatars while preserving the current experience.
+Do not replace or simplify any existing UI.
+Assets
+I am attaching 18 PNGs.
+There are:
+9 Masculine variants
+9 Feminine variants
+Organize them into a maintainable asset structure.
+Example:
+src/assets/mirror/
+    male/
+        alignment.png
+        anxiety.png
+        drift.png
+        flow.png
+        idle.png
+        overdrive.png
+        patience.png
+        pressure.png
+        stagnant.png
+
+    female/
+        alignment.png
+        anxiety.png
+        drift.png
+        flow.png
+        idle.png
+        overdrive.png
+        patience.png
+        pressure.png
+        stagnant.png
+First Launch
+On first launch only:
+Display a lightweight onboarding card.
+Choose Your Mirror
+
+Which Mirror would you like to see reflecting your journey?
+
+○ Masculine
+
+○ Feminine
+
+ⓘ Why are there two?
+Selecting either option:
+stores locally
+never asks again
+can later be changed in Settings
+Information Modal
+If the user taps:
+Why are there two?
+Display:
+About Mirror Avatars
+Mirror avatars are behavioral silhouettes, not characters.
+Psychological state is conveyed through posture, weight distribution, tension, orientation, and hand placement.
+Identity markers—including facial features, clothing, ethnicity, hairstyle, age, and accessories—are intentionally omitted so that attention remains on the state itself rather than the individual.
+Your selection simply chooses which symbolic form appears during Mirror card reveals.
+Both variants communicate the exact same psychological state.
+Future emotional nuance is expressed through the Mirror Light System rather than changes to the body itself.
+Local Storage
+Use:
+mirrorAvatarVariant
+Values:
+male
+female
+Persist locally.
+Settings
+Add:
+Mirror
+
+Avatar
+
+○ Masculine
+○ Feminine
+Changing this immediately affects future reveals.
+Rendering
+Current:
+Psychological State
+
+↓
+
+Current Artwork
+Replace with:
+Psychological State
+
+↓
+
+Mirror Avatar
+
+↓
+
+Mirror Light System (future)
+
+↓
+
+Mirror Frame
+
+↓
+
+Reveal Animation
+Do not implement the Light System yet.
+Only prepare the architecture.
+Architecture
+Separate responsibilities.
+Avatar selection should be isolated from:
+state calculation
+scoring
+reflection history
+reveal animation
+Future Light Behavior must be able to attach independently.
+Developer Documentation
+Create:
+docs/mirror-avatar-canon-v1.md
+Include this doctrine:
+Mirror avatars are behavioral silhouettes, not characters. Psychological state is conveyed through posture, weight distribution, tension, orientation, and hand placement. Identity markers—including facial features, clothing, ethnicity, hairstyle, age, and accessories—are intentionally omitted so that attention remains on the state itself rather than the individual. Emotional nuance beyond posture is expressed through the Mirror Light System.
+
+Preserve Existing Work
+Do not simplify, replace, or regress:
+backgrounds
+glassmorphism
+gradients
+spacing
+typography
+animations
+check screen
+home screen
+styling
+current UX polish
+This feature must integrate into the current application without changing its visual identity.
+Build
+Run the production build.
+Fix all errors.
+Run the preview.
+Verify onboarding, Settings, and avatar rendering.
+Required Completion Report
+Return:
+Build status
+Files changed
+Files created
+Assets added
+Local storage keys
+UI changes
+Architecture changes
+Documentation created
+Compatibility checklist

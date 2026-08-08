@@ -2,37 +2,61 @@ import { useEffect, useState } from "react";
 import type { MirrorCard } from "../services/cardEngine";
 import { MirrorCardVisual } from "./MirrorCardVisual";
 import styles from "./CardRevealOverlay.module.css";
+import type { MirrorAvatarVariant } from "../types/avatar";
 
-import alignment from "../assets/cards/alignment.jpeg";
-import anxiety from "../assets/cards/anxiety.jpeg";
-import drift from "../assets/cards/drift.jpeg";
-import flow from "../assets/cards/flow.jpeg";
-import idle from "../assets/cards/idle.jpeg";
-import overdrive from "../assets/cards/overdrive.jpeg";
-import patience from "../assets/cards/patience.jpeg";
-import pressure from "../assets/cards/pressure.jpeg";
-import stagnant from "../assets/cards/stagnant.jpeg";
+import maleAlignment from "../assets/mirror/male/alignment.png";
+import maleAnxiety from "../assets/mirror/male/anxiety.png";
+import maleDrift from "../assets/mirror/male/drift.png";
+import maleFlow from "../assets/mirror/male/flow.png";
+import maleIdle from "../assets/mirror/male/idle.png";
+import maleOverdrive from "../assets/mirror/male/overdrive.png";
+import malePatience from "../assets/mirror/male/patience.png";
+import malePressure from "../assets/mirror/male/pressure.png";
+import maleStagnant from "../assets/mirror/male/stagnant.png";
+import femaleAlignment from "../assets/mirror/female/alignment.png";
+import femaleAnxiety from "../assets/mirror/female/anxiety.png";
+import femaleDrift from "../assets/mirror/female/drift.png";
+import femaleFlow from "../assets/mirror/female/flow.png";
+import femaleIdle from "../assets/mirror/female/idle.png";
+import femaleOverdrive from "../assets/mirror/female/overdrive.png";
+import femalePatience from "../assets/mirror/female/patience.png";
+import femalePressure from "../assets/mirror/female/pressure.png";
+import femaleStagnant from "../assets/mirror/female/stagnant.png";
 
 type Props = {
   card: MirrorCard;
+  avatarVariant: MirrorAvatarVariant;
   onClose: () => void;
 };
 
-const CARD_IMAGES: Record<string, string> = {
-  Alignment: alignment,
-  Anxiety: anxiety,
-  Drift: drift,
-  Flow: flow,
-  Idle: idle,
-  Overdrive: overdrive,
-  Patience: patience,
-  Pressure: pressure,
-  Stagnant: stagnant,
+const AVATAR_IMAGES: Record<MirrorAvatarVariant, Record<string, string>> = {
+  male: {
+    Alignment: maleAlignment,
+    Anxiety: maleAnxiety,
+    Drift: maleDrift,
+    Flow: maleFlow,
+    Idle: maleIdle,
+    Overdrive: maleOverdrive,
+    Patience: malePatience,
+    Pressure: malePressure,
+    Stagnant: maleStagnant,
+  },
+  female: {
+    Alignment: femaleAlignment,
+    Anxiety: femaleAnxiety,
+    Drift: femaleDrift,
+    Flow: femaleFlow,
+    Idle: femaleIdle,
+    Overdrive: femaleOverdrive,
+    Patience: femalePatience,
+    Pressure: femalePressure,
+    Stagnant: femaleStagnant,
+  },
 };
 
-export function CardRevealOverlay({ card, onClose }: Props) {
+export function CardRevealOverlay({ card, avatarVariant, onClose }: Props) {
   const [visible, setVisible] = useState(false);
-  const cardImage = CARD_IMAGES[card.title];
+  const avatarImage = AVATAR_IMAGES[avatarVariant][card.title];
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -57,10 +81,10 @@ export function CardRevealOverlay({ card, onClose }: Props) {
         <div className={styles.kicker}>Reflection</div>
 
         <div className={visible ? styles.cardVisible : styles.cardHidden}>
-          {cardImage ? (
+          {avatarImage ? (
             <img
-              src={cardImage}
-              alt={`${card.title} reflection card`}
+              src={avatarImage}
+              alt={`${card.title} Mirror avatar`}
               className={styles.cardImage}
             />
           ) : (

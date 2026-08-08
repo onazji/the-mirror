@@ -3,13 +3,17 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
 import { CardRevealOverlay } from "../components/CardRevealOverlay";
+import { AvatarChoiceModal } from "../components/AvatarChoiceModal";
 import { LivingMirrorArtifact } from "../components/LivingMirrorArtifact";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
+import type { MirrorAvatarVariant } from "../types/avatar";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
 import { getMirrorCard } from "../services/cardEngine";
 import { buildWeeklyLayer } from "../services/weeklyLayer";
 import { buildResetLine } from "../services/nextStepEngine";
 import { computeArtifactStats } from "../services/artifactEngine";
+import { LocalStorageStore } from "../storage/localStorageStore";
+import { loadAvatarVariant, saveAvatarVariant } from "../services/avatarService";
 import styles from "./HomeScreen.module.css";
 
 type Props = {
@@ -58,10 +62,20 @@ function renderResultLabel(result: PreviousStartResult): string {
 export function HomeScreen({ sessions, onStart, onResult }: Props) {
   const [showInfo, setShowInfo] = useState(false);
   const [showCardReveal, setShowCardReveal] = useState(false);
+  const [showAvatarChoice, setShowAvatarChoice] = useState(false);
+  const [avatarVariant, setAvatarVariant] = useState<MirrorAvatarVariant | null>(
+    () => loadAvatarVariant(new LocalStorageStore())
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const chooseAvatar = (variant: MirrorAvatarVariant) => {
+    saveAvatarVariant(new LocalStorageStore(), variant);
+    setAvatarVariant(variant);
+    setShowAvatarChoice(false);
+  };
 
   const last = sessions.length ? sessions[sessions.length - 1] : null;
   const now = Date.now();
@@ -84,6 +98,15 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             <h1 className={styles.title}>The Mirror</h1>
             <div className={styles.tagline}>Pause. Reflect. Choose your direction.</div>
           </div>
+          <button
+            type="button"
+            className={styles.infoBtn}
+            aria-label="Open Mirror avatar settings"
+            title="Mirror avatar settings"
+            onClick={() => setShowAvatarChoice(true)}
+          >
+            ◐
+          </button>
           <button
             type="button"
             className={styles.infoBtn}
@@ -306,8 +329,22 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
       </div>
 
       {/* ── Card reveal overlay ── */}
-      {showCardReveal && card ? (
-        <CardRevealOverlay card={card} onClose={() => setShowCardReveal(false)} />
+      {showCardReveal && card && avatarVariant ? (
+        <CardRevealOverlay
+          card={card}
+          avatarVariant={avatarVariant}
+          onClose={() => setShowCardReveal(false)}
+        />
+      ) : null}
+
+      {/* ── First launch / avatar settings ── */}
+      {!avatarVariant || showAvatarChoice ? (
+        <AvatarChoiceModal
+          value={avatarVariant}
+          onboarding={!avatarVariant}
+          onSelect={chooseAvatar}
+          onClose={avatarVariant ? () => setShowAvatarChoice(false) : undefined}
+        />
       ) : null}
 
       {/* ── State map modal ── */}
