@@ -21,17 +21,21 @@ analytics, and card logic independent.
 
 ## Visual hierarchy
 
-The reveal stack remains:
+The reveal stack is:
 
-`Background → Light Behavior → Avatar → Mirror Card → UI`
+`Mirror frame (coded UI) → Light Behavior PNG → Canonical state PNG`
 
-The avatar remains the primary focal point. Light Behavior is centered in the
-same reveal stage and rendered beneath the avatar with subtle opacity.
+The canonical state PNG is one complete base image containing both the
+behavioral avatar and its black void/background. The Light Behavior PNG is
+centered over that complete base image, while the existing coded Mirror frame
+remains the foremost UI layer.
 
 ## Rendering rules
 
-- Canonical Draft 03 PNGs are preserved without resizing, cropping, or artwork
-  modification.
+- Canonical state PNGs and canonical Draft 03 Light Behavior PNGs are preserved
+  without resizing, cropping, masking, or artwork modification.
+- The canonical state PNG is not separated into avatar and background layers.
+- No additional background PNG family is used.
 - Assets use normal alpha compositing.
 - The layer is centered and static.
 - There is no glow filter, blur, blend mode, pulse, rotation, scale, fade, or
