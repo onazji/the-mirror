@@ -4,6 +4,7 @@ import { getLightBehaviorAsset } from "../services/lightBehaviorService";
 import { MirrorCardVisual } from "./MirrorCardVisual";
 import styles from "./CardRevealOverlay.module.css";
 import type { MirrorAvatarVariant } from "../types/avatar";
+import type { Body, Mind } from "../types/mirror";
 
 import maleAlignment from "../assets/mirror/male/alignment.png";
 import maleAnxiety from "../assets/mirror/male/anxiety.png";
@@ -27,6 +28,8 @@ import femaleStagnant from "../assets/mirror/female/stagnant.png";
 type Props = {
   card: MirrorCard;
   avatarVariant: MirrorAvatarVariant;
+  presence: Body;
+  focus: Mind;
   onClose: () => void;
 };
 
@@ -55,10 +58,16 @@ const AVATAR_IMAGES: Record<MirrorAvatarVariant, Record<string, string>> = {
   },
 };
 
-export function CardRevealOverlay({ card, avatarVariant, onClose }: Props) {
+export function CardRevealOverlay({
+  card,
+  avatarVariant,
+  presence,
+  focus,
+  onClose,
+}: Props) {
   const [visible, setVisible] = useState(false);
   const avatarImage = AVATAR_IMAGES[avatarVariant][card.title];
-  const lightBehaviorImage = getLightBehaviorAsset(card.id);
+  const lightBehaviorImage = getLightBehaviorAsset(presence, focus);
 
   useEffect(() => {
     const t = setTimeout(() => {

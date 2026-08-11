@@ -1,4 +1,4 @@
-import type { MirrorCardId } from "./cardEngine";
+import type { Body, Mind } from "../types/mirror";
 import type { MirrorLightBehavior } from "../types/lightBehavior";
 
 import emergent from "../assets/mirror/light/emergent.png";
@@ -11,16 +11,25 @@ import constricted from "../assets/mirror/light/constricted.png";
 import burdened from "../assets/mirror/light/burdened.png";
 import fractured from "../assets/mirror/light/fractured.png";
 
-const LIGHT_BEHAVIOR_BY_STATE: Record<MirrorCardId, MirrorLightBehavior> = {
-  alignment: "faithful",
-  anxiety: "constricted",
-  drift: "wandering",
-  flow: "gracious",
-  idle: "receptive",
-  overdrive: "emergent",
-  patience: "burdened",
-  pressure: "dissonant",
-  stagnant: "fractured",
+const LIGHT_BEHAVIOR_BY_PRESENCE_AND_FOCUS: Record<
+  Body,
+  Record<Mind, MirrorLightBehavior>
+> = {
+  relaxed: {
+    narrow: "emergent",
+    wide: "receptive",
+    scattered: "dissonant",
+  },
+  content: {
+    narrow: "faithful",
+    wide: "gracious",
+    scattered: "wandering",
+  },
+  tense: {
+    narrow: "constricted",
+    wide: "burdened",
+    scattered: "fractured",
+  },
 };
 
 const LIGHT_BEHAVIOR_ASSETS: Record<MirrorLightBehavior, string> = {
@@ -35,6 +44,16 @@ const LIGHT_BEHAVIOR_ASSETS: Record<MirrorLightBehavior, string> = {
   fractured,
 };
 
-export function getLightBehaviorAsset(state: MirrorCardId): string {
-  return LIGHT_BEHAVIOR_ASSETS[LIGHT_BEHAVIOR_BY_STATE[state]];
+export function getLightBehavior(
+  presence: Body,
+  focus: Mind
+): MirrorLightBehavior {
+  return LIGHT_BEHAVIOR_BY_PRESENCE_AND_FOCUS[presence][focus];
+}
+
+export function getLightBehaviorAsset(
+  presence: Body,
+  focus: Mind
+): string {
+  return LIGHT_BEHAVIOR_ASSETS[getLightBehavior(presence, focus)];
 }

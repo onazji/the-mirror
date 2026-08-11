@@ -1,0 +1,1 @@
+- [Mirror visual matrices](mirror-visual-matrices.md) — Mirror State and Light Behavior are independent 3×3 calculations with separate inputs and mappings.

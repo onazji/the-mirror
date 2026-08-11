@@ -1,23 +1,26 @@
 # Mirror Light Behavior System v1
 
-The Light Behavior layer is a second visual channel for Mirror. It expresses
-the psychological state through a static field surrounding the avatar while
-leaving the avatar selection, state calculation, scoring, reflection history,
-analytics, and card logic independent.
+The Light Behavior layer is a second visual channel for Mirror. It expresses a
+mapped expression through a static field surrounding the avatar. It is
+calculated independently from Mirror State:
 
-## State mapping
+- Mirror State: `Energy + Momentum`
+- Mapped Expression: `Presence + Focus`
 
-| Psychological state | Light Behavior asset |
-| --- | --- |
-| Alignment | `faithful.png` |
-| Anxiety | `constricted.png` |
-| Drift | `wandering.png` |
-| Flow | `gracious.png` |
-| Idle | `receptive.png` |
-| Overdrive | `emergent.png` |
-| Patience | `burdened.png` |
-| Pressure | `dissonant.png` |
-| Stagnant | `fractured.png` |
+The layer leaves avatar selection, state calculation, scoring, reflection
+history, analytics, and card logic independent.
+
+## Presence × Focus mapping
+
+| Presence | Narrow | Wide | Scattered |
+| --- | --- | --- | --- |
+| Relaxed | `emergent.png` | `receptive.png` | `dissonant.png` |
+| Content | `faithful.png` | `gracious.png` | `wandering.png` |
+| Tense | `constricted.png` | `burdened.png` | `fractured.png` |
+
+The resulting Mirror State does not participate in this lookup. For example,
+Stagnant can appear with Emergent, Receptive, or Fractured depending on
+Presence and Focus.
 
 ## Visual hierarchy
 

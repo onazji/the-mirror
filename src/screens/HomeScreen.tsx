@@ -329,10 +329,12 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
       </div>
 
       {/* ── Card reveal overlay ── */}
-      {showCardReveal && card && avatarVariant ? (
+      {showCardReveal && card && avatarVariant && last ? (
         <CardRevealOverlay
           card={card}
           avatarVariant={avatarVariant}
+          presence={last.body}
+          focus={last.mind}
           onClose={() => setShowCardReveal(false)}
         />
       ) : null}
