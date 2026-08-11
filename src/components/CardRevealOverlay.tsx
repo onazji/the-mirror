@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { MirrorCard } from "../services/cardEngine";
+import { getLightBehaviorAsset } from "../services/lightBehaviorService";
 import { MirrorCardVisual } from "./MirrorCardVisual";
 import styles from "./CardRevealOverlay.module.css";
 import type { MirrorAvatarVariant } from "../types/avatar";
@@ -57,6 +58,7 @@ const AVATAR_IMAGES: Record<MirrorAvatarVariant, Record<string, string>> = {
 export function CardRevealOverlay({ card, avatarVariant, onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const avatarImage = AVATAR_IMAGES[avatarVariant][card.title];
+  const lightBehaviorImage = getLightBehaviorAsset(card.id);
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -81,15 +83,23 @@ export function CardRevealOverlay({ card, avatarVariant, onClose }: Props) {
         <div className={styles.kicker}>Reflection</div>
 
         <div className={visible ? styles.cardVisible : styles.cardHidden}>
-          {avatarImage ? (
+          <div className={styles.revealStage}>
             <img
-              src={avatarImage}
-              alt={`${card.title} Mirror avatar`}
-              className={styles.cardImage}
+              src={lightBehaviorImage}
+              alt=""
+              aria-hidden="true"
+              className={styles.lightBehavior}
             />
-          ) : (
-            <MirrorCardVisual card={card} />
-          )}
+            {avatarImage ? (
+              <img
+                src={avatarImage}
+                alt={`${card.title} Mirror avatar`}
+                className={styles.cardImage}
+              />
+            ) : (
+              <MirrorCardVisual card={card} />
+            )}
+          </div>
         </div>
 
         <div className={styles.footer}>

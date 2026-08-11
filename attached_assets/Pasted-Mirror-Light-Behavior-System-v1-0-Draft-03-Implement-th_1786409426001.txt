@@ -1,0 +1,159 @@
+Mirror — Light Behavior System v1.0 (Draft 03)
+Implement the approved Mirror Light Behavior System v1.0.
+This is an additive visual update only.
+Do not modify:
+psychological state calculation
+reflection scoring
+state engine
+analytics
+history
+onboarding
+avatar selection
+card logic
+The Light Behavior layer is a second visual channel only.
+Visual hierarchy
+The reveal stack must become:
+Background
+
+↓
+
+Light Behavior
+
+↓
+
+Avatar
+
+↓
+
+Mirror Card
+
+↓
+
+UI
+The avatar must remain the primary focal point.
+The Light Behavior should feel like an invisible field surrounding the person—not a foreground effect.
+Assets
+Create:
+src/assets/mirror/light/
+Place the approved Draft 03 transparent PNGs there.
+Use this naming convention:
+emergent.png
+receptive.png
+dissonant.png
+faithful.png
+gracious.png
+wandering.png
+constricted.png
+burdened.png
+fractured.png
+Maintain transparency.
+Do not resize.
+Do not crop.
+Do not modify artwork.
+Mapping
+Map each psychological state to its Light Behavior.
+Alignment   → faithful.png
+
+Anxiety     → constricted.png
+
+Drift       → wandering.png
+
+Flow        → gracious.png
+
+Idle        → receptive.png
+
+Overdrive   → emergent.png
+
+Patience    → burdened.png
+
+Pressure    → dissonant.png
+
+Stagnant    → fractured.png
+Keep the Avatar System completely independent.
+There are now two separate mappings:
+Psychological State
+
+↓
+
+Avatar
+and
+Psychological State
+
+↓
+
+Light Behavior
+Neither system should know about the other.
+Rendering
+Render the Light Behavior beneath the avatar.
+Requirements:
+centered perfectly
+identical positioning across all states
+no clipping
+preserve transparency
+no bloom
+no glow filters
+no blur
+no additive blending
+use normal alpha compositing
+The PNG should simply render behind the avatar.
+Styling
+Keep opacity subtle.
+Approximately:
+opacity: 0.45–0.60
+Adjust only if needed to preserve the avatar as the dominant element.
+The Light Behavior should support the body—not compete with it.
+Animation
+Do NOT animate.
+Do NOT rotate.
+Do NOT pulse.
+Do NOT scale.
+Do NOT fade.
+Use the PNGs exactly as provided.
+Future micro-animation will be implemented separately.
+Architecture
+Create a lightweight mapping service similar to the Avatar implementation.
+Suggested structure:
+src/types/lightBehavior.ts
+
+src/services/lightBehaviorService.ts
+The reveal overlay should simply request:
+state
+
+↓
+
+light behavior asset
+No additional logic.
+Validation
+Verify all nine reveal states.
+For every state confirm:
+correct avatar
+correct Light Behavior
+centered alignment
+transparent rendering
+readable Mirror Card
+no layout regressions
+Preserve existing behavior
+Do not redesign the reveal.
+Do not change animations.
+Do not alter timing.
+Do not change card transitions.
+This update only introduces the Light Behavior layer.
+Documentation
+Add:
+docs/light-behavior-system-v1.md
+Document:
+purpose
+asset mapping
+visual hierarchy
+rendering rules
+future animation roadmap
+Success criteria
+The implementation is complete when:
+all nine Draft 03 assets render correctly
+every psychological state displays the correct Light Behavior
+avatars remain visually dominant
+all existing functionality is preserved
+production build passes
+tests pass
+live preview is verified
+Treat the approved Draft 03 artwork as canonical. Do not reinterpret, regenerate, or modify the assets. This implementation establishes the second permanent visual language of Mirror: Avatar → Light Behavior → Mirror Card.

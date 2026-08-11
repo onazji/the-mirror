@@ -9,5 +9,5 @@ nuance beyond posture is expressed through the Mirror Light System.
 
 The avatar variant is an independent local preference. It does not participate
 in state calculation, scoring, reflection history, or reveal animation. The
-state-specific avatar asset is selected only at reveal time, leaving room for a
-future Mirror Light System to attach independently.
+state-specific avatar asset is selected only at reveal time. The independent
+Mirror Light Behavior layer attaches separately beneath it during the reveal.
