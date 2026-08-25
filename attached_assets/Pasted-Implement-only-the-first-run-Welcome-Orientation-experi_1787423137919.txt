@@ -1,0 +1,106 @@
+Implement **only the first-run Welcome / Orientation experience for Mirror**.
+
+This is the first of several planned onboarding improvements. Keep this change isolated so it can be tested, committed, and pushed independently.
+
+## Goal
+
+A completely new user should be able to open Mirror without receiving a verbal explanation from me and understand enough to confidently begin their first reflection.
+
+Do **not** turn this into a tutorial, walkthrough, carousel, or multi-page onboarding flow.
+
+## First-Run Sequence
+
+For a brand-new user, the sequence should be:
+
+**Welcome to Mirror → existing Choose Your Mirror avatar selection → Home**
+
+The existing Masculine/Feminine avatar-selection experience already works correctly. Preserve it and do not redesign or combine it with this feature.
+
+## Welcome Experience
+
+Create one lightweight modal consistent with Mirror's existing visual language.
+
+Suggested content:
+
+### Welcome to Mirror
+
+Mirror is a reflection tool for noticing where you are and where you're moving.
+
+**Step Into the Mirror** begins a reflection of your current signals, experiences, and direction.
+
+There is no score, diagnosis, or correct state to achieve. Mirror reflects what you give it rather than deciding what you should become.
+
+**You don't need to already have a goal or trajectory.**
+
+If you aren't sure what you're working toward yet, begin with what is true enough to notice. Direction can become clearer through reflection.
+
+**Enter Mirror**
+
+## Behavior
+
+- Automatically show this Welcome only to first-time users.
+- Allow the user to continue or close it.
+- After dismissal/completion, proceed naturally into the existing avatar-selection experience if the user has not selected an avatar yet.
+- Do not automatically show the Welcome again once acknowledged.
+- Returning users who have already used Mirror should not unexpectedly receive first-run onboarding.
+- Persist the orientation state locally.
+
+Prefer a versioned persistence value such as:
+
+`mirrorOrientationVersion = 1`
+
+rather than a simple boolean, so a genuinely different orientation can potentially be introduced in a future major version without affecting normal releases.
+
+## Important Scope Restrictions
+
+Do **not** implement the following in this change:
+
+- Revisitable orientation from the Living Mirror artifact
+- New Check Screen information modals
+- Changes to the existing avatar selector
+- Changes to the existing Four Signals / One State information modal
+- Dev logs or What's New features
+- State-engine changes
+- Light Behavior changes
+- Card/reveal changes
+- History changes
+- Scoring changes
+- Analytics changes
+- New engagement mechanics, streaks, rewards, or gamification
+
+This commit is **only the first-run Welcome experience**.
+
+## Design Principle
+
+Mirror explains itself progressively. It should not require the user to study Mirror before using Mirror.
+
+The Welcome should provide enough context to begin, then get out of the way.
+
+Preserve the existing UI, styling, glass treatment, typography, backgrounds, spacing, animations, and interaction model.
+
+## Verification
+
+Before completion:
+
+1. Test with fresh local storage and confirm Welcome appears.
+2. Dismiss/complete Welcome and confirm existing avatar selection follows when appropriate.
+3. Complete avatar selection and reach Home normally.
+4. Refresh and confirm Welcome does not automatically appear again.
+5. Confirm an existing/returning user is not interrupted.
+6. Run the production build and existing tests.
+7. Verify the live preview for visual or runtime regressions.
+
+## Completion Report
+
+Report:
+
+- Files created
+- Files changed
+- Local-storage behavior
+- Exact first-run sequence
+- Existing-user behavior
+- Build status
+- Test status
+- Preview verification
+
+Do not make unrelated improvements while implementing this feature.
