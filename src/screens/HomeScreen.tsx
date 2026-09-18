@@ -4,6 +4,7 @@ import { Button } from "../components/Button";
 import { StateMap } from "../components/StateMap";
 import { CardRevealOverlay } from "../components/CardRevealOverlay";
 import { AvatarChoiceModal } from "../components/AvatarChoiceModal";
+import { WelcomeModal } from "../components/WelcomeModal";
 import { LivingMirrorArtifact } from "../components/LivingMirrorArtifact";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
 import type { MirrorAvatarVariant } from "../types/avatar";
@@ -14,6 +15,11 @@ import { buildResetLine } from "../services/nextStepEngine";
 import { computeArtifactStats } from "../services/artifactEngine";
 import { LocalStorageStore } from "../storage/localStorageStore";
 import { loadAvatarVariant, saveAvatarVariant } from "../services/avatarService";
+import {
+  completeOrientation,
+  getFirstRunStage,
+  type FirstRunStage,
+} from "../services/orientationService";
 import styles from "./HomeScreen.module.css";
 
 type Props = {
@@ -21,6 +27,8 @@ type Props = {
   onStart: () => void;
   onResult: (sessionId: string, result: PreviousStartResult) => void;
 };
+
+const onboardingStore = new LocalStorageStore();
 
 function formatTimeInvested(work: MirrorSession["work"]): string | null {
   const hours = work.hours ?? 0;
@@ -60,21 +68,33 @@ function renderResultLabel(result: PreviousStartResult): string {
 }
 
 export function HomeScreen({ sessions, onStart, onResult }: Props) {
+  const initialAvatarVariant = loadAvatarVariant(onboardingStore);
+  const initialFirstRunStage = getFirstRunStage(
+    onboardingStore,
+    initialAvatarVariant
+  );
   const [showInfo, setShowInfo] = useState(false);
   const [showCardReveal, setShowCardReveal] = useState(false);
   const [showAvatarChoice, setShowAvatarChoice] = useState(false);
-  const [avatarVariant, setAvatarVariant] = useState<MirrorAvatarVariant | null>(
-    () => loadAvatarVariant(new LocalStorageStore())
-  );
+  const [avatarVariant, setAvatarVariant] =
+    useState<MirrorAvatarVariant | null>(initialAvatarVariant);
+  const [firstRunStage, setFirstRunStage] =
+    useState<FirstRunStage>(initialFirstRunStage);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const chooseAvatar = (variant: MirrorAvatarVariant) => {
-    saveAvatarVariant(new LocalStorageStore(), variant);
+    saveAvatarVariant(onboardingStore, variant);
     setAvatarVariant(variant);
     setShowAvatarChoice(false);
+    setFirstRunStage("home");
+  };
+
+  const acknowledgeWelcome = () => {
+    completeOrientation(onboardingStore);
+    setFirstRunStage(avatarVariant ? "home" : "avatar");
   };
 
   const last = sessions.length ? sessions[sessions.length - 1] : null;
@@ -339,13 +359,21 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
         />
       ) : null}
 
-      {/* ── First launch / avatar settings ── */}
-      {!avatarVariant || showAvatarChoice ? (
+      {/* ── Avatar settings / first-run avatar choice ── */}
+      {firstRunStage === "avatar" || showAvatarChoice ? (
         <AvatarChoiceModal
           value={avatarVariant}
-          onboarding={!avatarVariant}
+          onboarding={firstRunStage === "avatar" && !avatarVariant}
           onSelect={chooseAvatar}
           onClose={avatarVariant ? () => setShowAvatarChoice(false) : undefined}
+        />
+      ) : null}
+
+      {/* ── One-time first-run Welcome ── */}
+      {firstRunStage === "welcome" ? (
+        <WelcomeModal
+          onContinue={acknowledgeWelcome}
+          onClose={acknowledgeWelcome}
         />
       ) : null}
 
