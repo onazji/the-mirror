@@ -1,0 +1,89 @@
+# Implement a One-Time First-Run Welcome
+
+Implement a one-time **First-Run Welcome** experience for **The Mirror**.
+
+## Required Flow
+
+1. A genuinely new user sees the **Welcome** screen first.
+2. Selecting **Choose Your Mirror** opens the existing avatar-selection experience.
+3. Selecting **Masculine** or **Feminine** leads to Home.
+4. Returning users bypass both Welcome and avatar selection when their choices already exist.
+5. Refreshing the app must not replay Welcome.
+
+## Welcome Content
+
+The Welcome screen should briefly establish:
+
+- The Mirror is a private reflection space.
+- The user checks their **Energy, Momentum, Presence, and Focus**.
+- The Mirror reflects the present moment without judging it.
+- Reflection data remains stored on the user's device.
+
+Use this initial copy:
+
+> # Welcome to The Mirror
+>
+> Pause and notice where you are.
+>
+> The Mirror reflects your Energy, Momentum, Presence, and Focus—without judgment or pressure to become something else.
+>
+> Your reflections remain on this device.
+>
+> **Choose Your Mirror**
+
+## Design Requirements
+
+- Preserve the existing glassmorphism.
+- Preserve the existing background, typography, spacing, and animation language.
+- Make the Welcome screen feel native to the current application.
+- Maintain a unified cross-platform experience.
+- Do not make haptics or platform-specific behavior essential.
+
+## Storage Requirements
+
+- Store a dedicated first-run completion value in `localStorage`.
+- Do not treat avatar selection alone as proof that Welcome was completed.
+- Preserve compatibility with existing users who have already selected an avatar.
+- Keep all personal reflection data on-device.
+
+## Scope Boundaries
+
+Do not redesign or modify unrelated behavior, including:
+
+- Avatar-selection design
+- Home screen
+- Check-in flow
+- Mirror State engine
+- Light Behavior engine
+- History and analytics
+- Existing storage architecture
+
+Keep this change isolated to the first-run onboarding sequence.
+
+## Required Tests
+
+Add or update tests confirming:
+
+1. A brand-new user sees Welcome.
+2. **Choose Your Mirror** opens avatar selection.
+3. Selecting an avatar leads to Home.
+4. A returning user bypasses onboarding.
+5. Refreshing after onboarding does not replay Welcome.
+6. Existing users with a saved avatar remain backward compatible.
+
+## Verification
+
+Before finishing:
+
+- Run the full automated test suite.
+- Run the production build.
+- Test the complete flow in a fresh private/incognito window.
+- Refresh after reaching Home and confirm the app returns directly to Home.
+- Confirm that the normal check-in flow still works.
+- Summarize every file changed and any remaining risks.
+
+## Commit
+
+Use this commit message:
+
+`Add one-time first-run welcome flow`
