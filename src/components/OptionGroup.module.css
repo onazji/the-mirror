@@ -10,14 +10,16 @@
 }
 
 .row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .opt {
   min-height: var(--tap);
-  padding: 10px 20px;
+  min-width: 0;
+  width: 100%;
+  padding: 10px 8px;
 
   border-radius: 99px;
 
@@ -25,6 +27,7 @@
 
   font-size: 15px;
   font-weight: 500;
+  white-space: nowrap;
 
   color: var(--text);
 

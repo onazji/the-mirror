@@ -1,0 +1,32 @@
+Physical Android Interaction Polish
+Mirror has now been successfully installed and tested as a Capacitor Android app on a physical Android device. Three issues were discovered during real-device testing. Inspect the current implementation before making changes.
+1. WebView tap highlight
+Tapping Mirror's rounded buttons/pills briefly produces a rectangular blue Android/WebView highlight before Mirror's own interaction animation. Remove the default WebView tap highlight so touch feedback remains visually consistent with Mirror's polished-glass interface.
+Preserve existing visual states, transitions, haptics, desktop behavior, and keyboard accessibility/focus indicators. Do not solve this by globally removing useful :focus-visible accessibility treatment.
+2. Android haptics are not firing
+Mirror's existing haptic utility was previously implemented as best-effort web vibration using navigator.vibrate(). On the physical Android Capacitor build, system haptics are enabled and work elsewhere on the device, but no Mirror interactions produce perceptible haptic feedback.
+Inspect the existing haptics utility and Capacitor configuration. Determine the smallest appropriate implementation for native Android haptics, preferably using Capacitor's native haptics capability when running natively while preserving a safe browser fallback for the web version.
+Preserve Mirror's existing semantic strengths:
+- light: 8ms equivalent intent
+- medium: 30ms equivalent intent
+- modal: 12ms equivalent intent
+These values describe the current relative interaction strengths; map them appropriately to native haptic feedback rather than assuming millisecond vibration durations are the correct native API abstraction.
+Do not introduce unrelated native plugins or permissions.
+3. State selector wrapping on physical Android
+On the Check Screen, Energy (Low / Steady / High) and Momentum (Low / Steady / High) correctly remain on one horizontal row.
+Presence currently renders:
+Relaxed / Content / Tense
+but on the physical Android viewport, Tense wraps onto a second row beneath Relaxed.
+Focus currently renders:
+Narrow / Wide / Scattered
+and Scattered similarly wraps onto a second row.
+Preserve the existing state vocabulary and current font sizing. Do not rename states merely to make them fit.
+Inspect the selector layout and make each three-option State selector reliably render as a single balanced horizontal row on mobile. Prefer a robust equal-column/responsive layout rather than content-dependent wrapping. Preserve the existing rounded pill design and desktop behavior.
+Validation
+Run the existing tests and production build after the changes. Report:
+- exact files changed;
+- cause of each issue;
+- implementation used for native-vs-web haptics;
+- responsive-layout approach used for the State selectors;
+- any Capacitor dependency or sync requirement needed before testing on Forge.
+Do not perform unrelated refactors, redesigns, dependency upgrades, or state-model changes.
