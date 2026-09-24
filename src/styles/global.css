@@ -18,15 +18,47 @@
 }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
-  background: #c8cde8 url("/THE-MIRROR-BG.png") center center / cover no-repeat fixed;
   color: var(--text);
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 }
 
+html {
+  background: #c8cde8;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #c8cde8 url("/THE-MIRROR-BG.png") center center / cover no-repeat;
+  transform: translateZ(0);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
 a { color: inherit; }
 * { box-sizing: border-box; }
+
+button,
+a,
+input,
+textarea,
+select,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button {
+  font-family: inherit;
+}
 
 .container {
   max-width: var(--max);
@@ -124,4 +156,13 @@ p { margin: 0; color: var(--muted); line-height: 1.35; }
 .mirrorTextarea {
   resize: vertical;
   min-height: 96px;
+}
+
+/* Live backdrop blur is especially costly while scrolling in Android WebView.
+   The translucent fills and shadows still preserve the glass treatment. */
+@media (hover: none) and (pointer: coarse) {
+  body * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }

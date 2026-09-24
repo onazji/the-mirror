@@ -28,7 +28,7 @@ export function OptionGroup<T extends string>({
               type="button"
               className={`${styles.opt} ${
                 active ? styles.active : ""
-              }`}
+              } ${opt.length >= 9 ? styles.longLabel : ""}`}
               onClick={() => { lightHaptic(); onChange(opt); }}
             >
               {opt}

@@ -71,6 +71,12 @@
   );
 }
 
+.longLabel {
+  padding-inline: 4px;
+  font-size: 14px;
+  letter-spacing: -0.1px;
+}
+
 .active {
   color: #7a5200;
 
