@@ -1,0 +1,39 @@
+Mirror Information Modal — Physical Android Fit
+Use the two attached physical-device photographs as the primary visual reference. This is a bounded responsive-layout correction to the existing Mirror informational modal.
+The photographs reveal two related overflow problems that were not adequately visible in desktop/browser testing.
+Horizontal problem
+At the modal's normal leftmost position, the Energy axis and the first two matrix columns are visible, but the complete third column (Overdrive / Pressure / Anxiety) extends beyond the right edge of the viewport.
+The user can horizontally scroll to reveal that column, but doing so clips content on the left. This modal should not behave as a horizontally scrollable chart.
+The complete 3×3 matrix must be simultaneously visible:
+Drift | Flow | Overdrive
+Idle | Alignment | Pressure
+Stagnant | Patience | Anxiety
+Pace — Low / Steady / High must align directly with those three columns.
+Energy — High / Steady / Low must align directly with the three rows.
+Inspect the photographs carefully. The Energy/row-label region currently consumes or introduces more horizontal spacing than necessary. Compact that supporting axis region and allocate the available width primarily to the 3×3 matrix.
+Prefer responsive grid sizing such as a compact axis column plus a minmax(0, 1fr) three-column matrix. Do not merely hide overflow.
+Vertical problem
+The closing sentence:
+Your state shapes your thoughts, actions, and results.
+is partially cut off at the bottom of the modal.
+The intended mobile composition should ideally display, without vertical scrolling:
+- The Mirror
+- 4 Signals. One State.
+- complete Pace/Energy 3×3 matrix
+- Body visualization
+- Mind visualization
+- complete closing sentence
+First recover vertical space by tightening excessive gaps, margins, and padding throughout the composition. Modestly reduce secondary/supporting typography only where necessary. Do not indiscriminately shrink the entire interface or materially reduce the prominence of the title, Body, Mind, or state information.
+The closing sentence may use slightly smaller responsive typography if necessary, but it must remain comfortably readable and fully contained within the modal.
+Acceptance criteria on narrow mobile
+- zero horizontal scrolling;
+- complete 3×3 matrix visible simultaneously;
+- all three Pace labels aligned with their columns;
+- all three Energy labels aligned with their rows;
+- Body fully visible;
+- Mind fully visible;
+- closing sentence fully visible;
+- no content clipped by the modal boundaries;
+- preserve the existing terminology, conceptual relationships, visual identity, and desktop behavior.
+Do not modify the state model, rename states, redesign the artifact toolbar, or implement the future monetizable feature.
+Run existing tests and production build afterward and report exact files changed and the responsive-layout strategy used.

@@ -1,5 +1,8 @@
 .wrapper {
 width: min(100%, 760px);
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 margin: 0 auto;
 padding: 24px;
 background: #ffffff;
@@ -22,6 +25,7 @@ color: #4b5563;
 font-weight: 500;
 }
 .matrixBlock {
+  min-width: 0;
 margin-bottom: 28px;
 }
 .axisTopTitle {
@@ -87,6 +91,7 @@ text-align: left;
 display: grid;
 grid-template-columns: repeat(3, 1fr);
 grid-template-rows: repeat(3, 1fr);
+  min-width: 0;
 min-height: 280px;
 border: 2px solid #cbd5e1;
 background-image:
@@ -208,7 +213,7 @@ font-weight: 500;
 }
 @media (max-width: 720px) {
 .wrapper {
-padding: 18px;
+  padding: 12px 12px 14px;
 border-radius: 16px;
 }
 .title {
@@ -216,37 +221,63 @@ font-size: 28px;
 }
 .subtitle {
 font-size: 16px;
-margin-bottom: 22px;
+  margin: 6px 0 14px;
+}
+.matrixBlock {
+  margin-bottom: 14px;
+}
+.axisTopTitle {
+  margin-bottom: 6px;
+  font-size: 14px;
 }
 .colLabels {
-grid-template-columns: 108px repeat(3, 1fr);
+  grid-template-columns: 76px repeat(3, minmax(0, 1fr));
+  margin-bottom: 6px;
 }
 .matrixRow {
-grid-template-columns: 108px 1fr;
-gap: 10px;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 6px;
 }
 .yAxisArea {
-grid-template-columns: 40px 1fr;
-min-height: 220px;
+  grid-template-columns: 26px minmax(0, 1fr);
+  min-height: 180px;
+}
+.yAxisTitle {
+  font-size: 13px;
 }
 .grid {
-min-height: 220px;
+  min-height: 180px;
 }
 .rowLabel,
 .colLabel,
 .bodyLabel,
-.mindLabel,
-.cellLabel {
+.mindLabel {
 font-size: 14px;
+}
+.rowLabel {
+  text-align: right;
+}
+.cell {
+  padding: 4px 2px;
+}
+.cellLabel {
+  font-size: 13px;
+  white-space: nowrap;
+}
+.section {
+  margin-top: 12px;
 }
 .sectionTitle {
 font-size: 22px;
+  margin-bottom: 8px;
 }
 .bodyRow {
-grid-template-columns: 72px 1fr 72px;
-gap: 10px;
+  grid-template-columns: 58px minmax(0, 1fr) 62px;
+  gap: 6px;
 }
 .footer {
-font-size: 15px;
+  margin-top: 14px;
+  font-size: 14px;
+  line-height: 1.3;
 }
 }
