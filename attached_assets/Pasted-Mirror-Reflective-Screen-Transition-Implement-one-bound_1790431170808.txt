@@ -1,0 +1,88 @@
+Mirror — Reflective Screen Transition
+Implement one bounded polish improvement to the transition between Mirror's existing Home and Check screens.
+Current problem
+Mirror has only two primary screens. Currently switching between them is instantaneous.
+This is especially noticeable after Record Reflection: the user's attention is at the bottom of the Check screen and the application abruptly switches to the top of Home. Although functionally correct, this feels like switching browser pages/tabs rather than interacting with one continuous Mirror surface.
+The desired experience is:
+Check → reflected light crosses the surface → Home
+rather than an abrupt screen replacement.
+Core design
+Create a very brief reflected-light sweep across the interface during the existing screen transition.
+It should resemble a nearby light source briefly catching polished dark glass as the viewing angle changes.
+This is not intended to slow navigation down. The transition should keep pace with how quickly the destination screen already becomes available. The animation exists to visually bridge/mask the abrupt screen and scroll-position change, not to introduce a waiting period.
+Do not artificially hold the destination screen just so an animation can finish.
+Start with a very short duration appropriate for an immediate mobile interaction. Approximately 150–250 ms is a reasonable prototype range, but keep the duration centralized and easy to tune after physical-device testing. The actual bright crossing may occupy only part of that duration.
+Direction carries meaning
+Preserve this directional behavior deliberately:
+Home → Check
+Light travels top → bottom.
+This represents entering/deeper into the Mirror and beginning the reflection process.
+Record Reflection / Check → Home
+Light travels bottom → top.
+This represents the completed reflection being sealed/released back into the Mirror surface.
+These directions are part of the intended interaction language and should not be arbitrarily reversed.
+Transition behavior
+Inspect the existing Home/Check screen state transition and scroll-reset implementation before editing.
+The existing screen change should occur around the brightest/most visually obscuring portion of the light sweep. Use that moment to mask the perceptual discontinuity between the user's position on the current screen and the destination screen's top position.
+When the reflected light clears, the destination screen should already be correctly positioned.
+The desired perception should be:
+current surface → light crosses glass → transformed surface
+Do not make the two screens appear like separate pages physically sliding past one another.
+Visual character
+The sweep should be:
+- neutral/white rather than orange;
+- soft and specular;
+- restrained;
+- visible enough for its direction to register;
+- narrow/brief enough to remain immediate;
+- naturally blended into Mirror's black surface;
+- free of obvious rectangular overlay edges.
+Do not add:
+- page-slide navigation;
+- fade-to-black;
+- loading screens;
+- literal lightning;
+- particles;
+- text;
+- progress indicators;
+- sound.
+The effect should communicate light interacting with glass, not a decorative transition animation.
+Preserve existing behavior
+Do not change:
+- reflection recording;
+- history persistence;
+- state calculation;
+- existing Home/Check content;
+- destination scroll positioning;
+- haptics;
+- StateMap;
+- card reveal;
+- artifact toolbar;
+- state vocabulary;
+- monetization concepts.
+Persistence/data operations must not be delayed or made dependent upon the visual animation.
+The transition overlay must always clean itself up and must never leave the interface blocked.
+Respect prefers-reduced-motion with an appropriate reduced/no-motion transition.
+Scope boundary
+Do not implement gyroscope/device-orientation behavior in this task.
+Gyroscope-driven reflective behavior for selected/committed surfaces is a separate future Mirror Material System feature.
+Today's task is only the two-screen reflective transition.
+Validation
+Validate:
+- Home → Check;
+- Check → Home after recording a reflection;
+- correct top→bottom and bottom→top directions;
+- correct destination scroll position;
+- rapid repeated interaction does not leave an overlay stuck;
+- narrow mobile layout;
+- desktop;
+- reduced-motion behavior.
+Run the existing tests and production build afterward.
+Report:
+- exact files changed;
+- final transition duration;
+- how the screen swap is synchronized with the sweep;
+- how the two directional variants are implemented;
+- reduced-motion behavior;
+- any remaining physical-device validation required.
+Keep this a small, reversible polish change. Do not perform unrelated refactors.

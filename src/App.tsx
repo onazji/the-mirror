@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Screen } from "./state/screens";
 import { createEmptyDraft } from "./state/appState";
 import type {
@@ -16,6 +16,7 @@ import {
 
 import { HomeScreen } from "./screens/HomeScreen";
 import { CheckScreen } from "./screens/CheckScreen";
+import { ReflectiveTransition } from "./components/ReflectiveTransition";
 
 const store = new LocalStorageStore();
 
@@ -27,11 +28,36 @@ export default function App() {
   );
 
   const [submitting, setSubmitting] = useState(false);
+  const [transition, setTransition] = useState<{
+    direction: "down" | "up";
+  } | null>(null);
+  const transitionTargetRef = useRef<Screen | null>(null);
+
+  const swapToTransitionTarget = useCallback(() => {
+    const target = transitionTargetRef.current;
+    if (target) {
+      setScreen(target);
+    }
+  }, []);
+
+  const completeTransition = useCallback(() => {
+    transitionTargetRef.current = null;
+    setTransition(null);
+  }, []);
+
+  const navigateWithTransition = (target: Screen) => {
+    if (transition || target === screen) return;
+
+    transitionTargetRef.current = target;
+    setTransition({
+      direction: screen === Screen.HOME ? "down" : "up",
+    });
+  };
 
   const goHome = () => {
     setSessions(loadSessions(store));
     setDraft(createEmptyDraft());
-    setScreen(Screen.HOME);
+    navigateWithTransition(Screen.HOME);
   };
 
   const saveDraftNow = async () => {
@@ -47,7 +73,7 @@ export default function App() {
     await new Promise((resolve) => setTimeout(resolve, 650));
 
     setDraft(createEmptyDraft());
-    setScreen(Screen.HOME);
+    navigateWithTransition(Screen.HOME);
 
     setSubmitting(false);
   };
@@ -69,18 +95,21 @@ export default function App() {
     setSessions(nextSessions);
   };
 
+  let screenContent: JSX.Element;
+
   switch (screen) {
     case Screen.HOME:
-      return (
+      screenContent = (
         <HomeScreen
           sessions={sessions}
-          onStart={() => setScreen(Screen.CHECK)}
+          onStart={() => navigateWithTransition(Screen.CHECK)}
           onResult={updatePreviousStartResult}
         />
       );
+      break;
 
     case Screen.CHECK:
-      return (
+      screenContent = (
         <CheckScreen
           draft={draft}
           onChange={setDraft}
@@ -89,8 +118,22 @@ export default function App() {
           submitting={submitting}
         />
       );
+      break;
 
     default:
       return null;
   }
+
+  return (
+    <>
+      {screenContent}
+      {transition ? (
+        <ReflectiveTransition
+          direction={transition.direction}
+          onSwap={swapToTransitionTarget}
+          onComplete={completeTransition}
+        />
+      ) : null}
+    </>
+  );
 }
