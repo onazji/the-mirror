@@ -1,0 +1,109 @@
+## Mirror Reflective Transition — Final Cinematic Timing Refinement
+
+Make one bounded refinement to the existing reflective screen transition. Do not redesign its architecture or add new features.
+
+### Current baseline
+
+The existing implementation is on `main` in commit:
+
+`9f7eb8c` — `Implement reflective screen transition component`
+
+Current behavior is functionally correct:
+
+- Home → Check travels top to bottom.
+- Check → Home travels bottom to top.
+- The destination screen swaps beneath the light.
+- Reflection persistence occurs before the return transition.
+- Rapid touches are blocked during the transition.
+- Home scroll reset remains intact.
+- Reduced-motion mode swaps immediately without displaying the sweep.
+- No gyroscope or device-orientation behavior exists.
+
+### Physical-device finding
+
+Physical testing confirms that the direction and mirror-transformation concept are correct, but the current **220ms** duration is too fast.
+
+The eye sees a flash with some direction, but cannot follow the reflected light through its complete journey across the display. It reads more like the application blinked than like light traveled across glass and transformed the mirror.
+
+This is especially noticeable for Home → Check: after pressing **Step Into the Mirror**, the user sees the flash begin near the top but cannot visually follow it to the bottom.
+
+The goal is not a slower page transition. The goal is a brief but legible reflected-light passage that naturally masks the screen transformation.
+
+### Required refinement
+
+Use these timing targets:
+
+- Total transition duration: **380ms**
+- Screen swap: approximately **175ms** after the transition begins
+- Keep the swap within the brightest middle portion of the sweep
+
+Refine the visual treatment so the light has:
+
+- a readable directional journey across the complete viewport;
+- a defined but soft luminous center;
+- a broader, lower-opacity halo or trailing reflection;
+- smooth movement through the middle of the display;
+- a restrained cinematic quality resembling reflected light crossing glass.
+
+The eye should be able to follow the light from its entry edge to its exit edge.
+
+Avoid:
+
+- a whole-screen white flash;
+- a generic fade;
+- a page slide;
+- fade-to-black;
+- particles, sparkles, text, sound, or progress indicators;
+- an exaggerated sci-fi beam;
+- a slow transition that makes the interface feel delayed;
+- adding gyroscope or device-orientation behavior.
+
+Use transform and opacity-based animation so the transition remains smooth. Prefer CSS layers or pseudo-elements inside the existing sweep rather than introducing unnecessary React components.
+
+### Direction
+
+Preserve the existing direction exactly:
+
+- Home → Check: top to bottom
+- Check → Home: bottom to top
+
+Both directions should feel like the same reflected-light phenomenon moving in reverse—not two different animations.
+
+### Behavioral safeguards
+
+Preserve all existing behavior:
+
+- touch capture throughout the complete transition;
+- automatic timer and overlay cleanup;
+- no stuck overlay after rapid interaction;
+- reflection persistence before Check → Home begins;
+- existing reflection-recording timing;
+- existing Home scroll reset;
+- immediate screen swap with no visible sweep under `prefers-reduced-motion: reduce`.
+
+Keep the TypeScript timer values synchronized with the CSS animation duration.
+
+### Scope
+
+This should normally require changes only to:
+
+- `src/components/ReflectiveTransition.tsx`
+- `src/components/ReflectiveTransition.module.css`
+
+Do not modify `src/App.tsx` unless a genuine behavioral correction is necessary. Do not change unrelated application code, dependencies, state logic, native configuration, or Gradle files.
+
+Do not create or commit a copy of this prompt, reference notes, screenshots, or other task material under `attached_assets/`.
+
+### Validation
+
+Run the existing tests, production build, and `git diff --check`.
+
+Report:
+
+- exact files changed;
+- final duration and swap timing;
+- how the luminous center and halo were constructed;
+- confirmation that both directions and all safeguards remain intact;
+- exact test and build results.
+
+Do not start or propose a separate Replit physical-device verification task. Physical iPhone and Android judgment will be handled outside Replit after the commit is pushed.

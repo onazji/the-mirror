@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import styles from "./ReflectiveTransition.module.css";
 
-export const REFLECTIVE_TRANSITION_DURATION_MS = 220;
-const REFLECTIVE_TRANSITION_SWAP_MS = 100;
+export const REFLECTIVE_TRANSITION_DURATION_MS = 380;
+const REFLECTIVE_TRANSITION_SWAP_MS = 175;
 
 type Props = {
   direction: "down" | "up";
