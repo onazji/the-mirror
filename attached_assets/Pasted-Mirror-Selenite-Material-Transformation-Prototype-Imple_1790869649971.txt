@@ -1,0 +1,320 @@
+Mirror — Selenite Material Transformation Prototype
+Implement the first prototype of Mirror's newly established selenite material transformation between its primary screens.
+I am attaching two visual references:
+1. Five-frame Selenite Transition concept plate — establishes the intended material progression from Clear → Crystallization → Luminous → Dense → Crest.
+2. Canonical selenite material PNG — establishes the actual crystalline material language: extremely fine horizontal fibers/strata, overlapping translucent layers, pearl/gray depth, localized density variation, and subtle crystalline discontinuities.
+The application already contains its canonical abstract Mirror background. Do not import another copy of that background. Inspect the existing implementation and identify the actual background asset currently being used.
+Before editing, inspect:
+- the existing Home/Check navigation;
+- the current ReflectiveTransition implementation;
+- the existing background implementation/assets;
+- existing scroll-reset behavior;
+- reduced-motion handling;
+- current transition/navigation state management.
+This task replaces the earlier exploratory reflective/light-sweep transition with a materially different system.
+1. Core concept
+This is not a conventional screen transition.
+Do not interpret the attached five frames as five static screens that should simply crossfade between one another.
+The conceptual model is:
+The Mirror UI exists behind a virtual sheet of clear glass. During navigation, that glass temporarily transforms into optically dense, horizontally fibrous selenite. At maximum crystalline density, the underlying React screen changes invisibly. The same material event then continues traveling across and off the display, revealing the destination beneath clear glass.
+The user should perceive:
+one physical Mirror surface transforming
+rather than:
+Screen A → animation → Screen B.
+The complete illusion for this first prototype is:
+Clear Home → selenite enters from top → crystallization develops → existing environmental light blooms through it → material densifies → full crystalline crest → Home secretly becomes Check → trailing edge continues downward → crystalline material exits through bottom → clear Check.
+2. Canonical material
+The attached selenite PNG is the canonical material reference.
+Preserve its defining visual characteristics:
+- extremely fine horizontal fibrous structure;
+- horizontal crystalline strata;
+- overlapping translucent layers;
+- subtle irregularity;
+- pearl/gray depth;
+- localized changes in apparent density;
+- small discontinuities between crystalline layers;
+- translucency rather than flat opacity.
+Do not redesign the material into generic:
+- frosted glass;
+- blur;
+- fog;
+- ice;
+- white noise;
+- cloudy glass;
+- a moving white gradient.
+CSS does not need to procedurally reinvent all of the selenite's texture.
+The canonical PNG may be used as source material for the rendering system.
+It is acceptable—and potentially preferable—to create an optimized application derivative from the master reference if necessary for runtime performance.
+For example, the implementation may use an appropriately resized/cropped/compressed derivative texture, potentially combined with CSS compositing, animated masks, gradients, opacity, blur, blend modes, or other lightweight techniques.
+Master artwork does not have to equal delivery artwork.
+If a derivative is created:
+- preserve the canonical horizontal material language;
+- keep it visually faithful to the supplied source;
+- optimize it appropriately for mobile delivery;
+- report exactly what derivative was created and why.
+Do not invent unnecessary texture-generation infrastructure.
+3. Canonical Mirror background and environmental light
+The application already contains and renders its canonical abstract Mirror background.
+Inspect the repository and identify the actual existing asset and implementation currently used by Mirror.
+Do not:
+- import a duplicate background;
+- replace it;
+- regenerate it;
+- recolor it;
+- substantially reinterpret it;
+- move it merely to create this transition;
+- create unrelated new animated light sources over it.
+The background remains stationary throughout the transformation.
+Its existing luminous regions establish the virtual environment's illumination:
+- soft pearlescent/white illumination throughout the composition;
+- warm cream/golden illumination around the lower-center region;
+- lavender/pink illumination toward the lower-left;
+- cool cyan/blue illumination toward the lower/right region.
+During the transformation, those existing regions should appear to interact differently with the changing optical material.
+The important illusion is:
+The lights were always there. The glass changed.
+Do not simply animate a new white/light gradient across the screen and call that the luminous phase.
+Instead, make the changing selenite layer appear increasingly capable of transmitting, diffusing and scattering the illumination that already exists underneath/within Mirror's environment.
+The canonical selenite should remain fundamentally a neutral optical material. Avoid permanently baking Mirror's warm/lavender/cyan illumination directly into the selenite texture if doing so would prevent the material from responding independently to the environment later.
+This separation is important for Mirror's future material system, although no gyroscope or device-orientation functionality should be implemented in this task.
+4. Stage 1 — Clear / 0%
+At rest, Home is visible through essentially clear, thin virtual Mirror glass.
+The existing application should look normal.
+There should not be a permanent crystalline overlay while the transition is inactive.
+The existing abstract background remains stationary.
+5. Stage 2 — Crystallization / approximately 25%
+When Home → Check begins, crystallization enters from the top of the display and advances downward.
+The overall transformation frontier moves:
+top → bottom
+However, this must not resemble a perfectly straight CSS wipe.
+Fine horizontal crystalline fibers should develop with slight irregularity around and behind the advancing frontier.
+Think of the material itself progressively forming rather than an image simply being uncovered.
+As crystallization develops:
+apparent material thickness increases
+underlying UI clarity decreases
+light scattering increases
+The degradation of the underlying interface should have some optical hierarchy:
+- fine typography loses definition relatively early;
+- larger shapes and broad interface structures remain perceptible somewhat longer;
+- the interface progressively becomes something seen through increasingly complicated material rather than merely receiving lower opacity.
+6. Stage 3 — Luminous / approximately 50%
+Around the middle of the transformation, the developing selenite reaches its strongest light-transmission/scattering state.
+This is the visual hero of the transformation.
+The existing stationary Mirror background should now appear to illuminate the crystalline material.
+Its pearl/white, warm, lavender and cyan regions may become more optically expressive according to their actual positions beneath the material.
+The selenite fibers should appear to catch, transmit and scatter that environmental illumination.
+This is essentially a lightweight fake optical/ray-scattering illusion, not actual physically based ray tracing.
+The luminous state should feel as though light is moving through depth and horizontal crystalline strata.
+It should bloom and breathe, not simply flash white.
+Do not introduce a moving spotlight merely to make this stage visible.
+Again:
+Nothing behind the glass moved.
+The material changed.
+7. Stage 4 — Dense / approximately 75%
+After the luminous phase, crystallization continues developing.
+The material becomes:
+- apparently thicker;
+- milkier;
+- richer in overlapping crystalline strata;
+- more optically dense;
+- increasingly difficult to see through.
+Importantly, brightness should no longer simply continue increasing.
+As density rises beyond the luminous sweet spot, apparent transmission should begin decreasing.
+Light should become increasingly trapped, scattered or subdued within the denser material.
+Therefore:
+50% may appear more luminous than 75%.
+That is intentional.
+The underlying UI should now be extremely difficult to resolve while the crystalline material itself becomes visually richer.
+8. Stage 5 — Crest / 100%
+At crest, the entire display has reached its maximum crystalline state.
+This is the transformation's moment of maximum perceptual cover.
+Crest must not become:
+- pure white;
+- an opaque white rectangle;
+- a blank screen;
+- a simple full-screen blur.
+Even at maximum cover, the selenite itself must remain visually rich and identifiable.
+The user should still perceive:
+- fine horizontal fibers;
+- overlapping translucent crystalline strata;
+- pearl/gray internal depth;
+- localized highlights;
+- subtle density differences;
+- subdued traces of Mirror's existing environmental illumination buried within the material.
+The original Home UI should now be nearly unknowable.
+At this exact perceptual cover, perform the underlying React screen substitution:
+HOME → CHECK
+The user should not perceive that swap.
+The destination should already be correctly prepared behind the material before visibility returns.
+There should be no obvious pause at crest.
+Crest is a perceptual handoff, not a destination.
+9. Critical motion rule — direction NEVER reverses
+This is one of the most important discoveries in the design.
+Do not reverse the animation at crest.
+Do not make selenite enter downward and then retreat upward.
+The transformation remains one continuous physical event traveling:
+top → bottom
+Think of it as having:
+an advancing leading edge
+followed later by:
+a trailing edge.
+Before crest, the leading edge is converting clear glass into crystalline material as it travels downward.
+At crest, the entire display is crystalline and the hidden React screen changes.
+After crest, the trailing edge continues traveling downward.
+Clear glass therefore begins reappearing at the top of the display.
+Check becomes visible there first.
+The clearing then progresses downward while the remaining crystalline material continues toward and ultimately exits through the bottom of the display.
+Conceptually:
+100% selenite
+↓
+75% selenite / 25% Check revealed
+↓
+50% selenite / 50% Check revealed
+↓
+25% selenite / 75% Check revealed
+↓
+0% selenite / 100% Check revealed
+The final crystalline fibers leave through the bottom.
+The user is then simply looking through clear Mirror glass at Check.
+There should be no perceptual indication that two separate entrance/exit animations occurred.
+It is one continuous transformation passing across the surface.
+10. Timing philosophy — prototype, do not prematurely optimize
+The final shipping duration is intentionally NOT locked yet.
+Do not attempt to decide the production duration from theory alone.
+For this first material prototype, use a deliberately inspectable duration—potentially around 2–3 seconds total.
+Treat approximately 3 seconds as an upper-bound laboratory duration, not the intended shipping duration.
+Centralize the timing values so the entire choreography can later be compressed easily after physical Android testing.
+What matters in this prototype is the relative rhythm between material stages.
+Pre-crest
+Pre-crest timing should be nonlinear and expressive.
+Give initial crystallization enough time to establish that an actual material transformation is occurring.
+Give the luminous phase perceptual room to breathe because it is the visual hero.
+Densification into crest may happen comparatively more quickly.
+Conceptually:
+establish → illuminate → densify → crest
+rather than four mechanically equal timing blocks.
+Crest
+Crest is the perceptual handoff.
+Do not visibly stop there.
+The underlying screen swap should occur during maximum optical cover while the material event continues.
+Post-crest
+Post-crest clearing should feel more linear and orderly.
+The conceptual:
+75 → 50 → 25 → 0%
+clearing stages should receive approximately equal relative timing.
+Once the material behavior is physically convincing, the entire choreography will be compressed through Android-device testing until it feels special without making navigation feel unnecessarily slow.
+Do not tune this first implementation into a supposed final shipping duration.
+11. Rendering/compositing strategy
+Choose the simplest performant rendering approach that can convincingly produce the intended material behavior.
+Acceptable tools may include a restrained combination of:
+- the optimized canonical selenite texture;
+- CSS compositing;
+- animated masks;
+- opacity;
+- gradients;
+- blur where optically appropriate;
+- blend modes;
+- layered texture treatment;
+- other lightweight browser/WebView techniques already appropriate for Mirror's architecture.
+Do not use complexity merely for its own sake.
+Do not implement actual ray tracing.
+Do not create a heavyweight graphics subsystem unless clearly necessary.
+The result should run appropriately inside Mirror's existing Capacitor/WebView architecture on mobile.
+The transition must work over arbitrary live Home/Check content.
+Do not create a prerecorded video or baked animation containing one specific screenshot of the application.
+Avoid unnecessarily large runtime assets.
+If an optimized derivative of the selenite master is required, follow the principle:
+master artwork ≠ delivery artwork.
+12. Scope — prototype Home → Check first
+For this task, fully prototype:
+Home → Check
+using the established:
+top → bottom
+material travel.
+Do not spend unnecessary implementation time perfecting both navigation directions before the material itself has been physically validated.
+However, structure the transition system reasonably so that the eventual Check → Home transformation can reuse the same material system rather than requiring an unrelated duplicate implementation.
+The established interaction language still reserves opposite directional meaning for the eventual return transition, but that is not today's validation target.
+Today's question is:
+Does Mirror convincingly transform into this material at all?
+13. Replace the exploratory transition
+Mirror currently has an earlier exploratory ReflectiveTransition implementation based on a brief reflected-light sweep.
+Inspect it before editing.
+The new selenite transformation supersedes that visual treatment.
+Do not simply place the full selenite transformation on top of the old light-sweep animation and allow both effects to compete.
+Reuse existing transition/navigation infrastructure where useful, but replace the old visual behavior with this material-state system.
+Preserve any robust existing safeguards such as transition cleanup, duplicate-touch prevention and appropriate navigation sequencing where they remain applicable.
+14. Preserve existing application behavior
+Do not alter unrelated Mirror functionality.
+Preserve:
+- reflection recording;
+- reflection/history persistence;
+- state calculation;
+- existing Home content;
+- existing Check content;
+- destination scroll positioning;
+- existing haptics;
+- StateMap behavior;
+- card reveal;
+- onboarding;
+- avatar behavior;
+- existing application terminology;
+- artifact toolbar;
+- all unrelated visual systems.
+Data persistence/navigation correctness must not depend upon the animation successfully completing.
+The transition layer must always clean itself up reliably.
+Prevent accidental duplicate navigation while the transformation is active.
+15. Accessibility
+Preserve appropriate prefers-reduced-motion handling.
+Users requesting reduced motion should not be forced through a long animated material transformation.
+Provide an appropriate immediate or substantially reduced transition while preserving correct screen state/navigation.
+Do not compromise application functionality when motion is reduced.
+16. Explicitly out of scope
+Do not implement:
+- gyroscope behavior;
+- device-orientation behavior;
+- dynamic phone-tilt lighting;
+- the future selected-button reflective material response;
+- monetization;
+- History/Insights;
+- toolbar redesign;
+- unrelated card work;
+- unrelated responsive-layout changes;
+- unrelated refactors.
+Gyroscope-driven reflective behavior is a future Mirror Material System feature.
+Today's task is solely the first convincing implementation of the selenite screen transformation.
+17. Validation
+Run the existing automated tests and production build after implementation.
+Validate the Home → Check transition in the available browser/mobile-size environment.
+Check that:
+- no horizontal/vertical page overflow is introduced;
+- the material layer covers the viewport correctly;
+- the underlying Home screen does not visibly pop into Check;
+- the transition progresses top → bottom;
+- the trailing edge also continues top → bottom rather than reversing;
+- the material remains visually present at crest rather than becoming whiteout;
+- transition cleanup always occurs;
+- repeated/rapid interaction cannot leave the application stuck;
+- reduced-motion navigation remains correct;
+- runtime logs remain clean.
+Do not continue speculative visual tuning after reaching a coherent first prototype.
+Physical Android observation will determine the next iteration.
+18. Final implementation report
+When finished, report:
+1. exact files changed;
+2. how the existing Mirror background was identified and preserved;
+3. rendering/compositing strategy used;
+4. how the canonical selenite PNG was incorporated;
+5. whether an optimized delivery derivative was created, including format/dimensions/file size if applicable;
+6. prototype total duration;
+7. relative timing/stage distribution;
+8. exact screen-swap point;
+9. how the leading edge works;
+10. how the trailing edge continues downward without reversing;
+11. how luminosity is derived from/interacts with the existing stationary Mirror environment rather than an independent moving light source;
+12. reduced-motion behavior;
+13. automated test/build results;
+14. any identified mobile/WebView performance concern;
+15. what specifically requires physical Android validation.
+Stop after producing and validating this coherent first prototype.
+Do not automatically begin another refinement task.
+The next decision should come from observing the material transformation on the physical Android device.
