@@ -16,7 +16,11 @@ import {
 
 import { HomeScreen } from "./screens/HomeScreen";
 import { CheckScreen } from "./screens/CheckScreen";
-import { ReflectiveTransition } from "./components/ReflectiveTransition";
+import {
+  ReflectiveTransition,
+  REFLECTIVE_TRANSITION_DURATION_MS,
+} from "./components/ReflectiveTransition";
+import transitionStyles from "./components/ReflectiveTransition.module.css";
 
 const store = new LocalStorageStore();
 
@@ -126,7 +130,16 @@ export default function App() {
 
   return (
     <>
-      {screenContent}
+      <div
+        className={transition ? transitionStyles.contentBehindMaterial : undefined}
+        style={
+          transition
+            ? { animationDuration: `${REFLECTIVE_TRANSITION_DURATION_MS}ms` }
+            : undefined
+        }
+      >
+        {screenContent}
+      </div>
       {transition ? (
         <ReflectiveTransition
           direction={transition.direction}
