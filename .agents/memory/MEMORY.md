@@ -1,2 +1,2 @@
 - [Mirror visual matrices](mirror-visual-matrices.md) — Mirror State and Light Behavior are independent 3×3 calculations with separate inputs and mappings.
-- [Selenite compositing](selenite-compositing.md) — keep material neutral; clipped blend layers compound opacity instead of directly sampling the environment.
+- [Selenite material rules](selenite-compositing.md) — population-based thin film, neutral artwork, shared physics; preserve physically validated navigation.

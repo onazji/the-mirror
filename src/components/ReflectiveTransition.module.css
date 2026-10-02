@@ -7,149 +7,133 @@
   touch-action: none;
 }
 
-/* Only live UI detail diffuses; the existing body::before environment remains
-   untouched. The persistent wrapper does not restart when the screen swaps.
-   Destination detail is restored behind full cover before clearing begins. */
+.material {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* The persistent UI wrapper survives substitution. Local population samples
+   first remove detail at individual fibers; this secondary diffusion destroys
+   finer information before silhouettes. Zero opacity is only the final
+   validated handoff safeguard, not the material-density mechanism. */
 .contentBehindMaterial {
   animation: selenite-content linear both;
   will-change: filter, opacity;
 }
 
-/* A single band transforms the glass beneath it. Both boundaries travel in
-   the same direction; the band is slightly taller than the viewport so the
-   screen substitution at 64.2857% is entirely covered. */
-.material {
-  position: absolute;
-  inset: 0;
-  animation: selenite-travel var(--selenite-duration) linear both;
-  will-change: clip-path;
+.fiber {
+  fill: none;
+  stroke: white;
+  stroke-linecap: butt;
+  stroke-dashoffset: var(--seed);
+  animation: selenite-population var(--selenite-duration) linear both;
 }
 
-.density,
-.transmission {
-  position: absolute;
-  inset: 0;
-  background: url("/selenite-material.webp") center / cover no-repeat;
-  pointer-events: none;
-  will-change: opacity;
-}
-
-/* The original neutral fibers supply the optical interference. Increasing
-   texture density complements UI diffusion without introducing live backdrop
-   blur (costly in mobile WebView). */
-.density {
-  animation: selenite-density var(--selenite-duration) linear both;
-}
-
-/* Soft-light accentuates the source strata. Transmission comes from the
-   density layer's translucency over the unchanged fixed Mirror environment;
-   there is no new light gradient, spotlight, or baked-in colored illumination. */
-.transmission {
-  mix-blend-mode: soft-light;
-  animation: selenite-transmission var(--selenite-duration) linear both;
-}
-
-/* Reuse the same material/timing for the return without reversing either
-   edge at crest. Counter-flip the texture to preserve its source orientation.
-   Home -> Check (down) is the prototype's visual validation target. */
-.up .material {
-  transform: scaleY(-1);
-}
-
-.up .density,
-.up .transmission {
-  transform: scaleY(-1);
-}
-
-@keyframes selenite-travel {
+/* Dash lengths grow laterally at differently seeded sites. Increasing stroke
+   width connects neighboring populations. After crest the network breaks
+   into NEW interrupted segments, rather than reversing the growth sequence.
+   All mask population values are geometric, not texture-opacity values. */
+@keyframes selenite-population {
   0% {
-    clip-path: polygon(
-      0 -108%, 16.5% -107%, 33% -109%, 50% -108%, 67% -106%, 83.5% -108%, 100% -107%,
-      100% -8%, 83.5% -7%, 67% -9%, 50% -6%, 33% -8%, 16.5% -5%, 0 -7%
-    );
+    stroke-width: 0.25px;
+    stroke-dasharray: 0 1000 0 1000 0 1000;
   }
-
-  /* Establish: the slightly irregular leading edge forms horizontal strata. */
-  20% {
-    clip-path: polygon(
-      0 -78%, 16.5% -77%, 33% -79%, 50% -78%, 67% -76%, 83.5% -78%, 100% -77%,
-      100% 28%, 83.5% 29%, 67% 27%, 50% 30%, 33% 28%, 16.5% 31%, 0 29%
-    );
+  10% {
+    stroke-width: 0.4px;
+    stroke-dasharray: 2 195 1 295 2 505;
   }
-
-  /* Illuminate: allow the stationary environment to transmit through strata. */
-  46% {
-    clip-path: polygon(
-      0 -42%, 16.5% -41%, 33% -43%, 50% -42%, 67% -40%, 83.5% -42%, 100% -41%,
-      100% 88%, 83.5% 89%, 67% 87%, 50% 90%, 33% 88%, 16.5% 91%, 0 89%
-    );
+  28% {
+    stroke-width: calc(var(--band) * 0.13);
+    stroke-dasharray:
+      calc(38px * var(--growth)) 140
+      calc(24px * var(--growth)) 205
+      calc(48px * var(--growth)) 545;
   }
-
-  /* Densify more quickly after the luminous sweet spot. */
-  55% {
-    clip-path: polygon(
-      0 -20%, 16.5% -19%, 33% -21%, 50% -20%, 67% -18%, 83.5% -20%, 100% -19%,
-      100% 103%, 83.5% 104%, 67% 102%, 50% 105%, 33% 103%, 16.5% 106%, 0 104%
-    );
+  48% {
+    stroke-width: calc(var(--band) * 0.44);
+    stroke-dasharray:
+      calc(170px * var(--growth)) 40
+      calc(90px * var(--growth)) 80
+      calc(200px * var(--growth)) 420;
   }
-
-  /* Crest: edges keep moving outside the viewport while React swaps at 1800ms. */
-  64.2857% {
-    clip-path: polygon(
-      0 -8%, 16.5% -7%, 33% -9%, 50% -8%, 67% -7%, 83.5% -8%, 100% -7%,
-      100% 113%, 83.5% 114%, 67% 112%, 50% 115%, 33% 113%, 16.5% 116%, 0 114%
-    );
+  52% {
+    stroke-width: calc(var(--band) * 0.85);
+    stroke-dasharray: 400 10 260 12 320 0;
   }
-
-  /* Orderly clearing: the trailing edge follows downward, never retreats. */
-  76.1905% {
-    clip-path: polygon(
-      0 32%, 16.5% 33%, 33% 31%, 50% 32%, 67% 34%, 83.5% 32%, 100% 33%,
-      100% 139%, 83.5% 140%, 67% 138%, 50% 141%, 33% 139%, 16.5% 142%, 0 140%
-    );
+  /* A cover interval around the handoff tolerates WebView frame latency:
+     the visual clock may be sampled one or more frames behind the timer. */
+  58%, 66% {
+    stroke-width: var(--band);
+    stroke-dasharray: 1000 0 1000 0 1000 0;
   }
-
-  88.0952% {
-    clip-path: polygon(
-      0 66%, 16.5% 67%, 33% 65%, 50% 66%, 67% 68%, 83.5% 66%, 100% 67%,
-      100% 173%, 83.5% 174%, 67% 172%, 50% 175%, 33% 173%, 16.5% 176%, 0 174%
-    );
+  72% {
+    stroke-width: calc(var(--band) * 0.85);
+    stroke-dasharray: 180 26 140 38 210 160;
   }
-
+  78% {
+    stroke-width: calc(var(--band) * 0.62);
+    stroke-dasharray: 110 80 75 120 95 520;
+  }
+  90% {
+    stroke-width: calc(var(--band) * 0.17);
+    stroke-dasharray: 24 140 18 240 12 566;
+  }
   100% {
-    clip-path: polygon(
-      0 104%, 16.5% 105%, 33% 103%, 50% 104%, 67% 106%, 83.5% 104%, 100% 105%,
-      100% 211%, 83.5% 212%, 67% 210%, 50% 213%, 33% 211%, 16.5% 214%, 0 212%
-    );
+    stroke-width: 0.25px;
+    stroke-dasharray: 0 1000 0 1000 0 1000;
   }
 }
 
-@keyframes selenite-density {
-  0% { opacity: 0; }
-  5% { opacity: 0.24; }
-  20% { opacity: 0.55; }
-  34% { opacity: 0.42; }
-  46% { opacity: 0.40; }
-  55% { opacity: 0.83; }
-  62%, 100% { opacity: 0.95; }
+.scattering {
+  animation: selenite-scattering var(--selenite-duration) linear both;
 }
 
-@keyframes selenite-transmission {
+.refraction {
+  mix-blend-mode: screen;
+  animation: selenite-refraction var(--selenite-duration) linear both;
+}
+
+.mineralDepth {
+  animation: selenite-depth var(--selenite-duration) linear both;
+}
+
+/* Source samples preserve actual spatial environmental colors. Luminous
+   increases the contribution of horizontally diffused/offset light; denser
+   populations reduce that transmission while retaining broad illumination. */
+@keyframes selenite-scattering {
+  0%, 10% { opacity: 0.35; }
+  28% { opacity: 0.7; }
+  48%, 100% { opacity: 1; }
+}
+
+@keyframes selenite-refraction {
   0% { opacity: 0; }
-  20% { opacity: 0.06; }
-  34% { opacity: 0.16; }
-  46% { opacity: 0.20; }
-  55% { opacity: 0.08; }
-  64.2857%, 100% { opacity: 0.02; }
+  28% { opacity: 0.12; }
+  40%, 48% { opacity: 0.24; }
+  60%, 66% { opacity: 0.025; }
+  78% { opacity: 0.10; }
+  100% { opacity: 0; }
+}
+
+@keyframes selenite-depth {
+  0%, 28% { opacity: 0; }
+  48% { opacity: 0.025; }
+  60%, 66% { opacity: 0.16; }
+  78% { opacity: 0.065; }
+  100% { opacity: 0; }
 }
 
 @keyframes selenite-content {
-  0% { filter: blur(0); opacity: 1; }
-  20% { filter: blur(1.5px); opacity: 1; }
-  46% { filter: blur(5px); opacity: 0.72; }
-  55% { filter: blur(8px); opacity: 0.22; }
-  62%, 64.2857% { filter: blur(10px); opacity: 0; }
-  65.2857%, 100% { filter: blur(0); opacity: 1; }
+  0%, 10% { filter: blur(0); opacity: 1; }
+  28% { filter: blur(1px); opacity: 1; }
+  48% { filter: blur(4px); opacity: 1; }
+  56% { filter: blur(12px); opacity: 0.25; }
+  58%, 66% { filter: blur(18px); opacity: 0; }
+  68% { filter: blur(8px); opacity: 1; }
+  78% { filter: blur(2px); opacity: 1; }
+  90%, 100% { filter: blur(0); opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -161,6 +145,12 @@
 
   .material {
     display: none;
+  }
+
+  .fiber,
+  .scattering,
+  .refraction,
+  .mineralDepth {
     animation: none;
   }
 }

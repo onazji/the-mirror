@@ -1,0 +1,400 @@
+THE MIRROR — SELENITE TRANSITION V2
+Definitive Material-System Implementation Specification
+Implement V2 of Mirror's Selenite Transition.
+This specification supersedes the visual/material behavior of the currently deployed V1 transition while deliberately preserving the parts of V1 that have already been validated successfully on physical Android hardware.
+I am attaching the approved V2 visual/perceptual reference. Treat it as the target for the material lifecycle and optical character, not as a prerecorded animation or literal full-screen texture that should simply be displayed over the app.
+Before changing anything, inspect the existing implementation, including:
+- src/App.tsx
+- src/components/ReflectiveTransition.tsx
+- src/components/ReflectiveTransition.module.css
+- existing transition tests
+- public/selenite-material.webp
+- the existing canonical Mirror background
+- existing reduced-motion handling
+- transition cleanup/touch interception
+- current Home/Check screen substitution
+Do not immediately rewrite the architecture. First understand what V1 already does successfully.
+1. What V1 already proved
+The current Android prototype has already validated the underlying navigation architecture.
+Preserve these successful behaviors:
+- the outgoing React screen can be completely concealed before substitution;
+- the React screen can change while perceptually hidden;
+- the destination can be fully mounted/prepared before it becomes visible;
+- touch input can be blocked safely during the transformation;
+- timers/state clean up reliably;
+- rapid interaction does not leave the app stuck;
+- reduced-motion navigation works immediately;
+- Home scroll-reset behavior remains correct;
+- persistence, haptics and unrelated application behavior remain intact.
+Do not rebuild stable navigation machinery merely because the visual material system is changing.
+V2 is primarily a replacement of the material behavior and optical model.
+2. Canonical governing idea
+The defining principle is:
+Mirror does not place selenite over the interface. The interface temporarily crystallizes.
+The user should not perceive:
+Screen A → texture → Screen B
+or:
+selenite PNG fades in → screen swaps → PNG fades out
+or:
+a crystalline wipe passes over the screen.
+The desired perception is:
+clear Mirror surface → crystallization develops within that surface → crystalline Mirror → concealed functional substitution → crystalline structure dissolves → clear Mirror surface
+The final instinctive perception should be:
+“The Mirror crystallized and cleared.”
+3. V2 rendering model
+Conceptually separate the effect into:
+A. Crystal Structure
+The microscopic/mineral vocabulary that makes the material recognizably selenite:
+- extremely fine horizontal fibers;
+- compressed horizontal crystalline strata;
+- subtle mineral discontinuities;
+- delicate overlapping structures;
+- restrained pearl/gray mineral character;
+- no chunky slab geometry;
+- no large rock fractures;
+- no frost-like generic noise.
+B. Crystal Population
+Controls where crystalline structure exists and how much has accumulated locally.
+Population—not simple texture opacity—should create apparent material density.
+C. Optical Response
+Controls how the existing application underneath the local crystalline population is perceived:
+- transmission;
+- localized diffusion;
+- restrained refraction-like displacement;
+- scattering;
+- loss of fine UI information;
+- retention of broad environmental illumination.
+D. Concealed Screen Substitution
+The already-proven navigation mechanism changes the React screen when crystalline complexity makes the underlying UI perceptually unknowable.
+These four concepts together constitute V2.
+4. Apparent thickness
+Do not depict a literal thick selenite slab.
+Earlier prototypes looked like chalk, gypsum or a several-centimeter mineral panel.
+V2 should have approximately optical-film / screen-coating apparent thickness.
+Do not attempt to communicate a measurable 5 mm slab.
+At low population, individual structures should feel almost microscopic.
+Apparent thickness should emerge because increasing numbers of thin translucent structures:
+accumulate → overlap → connect → scatter
+rather than because a thick mineral photograph becomes increasingly opaque.
+There should be no visual cue allowing the viewer to estimate substantial depth perpendicular to the screen.
+5. Canonical Mirror background = illumination environment
+Inspect the repository and use the actual existing canonical Mirror background already rendered by the application.
+V1 identified this as public/THE-MIRROR-BG.png, rendered through the application's existing background implementation. Verify the current repository rather than assuming this has not changed.
+Do not duplicate, replace, regenerate, recolor or animate the background itself.
+The background remains stationary.
+Its existing:
+- pearl/white;
+- warm cream/golden;
+- lavender/pink;
+- cyan/blue
+regions constitute the known virtual environmental illumination field.
+The material itself remains essentially neutral.
+Do not bake those environmental colors into the selenite.
+The illusion should be:
+the environment illuminates the crystalline structure
+rather than:
+the crystalline texture contains colored lighting.
+6. Fake optical / “fake ray tracing” behavior
+Do not implement actual ray tracing or a heavyweight renderer.
+Mirror has one known canonical background, so V2 can use a deliberately purpose-built approximation.
+Where crystalline population exists, use lightweight WebView-appropriate compositing to make the local environment appear optically altered.
+Depending on the simplest performant implementation, techniques may include:
+- sampling/reusing the existing background;
+- locally offset copies/samples;
+- directional blur aligned with the horizontal fibers;
+- masks;
+- restrained blend modes;
+- layered transparency;
+- local contrast/transmission changes;
+- subtle refractive displacement approximations;
+- population-dependent UI diffusion.
+The important perceptual rule is:
+A crystal structure over a cyan region should naturally inherit cyan influence from the environment.
+The same neutral structure over a warm region should naturally inherit warm influence.
+A structure spanning an illumination boundary may receive information from both.
+The texture itself should not have to know those colors.
+This is fake optical behavior specifically designed for Mirror's fixed visual environment.
+Prioritize convincing perception and mobile performance over physically accurate rendering.
+7. Full canonical material lifecycle
+V2 follows:
+Clear → Nucleation → Formation → Luminous → Dense → Crest / concealed swap → Dissolution → Thinning → Clearing → Clear
+These are perceptual/material states, not necessarily ten hard-coded animation keyframes.
+Implement them as a continuous transformation.
+8. CLEAR
+At rest, the user is looking through essentially clear virtual Mirror glass.
+The application appears normally.
+No permanent crystalline overlay should be perceptible.
+Conceptually:
+At rest, I look through the Mirror.
+9. NUCLEATION
+Do not begin with a full-screen selenite image at low opacity.
+Sparse microscopic crystalline nuclei should begin appearing within the virtual surface.
+They should be irregularly distributed rather than forming a clean straight boundary.
+The structures should already carry the horizontal/fibrous identity of selenite.
+At this stage:
+- population is very low;
+- transmission remains extremely high;
+- UI remains almost completely readable;
+- only local regions begin modifying environmental light;
+- there should be no impression of a slab entering the viewport.
+The sugar-crystallization experiment is a useful behavioral analogy:
+small structures begin to precipitate and provide sites from which further crystal organization can develop.
+Do not literally depict sugar.
+10. FORMATION
+Existing nuclei develop into fine horizontal fibers/strata.
+Additional structures may appear and connect.
+Think:
+nucleate → extend → overlap → connect → accumulate
+rather than:
+increase image opacity.
+Crystal growth should have irregularity:
+- neighboring fibers can extend different distances;
+- some structures can form slightly ahead of others;
+- temporary clear gaps may remain;
+- connected populations can become denser than isolated ones.
+The user should increasingly perceive that the surface itself is changing material state.
+11. Spatial behavior — supersedes V1 vertical wipe
+This is a major V2 change.
+V1 used a top → bottom leading/trailing mask. That successfully proved the screen-concealment architecture, but it is not the canonical V2 material behavior.
+V2 crystallization should follow the predominantly horizontal fibrous character of selenite.
+Growth therefore has a lateral/horizontal propagation bias.
+The approved reference suggests nucleation and growth can develop laterally across the surface, with different structures propagating different distances and connecting into a wider network.
+Do not simply rotate the old vertical wipe 90 degrees.
+There must not be a clean left/right CSS frontier.
+The system should have a direction of material development without resembling a rectangular mask traveling across the viewport.
+Spatial progression comes from:
+population growth and connectivity, not a clean wipe boundary.
+The old Home→Check top→bottom / Check→Home bottom→top visual grammar is superseded for the crystalline material itself.
+Reuse the stable concealed-navigation architecture underneath where useful, but do not allow the old directional wipe to dictate what V2 crystallization looks like.
+12. LUMINOUS
+As crystal population increases, there should be a phase where the relationship between:
+transmission + crystalline structure + environmental illumination
+produces maximum apparent luminosity/scattering.
+This is the visual hero.
+Importantly:
+maximum luminosity does NOT occur at maximum crystalline density.
+During Luminous:
+- enough structure exists to strongly scatter/refract the known environmental light;
+- enough transmission remains for that light to travel through the material;
+- lavender/cyan/warm/pearl regions remain clearly influential;
+- fibers may catch and distribute nearby environmental color;
+- the interface begins losing fine definition;
+- larger shapes remain recognizable.
+Do not create this phase by simply increasing brightness, whitening the texture or adding a moving spotlight.
+The perception should be:
+Mirror's existing light has become optically expressive because crystalline structure now exists in its path.
+13. DENSE
+Crystal population continues increasing after the luminous sweet spot.
+More structures:
+- overlap;
+- connect;
+- fill gaps;
+- increase local optical complexity.
+However, brightness should now decrease relative to Luminous.
+Continued structural accumulation reduces effective transmission.
+Therefore:
+crystal population continues ↑
+while:
+apparent luminosity/scattering reaches a peak and then ↓
+Fine typography should become extremely difficult to resolve.
+Larger UI geometry can survive somewhat longer.
+Broad environmental color/light information should survive longer than UI detail.
+14. CREST
+Crest means:
+maximum intended crystalline population / optical complexity
+It does not mean:
+texture opacity: 100%.
+At Crest:
+- the underlying UI is perceptually unknowable;
+- the crystalline material remains richly visible;
+- horizontal structures remain identifiable;
+- environmental color remains buried within the material;
+- the surface remains optically alive;
+- the screen does not become flat white;
+- the screen does not become an opaque mineral photograph.
+This distinction is canonical:
+UI information → almost completely lost.
+Material information → rich and clearly visible.
+Conceptually:
+At rest, I look through the Mirror. At Crest, I look at and into the glass itself.
+Perform the underlying React screen substitution only when this perceptual concealment is sufficient.
+The user must not see the outgoing screen disappear or the destination appear.
+There should be no obvious pause at Crest.
+15. DISSOLUTION — not reversed formation
+After the concealed swap, do not simply play formation backward.
+Do not lower the full-screen texture's opacity.
+Dissolution is loss of crystalline structural continuity.
+Think:
+dense connected network
+→
+microscopic gaps
+→
+interrupted fibers
+→
+fragmented connectivity
+→
+isolated structures
+→
+sparse remnants
+→
+clear
+This may perceptually resemble crystallization molting/melting away, but do not literally animate flakes falling from the screen.
+“Molting” is a perceptual metaphor.
+Structural dissolution is the implementation principle.
+16. THINNING / CLEARING
+Post-Crest should generally feel more orderly and efficient than Pre-Crest.
+The material story has already been communicated.
+As structural population collapses:
+- destination UI information resolves;
+- environmental transmission returns toward normal;
+- surviving fibers become increasingly isolated;
+- optical displacement/scattering weakens;
+- the last remnants disappear.
+Conceptual population landmarks may be useful:
+100% → 75% → 50% → 25% → 0%
+but these values describe remaining crystalline population/continuity, never texture opacity.
+At 0%, the user is once again looking through clear virtual Mirror glass.
+17. The asset's role
+The existing selenite-material.webp may be useful as a source of mineral microstructure, but V2 must not depend on displaying it as a full-screen opaque texture.
+Inspect whether it can be:
+- made substantially subtler;
+- cropped/processed into microstructure;
+- used in multiple differently masked layers;
+- replaced with a more neutral thin-film derivative;
+- or otherwise repurposed to support the V2 material model.
+If creating a new optimized derivative improves the implementation, do so.
+The material asset should provide crystalline vocabulary, not the entire visual effect.
+Do not bake Mirror's lavender/cyan/warm illumination into the asset.
+Report any asset changes clearly.
+18. UI information should degrade optically
+Avoid relying exclusively on opacity to hide the outgoing UI.
+As population increases:
+- very fine typography should lose definition first;
+- small details should become difficult to resolve;
+- medium geometry should survive somewhat longer;
+- large silhouettes/shapes should survive longest;
+- by Crest, the UI should be unknowable.
+Use restrained diffusion/refraction/scattering approximations where appropriate.
+This should feel like information being destroyed by looking through increasingly complex crystalline material—not like the application's opacity was animated to zero.
+19. Timing
+The current 2,800 ms V1 duration was intentionally a laboratory duration and has been physically confirmed as too slow for production.
+However, do not prematurely optimize V2 into a final shipping duration.
+Material behavior must first be readable and convincing.
+Centralize all timing constants so they are easy to tune after Android observation.
+Pre-Crest should remain more expressive:
+Nucleation → Formation → Luminous → Dense → Crest
+Luminous deserves enough perceptual time to register.
+Dense→Crest may be comparatively quicker.
+Post-Crest should be more orderly/efficient:
+Dissolution → Thinning → Clearing
+Previous physical observation suggests the eventual production range may plausibly fall around 1.4–1.8 seconds, but this is an experimental range, not a required final duration.
+For this V2 implementation, choose an inspectable duration that allows the new population/optical behavior to be evaluated clearly, while avoiding unnecessary 2.8-second sluggishness if the behavior remains readable at a shorter laboratory duration.
+Report the chosen prototype duration and stage distribution.
+20. Home → Check and Check → Home
+V2's material behavior should not depend on the old rule that one navigation direction uses top→bottom and the other bottom→top.
+Use the same coherent crystallization physics/material language in both directions.
+Navigation meaning can still be expressed through subtle variation if there is a compelling reason, but do not reintroduce a clean directional wipe merely to distinguish navigation directions.
+Home → Check remains the primary visual validation target because that direction has already been physically tested extensively.
+The return transition should reuse the same material system rather than becoming a separate visual effect.
+21. Performance
+This runs inside Mirror's existing Capacitor Android/WebView architecture.
+Prefer:
+- CSS compositing;
+- masks;
+- optimized texture assets;
+- lightweight duplicated layers;
+- performant filters;
+- GPU-friendly transforms/compositing where appropriate.
+Avoid:
+- actual ray tracing;
+- heavyweight canvas/WebGL architecture unless genuinely necessary;
+- enormous textures;
+- per-pixel JavaScript animation;
+- unnecessary continuous runtime work after the transition ends.
+The transition should allocate/do expensive work only while active where practical.
+V1 raised possible WebView costs from animated clipping, blending and whole-content blur. Be mindful of those costs.
+If a visually convincing approximation is materially cheaper than a physically sophisticated implementation, prefer the approximation.
+22. Reduced motion
+Preserve the existing successful reduced-motion behavior.
+Users requesting reduced motion should not be forced through the complete crystalline choreography.
+Navigation/state correctness must never depend on the visual animation completing.
+23. Preserve unrelated Mirror systems
+Do not modify unrelated functionality.
+Preserve:
+- reflection recording/persistence;
+- History;
+- StateMap;
+- avatar behavior;
+- onboarding;
+- card reveal;
+- haptics;
+- Time Invested;
+- Home scroll reset;
+- existing terminology;
+- existing canonical background;
+- unrelated layout/responsive behavior.
+Do not implement:
+- gyroscope/orientation response;
+- future selected-button material response;
+- monetization;
+- History/Insights;
+- unrelated asset optimization;
+- unrelated refactors.
+24. Automated validation
+Update/add focused transition tests as necessary.
+Run:
+- the complete existing test suite;
+- production build;
+- formatting/diff validation already appropriate to this repository.
+Validate:
+- screen substitution remains concealed;
+- destination exists before it becomes exposed;
+- transition always cleans up;
+- rapid taps cannot duplicate navigation;
+- reduced-motion behavior remains correct;
+- no new viewport overflow;
+- no runtime errors;
+- Home scroll reset remains correct.
+Do not attempt to claim browser simulation proves physical Android optical quality.
+25. STOP CONDITION
+Produce one coherent V2 prototype.
+Do not automatically begin iterative visual tweaking afterward.
+Do not spend Agent time repeatedly adjusting arbitrary opacity/timing values trying to “perfect” the transition without physical observation.
+Once:
+- V2 is implemented;
+- automated validation passes;
+- the visual lifecycle is coherent in the available preview;
+- the implementation report is complete;
+stop.
+The next step is deployment to the Blackview BV5200 Pro for physical evaluation.
+26. Final implementation report
+When finished, report:
+1. exact files changed;
+2. which parts of V1 architecture were preserved;
+3. how V1's vertical wipe behavior was removed/replaced;
+4. how nucleation is represented;
+5. how horizontal/lateral fiber propagation works without becoming a horizontal wipe;
+6. how crystal population/density is represented independently from simple texture opacity;
+7. how the canonical background supplies environmental illumination;
+8. how the fake scattering/refraction behavior works;
+9. how UI detail progressively loses legibility;
+10. how Luminous differs optically from Dense;
+11. how Crest conceals the React substitution without whiteout;
+12. how dissolution breaks structural continuity rather than merely fading;
+13. whether selenite-material.webp was retained, processed, replaced or supplemented;
+14. details of any new/optimized asset;
+15. total prototype duration;
+16. stage timing distribution;
+17. exact screen-substitution point;
+18. reduced-motion behavior;
+19. test/build results;
+20. likely Android/WebView performance risks;
+21. the specific perceptual questions that must now be answered on the physical Android device.
+Final perceptual target
+Do not optimize for “impressive animation.”
+Optimize for this:
+The user taps Step Into the Mirror. Clear virtual glass begins developing sparse microscopic crystalline structures. Fine horizontal selenite fibers propagate, connect and accumulate within the surface. Mirror's existing environmental light increasingly scatters through that structure. The material reaches a luminous optical sweet spot, then becomes structurally denser and less transmissive. At Crest, the UI becomes unknowable while the crystalline surface remains rich, translucent and environmentally illuminated. The React screen changes invisibly. The crystal network then loses continuity, develops gaps, fragments, thins and disappears. The destination resolves through increasingly clear glass.
+The desired instinctive reaction is:
+“The Mirror crystallized and cleared.”
+Not:
+“A selenite animation played.”
