@@ -1,0 +1,406 @@
+Mirror V2.1 — Glass Material + Selenite Optical Refinement
+
+We have physically validated Selenite Transition V2 on the Blackview BV5200 Pro. Do not redesign the transition. This is a bounded material refinement of the successful V2 implementation.
+
+Before editing, inspect the current implementation, especially:
+
+* src/components/ReflectiveTransition.tsx
+* src/components/ReflectiveTransition.module.css
+* src/components/seleniteMaterial.ts
+* public/selenite-fibers.webp
+* public/selenite-material.webp
+* public/THE-MIRROR-BG.png
+* current transition tests
+* existing Capacitor configuration/dependencies
+
+Physical V2 findings
+
+The current Android prototype successfully does the following:
+
+* distributed horizontal structures visibly nucleate, extend and connect;
+* there is no obvious conventional wipe;
+* the Mirror background remains visible through crystallization;
+* environmental cyan/lavender/warm/pearl coloration carries through the material;
+* UI information becomes concealed while broad environmental information survives;
+* Home ↔ Check substitution is perceptually seamless;
+* destination content resolves naturally during clearing;
+* total duration of 2100ms feels correct;
+* concealed substitution at 62% / ~1302ms works extremely well;
+* wherever the user’s eyes rest, they can observe part of the surface transforming.
+
+Preserve all of those behaviors.
+
+The current weakness is material identity.
+
+The horizontal structures still sometimes read as generated/CSS line segments. They grow and meet convincingly, but often appear to meet endpoint-to-endpoint rather than accumulating like actual fibrous mineral structure.
+
+The intended Luminous → Dense distinction also isn’t perceptually strong on the physical Android device. The user mainly perceives the background becoming somewhat lower-fidelity/smudged as crystal population increases.
+
+New material doctrine
+
+The object is not simply a UI with a selenite animation over it.
+
+The Mirror is a virtual glass/mirror surface that temporarily crystallizes into selenite.
+
+Build the visual system around four conceptual layers:
+
+1. Environmental layer
+Existing canonical THE-MIRROR-BG.png. This remains stationary and supplies environmental illumination.
+
+2. Content layer
+Existing Mirror UI.
+
+3. Glass optical layer
+A restrained virtual reflective surface providing subtle evidence that the user is looking through/at glass.
+
+4. Selenite transformation layer
+The existing V2 distributed population system temporarily changes the optical properties of that surface.
+
+Do not restructure unrelated application architecture merely to make these conceptual layers literal DOM layers if the existing implementation can support the same result more safely.
+
+⸻
+
+A. Establish subtle mobile glass response
+
+Implement a restrained orientation-responsive specular response using appropriate mobile orientation/motion input.
+
+The purpose is not to create a flashy gyroscope effect.
+
+The purpose is to provide subtle physical evidence that the Mirror has a reflective glass surface.
+
+Small phone tilts should slightly change the position/angle/intensity of a very soft virtual specular response.
+
+It must NOT look like:
+
+* a flashlight;
+* moving spotlight;
+* rainbow holographic foil;
+* lens flare;
+* glossy button sheen;
+* game loot-card effect;
+* large white swipe;
+* liquid glass;
+* exaggerated parallax.
+
+At rest, it should be easy to ignore.
+
+Movement should make the surface feel responsive rather than make the effect demand attention.
+
+Graceful fallback
+
+The application must remain fully functional when orientation data is unavailable, denied, unsupported, unreliable, or disabled.
+
+Do not make navigation, Selenite Transition, or core Mirror functionality dependent upon sensor access.
+
+Respect platform permission requirements rather than attempting to circumvent them.
+
+Do not introduce an intrusive permission flow merely to demonstrate the effect. If explicit permission is required on a platform, architect the capability cleanly and report what user interaction would be required rather than inventing an automatic permission experience.
+
+Respect reduced-motion/accessibility behavior.
+
+⸻
+
+B. Mirror micro-surface detail
+
+Explore an extremely restrained micro-surface treatment that helps specular illumination reveal the existence of virtual glass.
+
+This may include a very small number of microscopic hairline imperfections / polishing marks that become perceptible primarily when the virtual specular response catches them.
+
+These are NOT decorative scratches.
+
+The Mirror should remain pristine.
+
+Do not add:
+
+* obvious scratches;
+* cracked glass;
+* fingerprints;
+* dirt;
+* chips;
+* dust;
+* distressed texture.
+
+The user should generally perceive “glass has a surface”, not “this mirror is scratched.”
+
+If this cannot be achieved subtly and performantly, prefer omitting the imperfections over making them visually obvious.
+
+⸻
+
+C. Make Selenite specifically resemble selenite
+
+Preserve the existing 88-row distributed population concept unless inspection reveals a compelling technical reason to modify its representation.
+
+Do NOT merely beautify the existing horizontal bars.
+
+Translate recognizable selenite/satin-spar characteristics into the material:
+
+* extremely fine parallel fibrous striation;
+* bundles of many tiny fibers rather than one visually uniform bar;
+* silky/pearly directional optical response;
+* subtle longitudinal variation;
+* irregular mineral boundaries;
+* translucency;
+* local accumulation;
+* partial interpenetration/overlap when neighboring structures meet;
+* loss of obvious endpoint-to-endpoint joins.
+
+A visible V2 “thread” may function as a carrier for a bundle of finer mineral fibers rather than appearing as one solid segment.
+
+Preserve horizontal material identity.
+
+Do NOT turn it into:
+
+* cracks;
+* frost;
+* ice;
+* dried-earth crazing;
+* veins;
+* random noise;
+* thick mineral slabs.
+
+Apparent thickness remains optical-film / screen-coating scale.
+
+⸻
+
+D. Formation behavior
+
+Preserve:
+
+nucleate → extend → overlap/connect → accumulate → densify
+
+But improve the physical reading of connection.
+
+Neighboring structures should not consistently look like two CSS bars extending until their endpoints touch and stop.
+
+Where appropriate, fine internal fibers should visually mingle, penetrate, overlap, accumulate or become locally denser around meeting regions.
+
+There must still be no clean wipe frontier.
+
+Preserve the successful property that wherever the user’s gaze happens to rest, local transformation is occurring.
+
+⸻
+
+E. Make Luminous → Dense physically perceptible
+
+Current physical testing did NOT reveal a sufficiently distinct Luminous phase.
+
+Do not solve this with generic brightness.
+
+Instead, use selenite’s fine fibrous structure and the existing Mirror environment to create restrained silky/pearly directional scattering.
+
+During Luminous:
+
+* crystal population is substantial but still transmissive;
+* environmental cyan/lavender/warm/pearl light should interact more visibly with fine fibers;
+* scattering may extend subtly along the horizontal fibrous direction;
+* the surface should feel optically alive;
+* this should be the scattering sweet spot.
+
+During Dense:
+
+* crystal population continues increasing;
+* transmission decreases;
+* structural information increases;
+* optical congestion increases;
+* the earlier silky scattering contribution should become somewhat less pronounced.
+
+Therefore:
+
+maximum perceived luminosity must still occur before maximum crystal population.
+
+Do not create this distinction with a white flash, global brightness pulse, baked colors, moving light sweep, or simple opacity peak.
+
+The canonical background remains the source of environmental color.
+
+⸻
+
+F. Interaction between glass and crystallization
+
+The glass response and selenite response should feel like states of the same virtual surface.
+
+During clear/resting Mirror:
+
+orientation can produce an extremely restrained glass/specular response.
+
+As crystal forms:
+
+the developing fibrous structure may catch/scatter that same virtual illumination more strongly.
+
+At Luminous:
+
+fine selenite structure should provide the strongest perceptible directional scattering response.
+
+At Dense/Crest:
+
+increased structure/transmission loss should prevent this from simply becoming brighter and brighter.
+
+During dissolution:
+
+the crystalline optical response disappears with structural continuity and the subtler clear-glass response remains.
+
+Do not make gyroscope orientation control the crystallization geometry itself. It should influence optical response, not where crystals nucleate or how navigation proceeds.
+
+⸻
+
+G. Preserve V2 timing and concealment exactly
+
+Do not change the 2100ms total duration in this pass.
+
+Do not change the 62% / ~1302ms concealed substitution point unless required to correct an actual regression introduced by this work.
+
+The physical test rated the hidden Home ↔ Check substitution 10/10.
+
+Protect it.
+
+Preserve:
+
+* destination preparation;
+* touch lock;
+* timer alignment to first rendered material frame;
+* cover interval;
+* cleanup;
+* rapid-input safety;
+* Home scroll behavior;
+* reduced-motion navigation;
+* both navigation directions.
+
+Do not make screen substitution dependent on sensor data.
+
+⸻
+
+H. Dissolution
+
+Preserve the successful destination reveal.
+
+Improve dissolution only insofar as the richer fiber structure naturally permits:
+
+connected crystalline population → microscopic interruptions → widening gaps → fragmented fiber bundles → isolated remnants → clear glass
+
+Do not reverse the formation animation.
+
+Do not introduce falling flakes or particles.
+
+⸻
+
+I. Performance
+
+Physical testing on the Blackview revealed some hitching, but performance optimization is NOT the primary goal of this pass.
+
+Nevertheless, do not recklessly increase rendering cost.
+
+This remains a Capacitor Android/WebView application.
+
+Prefer lightweight compositing, CSS variables, transforms, restrained filters and existing deterministic geometry.
+
+Avoid:
+
+* per-pixel JavaScript;
+* continuous React rerenders from sensor events;
+* heavy WebGL;
+* large new textures;
+* uncontrolled high-frequency sensor-driven DOM updates;
+* expensive effects that multiply the existing SVG/filter cost dramatically.
+
+If processing orientation data continuously, throttle/smooth it appropriately and feed rendering through an efficient mechanism such as CSS custom properties / requestAnimationFrame rather than causing application-level React rerenders for every sensor event.
+
+Report performance implications rather than attempting a broad optimization pass.
+
+⸻
+
+J. Do not touch unrelated systems
+
+Do not modify:
+
+* reflection persistence;
+* History;
+* Mirror Graph;
+* avatar;
+* onboarding;
+* card reveal;
+* Time Invested;
+* haptics except if technically required for an existing integration;
+* terminology;
+* canonical background;
+* monetization;
+* History/Insights;
+* unrelated responsive layout;
+* unrelated assets.
+
+Do not perform dependency upgrades or unrelated refactors.
+
+⸻
+
+Validation
+
+Update/add focused tests where appropriate.
+
+Run:
+
+* complete test suite;
+* TypeScript/production build;
+* diff validation.
+
+Validate:
+
+* existing transition concealment remains correct;
+* 2100ms lifecycle remains;
+* substitution remains at the existing intended point;
+* sensor unavailable/denied path is safe;
+* orientation input cannot break navigation;
+* cleanup removes relevant listeners/resources;
+* rapid navigation remains safe;
+* reduced motion remains safe;
+* no new viewport overflow;
+* no unrelated application errors.
+
+Browser simulation cannot establish physical gyroscopic feel or final material quality. Do not claim that it can.
+
+⸻
+
+STOP CONDITION
+
+Produce one coherent V2.1 prototype.
+
+Do not repeatedly tweak the visual result after implementation.
+
+Once implementation, automated validation and a coherent preview are complete, STOP.
+
+The next judgment will again happen on the physical Blackview.
+
+Do not change the existing successful timing merely because the desktop/browser preview feels different.
+
+⸻
+
+Required final report
+
+Report:
+
+1. exact files changed;
+2. how orientation input was implemented;
+3. permission/fallback behavior;
+4. how sensor updates avoid React-render churn;
+5. how the clear Mirror now communicates virtual glass;
+6. whether/how microscopic surface imperfections were used;
+7. how generic line segments were made more specifically selenite-like;
+8. how fiber bundles/striations are represented;
+9. how endpoint-to-endpoint connections were reduced;
+10. how local overlap/interpenetration works;
+11. how the canonical background still supplies environmental illumination;
+12. how orientation influences specular/scattering response;
+13. how Luminous now differs perceptually from Dense;
+14. confirmation that maximum luminosity remains before maximum population;
+15. Crest concealment behavior;
+16. dissolution behavior;
+17. confirmation of 2100ms duration;
+18. exact substitution timing;
+19. test/build results;
+20. Android/WebView performance risks;
+21. what specifically requires physical-device judgment.
+
+Final perceptual target
+
+At rest, the user is looking through a subtle virtual glass/mirror surface. Small movements of the physical phone provide restrained evidence that this surface has reflective optical properties.
+
+When the user enters the Mirror, microscopic selenite structures nucleate within that same surface. Fine parallel fiber bundles extend, mingle, overlap and accumulate throughout the display. Mirror’s existing environmental illumination passes through and scatters along those structures, producing a brief silky/pearly luminous state. Continued accumulation makes the material structurally richer and less transmissive rather than simply brighter. Crest conceals the UI without whiteout. The screen changes invisibly. The crystalline network then loses continuity, fragments into increasingly sparse fibrous remnants, and disappears until only clear responsive glass remains.
+
+The user should perceive one surface changing material state—not a glass effect plus a crystal animation.

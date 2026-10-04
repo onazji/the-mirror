@@ -94,16 +94,32 @@ describe("selenite transition sequencing", () => {
   it("uses the same distributed population in both navigation directions", () => {
     const props = { onSwap: vi.fn(), onComplete: vi.fn() };
     act(() => root.render(<ReflectiveTransition direction="down" {...props} />));
-    const down = [...container.querySelectorAll("path")].map((path) => ({
+    const down = [...container.querySelectorAll("mask > path")].map((path) => ({
       geometry: path.getAttribute("d"),
       style: path.getAttribute("style"),
     }));
     expect(down).toHaveLength(SELENITE_FIBERS.length);
+    expect(down.every((path) => (path.geometry?.match(/M /g) ?? []).length === 3)).toBe(true);
+    expect(container.querySelector("mask > path")?.getAttribute("pathLength")).toBe("3000");
     expect(new Set(SELENITE_FIBERS.map((fiber) => fiber.offset)).size).toBeGreaterThan(80);
     act(() => root.render(<ReflectiveTransition direction="up" {...props} />));
-    expect([...container.querySelectorAll("path")].map((path) => ({
+    expect([...container.querySelectorAll("mask > path")].map((path) => ({
       geometry: path.getAttribute("d"),
       style: path.getAttribute("style"),
     }))).toEqual(down);
+  });
+
+  it("keeps physically validated timing exact and geometry independent of optical input", () => {
+    expect(REFLECTIVE_TRANSITION_DURATION_MS).toBe(2100);
+    expect(SELENITE_SWAP_MS).toBe(1302);
+    act(() => root.render(
+      <ReflectiveTransition direction="down" onSwap={vi.fn()} onComplete={vi.fn()} />,
+    ));
+    const before = [...container.querySelectorAll("mask > path")].map((path) => path.getAttribute("d"));
+    document.documentElement.style.setProperty("--mirror-tilt-x", "1");
+    document.documentElement.style.setProperty("--mirror-specular-angle", "5deg");
+    expect([...container.querySelectorAll("mask > path")].map((path) => path.getAttribute("d"))).toEqual(before);
+    document.documentElement.style.removeProperty("--mirror-tilt-x");
+    document.documentElement.style.removeProperty("--mirror-specular-angle");
   });
 });

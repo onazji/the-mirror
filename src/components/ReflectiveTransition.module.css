@@ -26,7 +26,8 @@
 .fiber {
   fill: none;
   stroke: white;
-  stroke-linecap: butt;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-dashoffset: var(--seed);
   animation: selenite-population var(--selenite-duration) linear both;
 }
@@ -92,16 +93,53 @@
 
 .refraction {
   mix-blend-mode: screen;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform:
+    translate3d(
+      calc(var(--mirror-tilt-x, 0) * 3px),
+      calc(var(--mirror-tilt-y, 0) * 3px),
+      0
+    )
+    rotate(var(--mirror-specular-angle, 0deg));
+  filter: var(--refraction-filter);
   animation: selenite-refraction var(--selenite-duration) linear both;
+}
+
+.silkLight {
+  mix-blend-mode: screen;
+  filter: var(--refraction-filter);
+  opacity: calc(0.22 + var(--mirror-specular-gain, 0.35) * 0.12);
+  transform: translate(
+    calc(var(--mirror-tilt-x, 0) * 2px),
+    calc(var(--mirror-tilt-y, 0) * 0.5px)
+  );
+}
+
+.silkFiber {
+  animation: selenite-silk-channels var(--selenite-duration) linear both;
+}
+
+/* Widened micro-fiber optical channels form the silky scattering sweet spot.
+   Dense keeps accumulating neutral structure while these channels narrow:
+   the distinction is structural and local, not a whole-surface opacity peak. */
+@keyframes selenite-silk-channels {
+  0%, 10% { stroke-width: 0.08px; }
+  28% { stroke-width: 0.35px; }
+  42% { stroke-width: 0.85px; }
+  48% { stroke-width: 0.65px; }
+  58%, 66% { stroke-width: 0.16px; }
+  78% { stroke-width: 0.24px; }
+  90% { stroke-width: 0.1px; }
+  100% { stroke-width: 0; }
 }
 
 .mineralDepth {
   animation: selenite-depth var(--selenite-duration) linear both;
 }
 
-/* Source samples preserve actual spatial environmental colors. Luminous
-   increases the contribution of horizontally diffused/offset light; denser
-   populations reduce that transmission while retaining broad illumination. */
+/* Preserve the validated population-gated environmental transmission. The
+   additional fine channels, rather than this full sample, provide the hero. */
 @keyframes selenite-scattering {
   0%, 10% { opacity: 0.35; }
   28% { opacity: 0.7; }
@@ -110,10 +148,11 @@
 
 @keyframes selenite-refraction {
   0% { opacity: 0; }
-  28% { opacity: 0.12; }
-  40%, 48% { opacity: 0.24; }
+  28% { opacity: 0.08; }
+  40%, 48% { opacity: 0.2; }
+  58% { opacity: 0.13; }
   60%, 66% { opacity: 0.025; }
-  78% { opacity: 0.10; }
+  78% { opacity: 0.08; }
   100% { opacity: 0; }
 }
 
@@ -150,6 +189,7 @@
   .fiber,
   .scattering,
   .refraction,
+  .silkFiber,
   .mineralDepth {
     animation: none;
   }

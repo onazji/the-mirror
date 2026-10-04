@@ -21,6 +21,7 @@ import {
   REFLECTIVE_TRANSITION_DURATION_MS,
 } from "./components/ReflectiveTransition";
 import transitionStyles from "./components/ReflectiveTransition.module.css";
+import { GlassSurface } from "./components/GlassSurface";
 
 const store = new LocalStorageStore();
 
@@ -140,6 +141,7 @@ export default function App() {
       >
         {screenContent}
       </div>
+      <GlassSurface crystallizing={transition !== null} />
       {transition ? (
         <ReflectiveTransition
           direction={transition.direction}

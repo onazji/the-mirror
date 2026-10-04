@@ -1,0 +1,44 @@
+.surface {
+  position: fixed;
+  inset: 0;
+  z-index: 1900;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 180ms linear;
+}
+
+/* Broad neutral reflection, not a moving light source. Only this reflection
+   moves; the environmental background and interface remain stationary. */
+.surface::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  background: linear-gradient(
+    108deg,
+    transparent 22%,
+    rgb(255 255 255 / 0.055) 44%,
+    rgb(255 255 255 / 0.07) 52%,
+    transparent 74%
+  );
+  opacity: calc(0.42 + var(--mirror-specular-gain, 0.35) * 0.18);
+  transform:
+    translate(
+      calc(var(--mirror-tilt-x, 0) * 6px),
+      calc(var(--mirror-tilt-y, 0) * 4px)
+    )
+    rotate(var(--mirror-specular-angle, 0deg));
+}
+
+/* The same optical input transfers to the developing mineral, rather than
+   adding an independent glass sheen on top of crystallization. */
+.surface[data-crystallizing="true"] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface {
+    display: none;
+    transition: none;
+  }
+}
