@@ -11,12 +11,18 @@ export const GlassSurface = forwardRef<GlassSurfaceHandle, { crystallizing: bool
   function GlassSurface({ crystallizing }, ref) {
     const controller = useRef<GlassOpticsController | null>(null);
     useEffect(() => {
+      if (crystallizing) {
+        controller.current?.dispose();
+        controller.current = null;
+        return;
+      }
+
       controller.current = attachGlassOptics(document.documentElement);
       return () => {
         controller.current?.dispose();
         controller.current = null;
       };
-    }, []);
+    }, [crystallizing]);
     useImperativeHandle(ref, () => ({
       requestPermission: async () => controller.current?.requestPermission() ?? "unavailable",
     }), []);

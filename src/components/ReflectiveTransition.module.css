@@ -5,192 +5,122 @@
   overflow: hidden;
   pointer-events: auto;
   touch-action: none;
+  contain: strict;
+  isolation: isolate;
 }
 
-.material {
-  display: block;
+.contentBehindMaterial {
+  animation: selenite-content var(--selenite-duration, 2100ms) linear both;
+  will-change: opacity, transform;
+}
+
+.environment,
+.material,
+.pearl,
+.depth {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  will-change: opacity, transform;
 }
 
-/* The persistent UI wrapper survives substitution. Local population samples
-   first remove detail at individual fibers; this secondary diffusion destroys
-   finer information before silhouettes. Zero opacity is only the final
-   validated handoff safeguard, not the material-density mechanism. */
-.contentBehindMaterial {
-  animation: selenite-content linear both;
-  will-change: filter, opacity;
+.environment {
+  background: url("/THE-MIRROR-BG.png") center / cover no-repeat;
+  animation: selenite-environment var(--selenite-duration) linear both;
 }
 
-.fiber {
-  fill: none;
-  stroke: white;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dashoffset: var(--seed);
-  animation: selenite-population var(--selenite-duration) linear both;
+.material { transform: translateZ(0); }
+
+.field {
+  position: absolute;
+  inset: -3%;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgb(255 255 255 / 0.03),
+      rgb(207 222 226 / 0.12) 34%,
+      rgb(255 255 255 / 0.18) 52%,
+      rgb(178 199 207 / 0.08) 76%,
+      rgb(255 255 255 / 0.025)
+    ),
+    url("/selenite-fibers.webp");
+  background-size: 100% 100%, 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: translate3d(var(--field-drift), 0, 0) scaleX(0.015) scaleY(var(--field-scale));
+  transform-origin: var(--field-origin) center;
+  animation: selenite-field var(--selenite-duration) linear both;
+  animation-delay: calc(var(--field-phase) * 12ms);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
-/* Dash lengths grow laterally at differently seeded sites. Increasing stroke
-   width connects neighboring populations. After crest the network breaks
-   into NEW interrupted segments, rather than reversing the growth sequence.
-   All mask population values are geometric, not texture-opacity values. */
-@keyframes selenite-population {
-  0% {
-    stroke-width: 0.25px;
-    stroke-dasharray: 0 1000 0 1000 0 1000;
-  }
-  10% {
-    stroke-width: 0.4px;
-    stroke-dasharray: 2 195 1 295 2 505;
-  }
-  28% {
-    stroke-width: calc(var(--band) * 0.13);
-    stroke-dasharray:
-      calc(38px * var(--growth)) 140
-      calc(24px * var(--growth)) 205
-      calc(48px * var(--growth)) 545;
-  }
-  48% {
-    stroke-width: calc(var(--band) * 0.44);
-    stroke-dasharray:
-      calc(170px * var(--growth)) 40
-      calc(90px * var(--growth)) 80
-      calc(200px * var(--growth)) 420;
-  }
-  52% {
-    stroke-width: calc(var(--band) * 0.85);
-    stroke-dasharray: 400 10 260 12 320 0;
-  }
-  /* A cover interval around the handoff tolerates WebView frame latency:
-     the visual clock may be sampled one or more frames behind the timer. */
-  58%, 66% {
-    stroke-width: var(--band);
-    stroke-dasharray: 1000 0 1000 0 1000 0;
-  }
-  72% {
-    stroke-width: calc(var(--band) * 0.85);
-    stroke-dasharray: 180 26 140 38 210 160;
-  }
-  78% {
-    stroke-width: calc(var(--band) * 0.62);
-    stroke-dasharray: 110 80 75 120 95 520;
-  }
-  90% {
-    stroke-width: calc(var(--band) * 0.17);
-    stroke-dasharray: 24 140 18 240 12 566;
-  }
-  100% {
-    stroke-width: 0.25px;
-    stroke-dasharray: 0 1000 0 1000 0 1000;
-  }
-}
-
-.scattering {
-  animation: selenite-scattering var(--selenite-duration) linear both;
-}
-
-.refraction {
-  mix-blend-mode: screen;
-  transform-box: fill-box;
-  transform-origin: center;
-  transform:
-    translate3d(
-      calc(var(--mirror-tilt-x, 0) * 3px),
-      calc(var(--mirror-tilt-y, 0) * 3px),
-      0
-    )
-    rotate(var(--mirror-specular-angle, 0deg));
-  filter: var(--refraction-filter);
-  animation: selenite-refraction var(--selenite-duration) linear both;
-}
-
-.silkLight {
-  mix-blend-mode: screen;
-  filter: var(--refraction-filter);
-  opacity: calc(0.22 + var(--mirror-specular-gain, 0.35) * 0.12);
-  transform: translate(
-    calc(var(--mirror-tilt-x, 0) * 2px),
-    calc(var(--mirror-tilt-y, 0) * 0.5px)
+.pearl {
+  background: linear-gradient(
+    105deg,
+    transparent 14%,
+    rgb(214 239 244 / 0.16) 35%,
+    rgb(255 247 232 / 0.12) 51%,
+    rgb(215 205 241 / 0.14) 68%,
+    transparent 88%
   );
+  animation: selenite-pearl var(--selenite-duration) linear both;
 }
 
-.silkFiber {
-  animation: selenite-silk-channels var(--selenite-duration) linear both;
-}
-
-/* Widened micro-fiber optical channels form the silky scattering sweet spot.
-   Dense keeps accumulating neutral structure while these channels narrow:
-   the distinction is structural and local, not a whole-surface opacity peak. */
-@keyframes selenite-silk-channels {
-  0%, 10% { stroke-width: 0.08px; }
-  28% { stroke-width: 0.35px; }
-  42% { stroke-width: 0.85px; }
-  48% { stroke-width: 0.65px; }
-  58%, 66% { stroke-width: 0.16px; }
-  78% { stroke-width: 0.24px; }
-  90% { stroke-width: 0.1px; }
-  100% { stroke-width: 0; }
-}
-
-.mineralDepth {
+.depth {
+  background: rgb(73 82 88 / 0.16);
   animation: selenite-depth var(--selenite-duration) linear both;
 }
 
-/* Preserve the validated population-gated environmental transmission. The
-   additional fine channels, rather than this full sample, provide the hero. */
-@keyframes selenite-scattering {
-  0%, 10% { opacity: 0.35; }
-  28% { opacity: 0.7; }
-  48%, 100% { opacity: 1; }
+@keyframes selenite-field {
+  0%, 8% { opacity:0; transform:translate3d(var(--field-drift),0,0) scaleX(0.015) scaleY(var(--field-scale)); }
+  18% { opacity:var(--field-opacity-18); transform:translate3d(0,0,0) scaleX(0.16) scaleY(var(--field-scale)); }
+  32% { opacity:var(--field-opacity-32); transform:translate3d(0,0,0) scaleX(0.48) scaleY(var(--field-scale)); }
+  48% { opacity:var(--field-opacity-48); transform:translate3d(0,0,0) scaleX(0.9) scaleY(var(--field-scale)); }
+  58%,66% { opacity:var(--field-opacity); transform:translate3d(0,0,0) scaleX(1) scaleY(var(--field-scale)); }
+  76% { opacity:var(--field-opacity-76); transform:translate3d(var(--field-drift),0,0) scaleX(0.72) scaleY(var(--field-scale)); }
+  90% { opacity:var(--field-opacity-90); transform:translate3d(var(--field-drift),0,0) scaleX(0.22) scaleY(var(--field-scale)); }
+  100% { opacity:0; transform:translate3d(var(--field-drift),0,0) scaleX(0.015) scaleY(var(--field-scale)); }
 }
 
-@keyframes selenite-refraction {
-  0% { opacity: 0; }
-  28% { opacity: 0.08; }
-  40%, 48% { opacity: 0.2; }
-  58% { opacity: 0.13; }
-  60%, 66% { opacity: 0.025; }
-  78% { opacity: 0.08; }
-  100% { opacity: 0; }
+@keyframes selenite-environment {
+  0%,10% { opacity:0; transform:scale(1); }
+  32% { opacity:0.18; transform:scale(1.002); }
+  48% { opacity:0.4; transform:scale(1.004); }
+  58%,66% { opacity:0.62; transform:scale(1.005); }
+  78% { opacity:0.24; transform:scale(1.002); }
+  100% { opacity:0; transform:scale(1); }
+}
+
+@keyframes selenite-pearl {
+  0%,18% { opacity:0; transform:translate3d(-2%,0,0); }
+  38% { opacity:0.36; transform:translate3d(-0.5%,0,0); }
+  48% { opacity:0.52; transform:translate3d(0,0,0); }
+  58%,66% { opacity:0.12; transform:translate3d(0.5%,0,0); }
+  78% { opacity:0.24; transform:translate3d(1%,0,0); }
+  100% { opacity:0; transform:translate3d(2%,0,0); }
 }
 
 @keyframes selenite-depth {
-  0%, 28% { opacity: 0; }
-  48% { opacity: 0.025; }
-  60%, 66% { opacity: 0.16; }
-  78% { opacity: 0.065; }
-  100% { opacity: 0; }
+  0%,32% { opacity:0; }
+  48% { opacity:0.08; }
+  58%,66% { opacity:0.64; }
+  78% { opacity:0.18; }
+  100% { opacity:0; }
 }
 
 @keyframes selenite-content {
-  0%, 10% { filter: blur(0); opacity: 1; }
-  28% { filter: blur(1px); opacity: 1; }
-  48% { filter: blur(4px); opacity: 1; }
-  56% { filter: blur(12px); opacity: 0.25; }
-  58%, 66% { filter: blur(18px); opacity: 0; }
-  68% { filter: blur(8px); opacity: 1; }
-  78% { filter: blur(2px); opacity: 1; }
-  90%, 100% { filter: blur(0); opacity: 1; }
+  0%,18% { opacity:1; transform:translateZ(0) scale(1); }
+  40% { opacity:0.82; transform:translateZ(0) scale(0.999); }
+  54% { opacity:0.24; transform:translateZ(0) scale(0.997); }
+  58%,66% { opacity:0; transform:translateZ(0) scale(0.996); }
+  70% { opacity:0.38; transform:translateZ(0) scale(0.997); }
+  82% { opacity:0.9; transform:translateZ(0) scale(0.999); }
+  100% { opacity:1; transform:translateZ(0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contentBehindMaterial {
-    animation: none;
-    filter: none;
-    opacity: 1;
-  }
-
-  .material {
-    display: none;
-  }
-
-  .fiber,
-  .scattering,
-  .refraction,
-  .silkFiber,
-  .mineralDepth {
-    animation: none;
-  }
+  .contentBehindMaterial { animation:none; opacity:1; transform:none; }
+  .overlay { display:none; }
 }

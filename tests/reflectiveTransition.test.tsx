@@ -5,7 +5,7 @@ import {
   ReflectiveTransition,
   REFLECTIVE_TRANSITION_DURATION_MS,
 } from "../src/components/ReflectiveTransition";
-import { SELENITE_FIBERS, SELENITE_SWAP_MS } from "../src/components/seleniteMaterial";
+import { SELENITE_SWAP_MS } from "../src/components/seleniteMaterial";
 
 describe("selenite transition sequencing", () => {
   let root: Root;
@@ -64,21 +64,6 @@ describe("selenite transition sequencing", () => {
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
-  it("aligns substitution with an already-started visual clock", () => {
-    const onSwap = vi.fn();
-    act(() => root.render(
-      <ReflectiveTransition direction="down" onSwap={onSwap} onComplete={vi.fn()} />,
-    ));
-    const path = container.querySelector("path")!;
-    Object.defineProperty(path, "getAnimations", {
-      value: () => [{ currentTime: 80 }],
-    });
-    act(() => vi.advanceTimersByTime(SELENITE_SWAP_MS - 81));
-    expect(onSwap).not.toHaveBeenCalled();
-    act(() => vi.advanceTimersByTime(1));
-    expect(onSwap).toHaveBeenCalledTimes(1);
-  });
-
   it("clears pending navigation timers when the layer unmounts", () => {
     const onSwap = vi.fn();
     const onComplete = vi.fn();
@@ -91,34 +76,30 @@ describe("selenite transition sequencing", () => {
     expect(onComplete).not.toHaveBeenCalled();
   });
 
-  it("uses the same distributed population in both navigation directions", () => {
+  it("uses the same lightweight distributed material in both navigation directions", () => {
     const props = { onSwap: vi.fn(), onComplete: vi.fn() };
     act(() => root.render(<ReflectiveTransition direction="down" {...props} />));
-    const down = [...container.querySelectorAll("mask > path")].map((path) => ({
-      geometry: path.getAttribute("d"),
-      style: path.getAttribute("style"),
-    }));
-    expect(down).toHaveLength(SELENITE_FIBERS.length);
-    expect(down.every((path) => (path.geometry?.match(/M /g) ?? []).length === 3)).toBe(true);
-    expect(container.querySelector("mask > path")?.getAttribute("pathLength")).toBe("3000");
-    expect(new Set(SELENITE_FIBERS.map((fiber) => fiber.offset)).size).toBeGreaterThan(80);
+    const down = [...container.querySelectorAll("[class*='field']")].map((field) =>
+      field.getAttribute("style")
+    );
+    expect(down).toHaveLength(3);
+    expect(container.querySelector("svg")).toBeNull();
     act(() => root.render(<ReflectiveTransition direction="up" {...props} />));
-    expect([...container.querySelectorAll("mask > path")].map((path) => ({
-      geometry: path.getAttribute("d"),
-      style: path.getAttribute("style"),
-    }))).toEqual(down);
+    expect([...container.querySelectorAll("[class*='field']")].map((field) =>
+      field.getAttribute("style")
+    )).toEqual(down);
   });
 
-  it("keeps physically validated timing exact and geometry independent of optical input", () => {
+  it("keeps physically validated timing exact and material independent of optical input", () => {
     expect(REFLECTIVE_TRANSITION_DURATION_MS).toBe(2100);
     expect(SELENITE_SWAP_MS).toBe(1302);
     act(() => root.render(
       <ReflectiveTransition direction="down" onSwap={vi.fn()} onComplete={vi.fn()} />,
     ));
-    const before = [...container.querySelectorAll("mask > path")].map((path) => path.getAttribute("d"));
+    const before = container.innerHTML;
     document.documentElement.style.setProperty("--mirror-tilt-x", "1");
     document.documentElement.style.setProperty("--mirror-specular-angle", "5deg");
-    expect([...container.querySelectorAll("mask > path")].map((path) => path.getAttribute("d"))).toEqual(before);
+    expect(container.innerHTML).toEqual(before);
     document.documentElement.style.removeProperty("--mirror-tilt-x");
     document.documentElement.style.removeProperty("--mirror-specular-angle");
   });
