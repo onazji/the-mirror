@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+def mirrorReleaseStoreFile = System.getenv('MIRROR_RELEASE_STORE_FILE')
+def mirrorReleaseStorePassword = System.getenv('MIRROR_RELEASE_STORE_PASSWORD')
+def mirrorReleaseKeyAlias = System.getenv('MIRROR_RELEASE_KEY_ALIAS')
+def mirrorReleaseKeyPassword = System.getenv('MIRROR_RELEASE_KEY_PASSWORD')
+def mirrorReleaseSigningConfigured = [
+    mirrorReleaseStoreFile, mirrorReleaseStorePassword,
+    mirrorReleaseKeyAlias, mirrorReleaseKeyPassword
+].every { it }
+
 android {
     namespace = "com.themirror.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -16,9 +25,20 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (mirrorReleaseSigningConfigured) {
+            release {
+                storeFile = file(mirrorReleaseStoreFile)
+                storePassword = mirrorReleaseStorePassword
+                keyAlias = mirrorReleaseKeyAlias
+                keyPassword = mirrorReleaseKeyPassword
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled = false
+            signingConfig = mirrorReleaseSigningConfigured ? signingConfigs.release : null
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,6 +63,16 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+
+tasks.configureEach { task ->
+    if (task.name == 'bundleRelease') {
+        task.doFirst {
+            if (!mirrorReleaseSigningConfigured) {
+                throw new GradleException('Release signing requires the MIRROR_RELEASE_STORE_FILE, MIRROR_RELEASE_STORE_PASSWORD, MIRROR_RELEASE_KEY_ALIAS, and MIRROR_RELEASE_KEY_PASSWORD environment variables.')
+            }
+        }
+    }
+}
 
 try {
     def servicesJSON = file('google-services.json')
