@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { FREE_HISTORY_LIMIT, getRecentSessions } from "../src/services/historyService";
+import {
+  FREE_HISTORY_LIMIT,
+  getHistoryAccessView,
+  getRecentSessions,
+} from "../src/services/historyService";
 import type { MirrorSession } from "../src/types/mirror";
 
 function makeSession(id: string, timestamp: number): MirrorSession {
@@ -62,5 +66,29 @@ describe("free recent history", () => {
       "first-same-time",
       "oldest",
     ]);
+  });
+
+  it("limits free access without removing older records", () => {
+    const sessions = Array.from({ length: 12 }, (_, index) =>
+      makeSession(`reflection-${index}`, index)
+    );
+    const view = getHistoryAccessView(sessions, "free");
+
+    expect(view.sessions).toHaveLength(5);
+    expect(view.totalCount).toBe(12);
+    expect(view.hiddenCount).toBe(7);
+    expect(sessions).toHaveLength(12);
+  });
+
+  it("makes the complete sorted archive available with Premium access", () => {
+    const sessions = Array.from({ length: 75 }, (_, index) =>
+      makeSession(`reflection-${index}`, index)
+    );
+    const view = getHistoryAccessView(sessions, "premium");
+
+    expect(view.sessions).toHaveLength(75);
+    expect(view.sessions[0].id).toBe("reflection-74");
+    expect(view.sessions.at(-1)?.id).toBe("reflection-0");
+    expect(view.hiddenCount).toBe(0);
   });
 });

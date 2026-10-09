@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { getMirrorCard } from "../services/cardEngine";
-import { FREE_HISTORY_LIMIT, getRecentSessions } from "../services/historyService";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import type { HistoryAccessLevel } from "../services/historyService";
 import type { MirrorSession } from "../types/mirror";
+import { HistoryArchive } from "./HistoryArchive";
 import styles from "./ExploreModal.module.css";
 
 type ExploreTab = "history" | "context" | "echoes";
@@ -9,6 +9,7 @@ type ExploreTab = "history" | "context" | "echoes";
 type Props = {
   sessions: MirrorSession[];
   onClose: () => void;
+  historyAccess?: HistoryAccessLevel;
 };
 
 const TABS: readonly { id: ExploreTab; label: string }[] = [
@@ -17,13 +18,7 @@ const TABS: readonly { id: ExploreTab; label: string }[] = [
   { id: "echoes", label: "Echoes" },
 ];
 
-const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-});
-
-export function ExploreModal({ sessions, onClose }: Props) {
+export function ExploreModal({ sessions, onClose, historyAccess = "free" }: Props) {
   const [activeTab, setActiveTab] = useState<ExploreTab>("history");
   const closeRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<Record<ExploreTab, HTMLButtonElement | null>>({
@@ -31,10 +26,6 @@ export function ExploreModal({ sessions, onClose }: Props) {
     context: null,
     echoes: null,
   });
-  const recentSessions = useMemo(
-    () => getRecentSessions(sessions, FREE_HISTORY_LIMIT),
-    [sessions]
-  );
 
   useEffect(() => {
     const previousFocus = document.activeElement as HTMLElement | null;
@@ -127,7 +118,7 @@ export function ExploreModal({ sessions, onClose }: Props) {
           className={styles.content}
         >
           {activeTab === "history" ? (
-            <HistoryPreview sessions={recentSessions} totalCount={sessions.length} />
+            <HistoryArchive sessions={sessions} accessLevel={historyAccess} />
           ) : null}
           {activeTab === "context" ? <ContextPreview reflectionCount={sessions.length} /> : null}
           {activeTab === "echoes" ? <EchoesPreview /> : null}
@@ -135,49 +126,6 @@ export function ExploreModal({ sessions, onClose }: Props) {
 
         <div className={styles.privacy}>Your reflections remain on this device.</div>
       </div>
-    </div>
-  );
-}
-
-function HistoryPreview({
-  sessions,
-  totalCount,
-}: {
-  sessions: MirrorSession[];
-  totalCount: number;
-}) {
-  return (
-    <div>
-      <div className={styles.sectionHeading}>Recent reflections</div>
-      <p className={styles.sectionCopy}>
-        Revisit the five most recent moments in your complete local history.
-      </p>
-      {sessions.length === 0 ? (
-        <div className={styles.empty}>Your reflections will appear here after your first return.</div>
-      ) : (
-        <div className={styles.historyList}>
-          {sessions.map((session) => {
-            const card = getMirrorCard(session.energy, session.pace);
-            return (
-              <article key={session.id} className={styles.historyItem}>
-                <time dateTime={new Date(session.timestamp).toISOString()} className={styles.date}>
-                  {dateFormatter.format(session.timestamp)}
-                </time>
-                <div className={styles.cardTitle}>{card.title}</div>
-                <div className={styles.meta}>
-                  {session.energy} energy · {session.pace} momentum
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      )}
-      {totalCount > FREE_HISTORY_LIMIT ? (
-        <div className={styles.previewNote}>
-          {totalCount - FREE_HISTORY_LIMIT} earlier reflection
-          {totalCount - FREE_HISTORY_LIMIT === 1 ? "" : "s"} remain safely stored. Complete archive browsing is part of Mirror Premium.
-        </div>
-      ) : null}
     </div>
   );
 }

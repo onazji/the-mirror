@@ -477,7 +477,11 @@ export function HomeScreen({
       ) : null}
 
       {showExplore ? (
-        <ExploreModal sessions={sessions} onClose={() => setShowExplore(false)} />
+        <ExploreModal
+          sessions={sessions}
+          historyAccess="free"
+          onClose={() => setShowExplore(false)}
+        />
       ) : null}
     </>
   );

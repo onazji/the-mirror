@@ -3,6 +3,32 @@ import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ExploreButton } from "../src/components/ExploreButton";
 import { ExploreModal } from "../src/components/ExploreModal";
+import type { MirrorSession } from "../src/types/mirror";
+
+function makeSession(id: string, timestamp: number): MirrorSession {
+  return {
+    id,
+    timestamp,
+    energy: "steady",
+    pace: "high",
+    body: "content",
+    mind: "narrow",
+    seer: { anchor: true, integrity: false },
+    work: {
+      app: true,
+      game: false,
+      output: false,
+      sessions: 2,
+      hours: 1,
+      minutes: 15,
+      note: `Work note ${id}`,
+    },
+    attention: "features",
+    todaySignal: `Signal ${id}`,
+    blocker: `Friction ${id}`,
+    tomorrowStart: `Tomorrow ${id}`,
+  };
+}
 
 describe("Explore interface", () => {
   let root: Root;
@@ -58,5 +84,44 @@ describe("Explore interface", () => {
     act(() => root.render(<ExploreModal sessions={[]} onClose={onClose} />));
     act(() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" })));
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("limits free History to five records and opens original details", () => {
+    const sessions = Array.from({ length: 7 }, (_, index) =>
+      makeSession(`reflection-${index}`, 1_700_000_000_000 + index)
+    );
+    act(() => root.render(<ExploreModal sessions={sessions} onClose={vi.fn()} />));
+
+    const historyButtons = [
+      ...container.querySelectorAll<HTMLButtonElement>('button[aria-label^="Open "]'),
+    ];
+    expect(historyButtons).toHaveLength(5);
+    expect(container.textContent).toContain("2 earlier reflections remain safely stored");
+
+    act(() => historyButtons[0].click());
+    expect(container.textContent).toContain("Signal reflection-6");
+    expect(container.textContent).toContain("Friction reflection-6");
+    expect(container.textContent).toContain("Tomorrow reflection-6");
+    expect(container.textContent).toContain("Work note reflection-6");
+  });
+
+  it("incrementally exposes a complete large archive with Premium access", () => {
+    const sessions = Array.from({ length: 35 }, (_, index) =>
+      makeSession(`reflection-${index}`, index)
+    );
+    act(() =>
+      root.render(
+        <ExploreModal sessions={sessions} historyAccess="premium" onClose={vi.fn()} />
+      )
+    );
+
+    expect(container.querySelectorAll('button[aria-label^="Open "]')).toHaveLength(30);
+    const loadMore = [...container.querySelectorAll("button")].find(
+      (button) => button.textContent === "Load older reflections"
+    );
+    expect(loadMore).not.toBeUndefined();
+    act(() => (loadMore as HTMLButtonElement).click());
+    expect(container.querySelectorAll('button[aria-label^="Open "]')).toHaveLength(35);
+    expect(container.textContent).not.toContain("remain safely stored on this device");
   });
 });
