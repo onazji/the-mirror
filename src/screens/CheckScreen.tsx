@@ -17,6 +17,7 @@ type Props = {
   onNext: () => void;
   onBack: () => void;
   submitting: boolean;
+  saveError: string | null;
 };
 
 const ENERGY: readonly Energy[] = ["low", "steady", "high"] as const;
@@ -30,6 +31,7 @@ export function CheckScreen({
   onNext,
   onBack,
   submitting,
+  saveError,
 }: Props) {
   const [showStateInfo, setShowStateInfo] = useState(false);
 
@@ -196,6 +198,16 @@ export function CheckScreen({
       {!complete ? (
         <div className="small" style={{ marginTop: 8 }}>
           Energy, Momentum, and tomorrow start required
+        </div>
+      ) : null}
+
+      {saveError ? (
+        <div
+          className="small"
+          role="alert"
+          style={{ marginTop: 10, color: "#842a42", fontWeight: 600 }}
+        >
+          {saveError}
         </div>
       ) : null}
 

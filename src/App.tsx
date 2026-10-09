@@ -1,4 +1,7 @@
 import { useCallback, useRef, useState } from "react";
+import { Capacitor } from "@capacitor/core";
+import { Directory, Encoding, Filesystem } from "@capacitor/filesystem";
+import { Share } from "@capacitor/share";
 import { Screen } from "./state/screens";
 import { createEmptyDraft } from "./state/appState";
 import type {
@@ -8,10 +11,13 @@ import type {
 } from "./types/mirror";
 import { LocalStorageStore } from "./storage/localStorageStore";
 import {
-  loadSessions,
+  loadSessionsResult,
   saveSessions,
   createSessionFromDraft,
   appendSession,
+  createReflectionExport,
+  deleteAllSessions,
+  type SessionLoadResult,
 } from "./services/sessionService";
 
 import { HomeScreen } from "./screens/HomeScreen";
@@ -25,12 +31,21 @@ import { GlassSurface } from "./components/GlassSurface";
 
 const store = new LocalStorageStore();
 
+function loadWarning(result: SessionLoadResult): string | null {
+  if (result.issues.length === 0) return null;
+  const count = result.issues.length;
+  return `${count} stored reflection issue${count === 1 ? "" : "s"} detected. Nothing was overwritten. Export includes recovery data.`;
+}
+
 export default function App() {
+  const [initialLoad] = useState(() => loadSessionsResult(store));
   const [screen, setScreen] = useState<Screen>(Screen.HOME);
   const [draft, setDraft] = useState<MirrorDraft>(createEmptyDraft());
-  const [sessions, setSessions] = useState<MirrorSession[]>(() =>
-    loadSessions(store)
+  const [sessions, setSessions] = useState<MirrorSession[]>(initialLoad.sessions);
+  const [dataWarning, setDataWarning] = useState<string | null>(() =>
+    loadWarning(initialLoad)
   );
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const [submitting, setSubmitting] = useState(false);
   const [transition, setTransition] = useState<{
@@ -60,7 +75,10 @@ export default function App() {
   };
 
   const goHome = () => {
-    setSessions(loadSessions(store));
+    const result = loadSessionsResult(store);
+    setSessions(result.sessions);
+    setDataWarning(loadWarning(result));
+    setSaveError(null);
     setDraft(createEmptyDraft());
     navigateWithTransition(Screen.HOME);
   };
@@ -69,18 +87,23 @@ export default function App() {
     if (submitting) return;
 
     setSubmitting(true);
-
-    const session = createSessionFromDraft(draft, Date.now());
-    const nextSessions = appendSession(store, session);
-
-    setSessions(nextSessions);
-
-    await new Promise((resolve) => setTimeout(resolve, 650));
-
-    setDraft(createEmptyDraft());
-    navigateWithTransition(Screen.HOME);
-
-    setSubmitting(false);
+    setSaveError(null);
+    try {
+      const session = createSessionFromDraft(draft, Date.now());
+      const nextSessions = appendSession(store, session);
+      setSessions(nextSessions);
+      await new Promise((resolve) => setTimeout(resolve, 650));
+      setDraft(createEmptyDraft());
+      navigateWithTransition(Screen.HOME);
+    } catch (error) {
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "The reflection could not be saved on this device."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const updatePreviousStartResult = (
@@ -96,8 +119,78 @@ export default function App() {
         : session
     );
 
-    saveSessions(store, nextSessions);
-    setSessions(nextSessions);
+    try {
+      saveSessions(store, nextSessions);
+      setSessions(nextSessions);
+      setDataWarning(null);
+    } catch (error) {
+      setDataWarning(
+        error instanceof Error
+          ? error.message
+          : "The reflection update could not be saved."
+      );
+    }
+  };
+
+  const exportReflections = async () => {
+    const exportDocument = createReflectionExport(store);
+    const contents = JSON.stringify(exportDocument, null, 2);
+    const date = exportDocument.exportedAt.slice(0, 10);
+    const filename = `the-mirror-reflections-${date}.json`;
+    const file = new File([contents], filename, { type: "application/json" });
+
+    if (Capacitor.isNativePlatform()) {
+      const canShare = await Share.canShare();
+      if (!canShare.value) {
+        throw new Error("Android sharing is not available on this device.");
+      }
+
+      const { uri } = await Filesystem.writeFile({
+        path: filename,
+        data: contents,
+        directory: Directory.Cache,
+        encoding: Encoding.UTF8,
+      });
+      await Share.share({
+        title: "The Mirror reflections",
+        files: [uri],
+        dialogTitle: "Export reflections",
+      });
+      return;
+    }
+
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: "The Mirror reflections",
+      });
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    try {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const removeAllReflections = () => {
+    try {
+      deleteAllSessions(store);
+      setSessions([]);
+      setDraft(createEmptyDraft());
+      setDataWarning(null);
+    } catch (error) {
+      setDataWarning(
+        error instanceof Error
+          ? error.message
+          : "Reflection history could not be deleted from this device."
+      );
+    }
   };
 
   let screenContent: JSX.Element;
@@ -109,6 +202,9 @@ export default function App() {
           sessions={sessions}
           onStart={() => navigateWithTransition(Screen.CHECK)}
           onResult={updatePreviousStartResult}
+          onExport={exportReflections}
+          onDeleteAll={removeAllReflections}
+          dataWarning={dataWarning}
         />
       );
       break;
@@ -121,6 +217,7 @@ export default function App() {
           onBack={goHome}
           onNext={saveDraftNow}
           submitting={submitting}
+          saveError={saveError}
         />
       );
       break;

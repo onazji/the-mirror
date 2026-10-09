@@ -8,18 +8,20 @@ export class LocalStorageStore implements KeyValueStore {
       return null;
     }
   }
-  setString(key: string, value: string): void {
+  setString(key: string, value: string): boolean {
     try {
       localStorage.setItem(key, value);
+      return localStorage.getItem(key) === value;
     } catch {
-      // ignore (storage full / blocked)
+      return false;
     }
   }
-  remove(key: string): void {
+  remove(key: string): boolean {
     try {
       localStorage.removeItem(key);
+      return localStorage.getItem(key) === null;
     } catch {
-      // ignore
+      return false;
     }
   }
 }

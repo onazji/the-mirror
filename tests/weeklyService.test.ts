@@ -13,9 +13,11 @@ return this.m.get(key) ?? null;
 }
 setString(key: string, value: string) {
 this.m.set(key, value);
+return true;
 }
 remove(key: string) {
 this.m.delete(key);
+return true;
 }
 }
 let store: MemoryStore;

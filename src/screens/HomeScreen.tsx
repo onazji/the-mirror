@@ -6,6 +6,7 @@ import { CardRevealOverlay } from "../components/CardRevealOverlay";
 import { AvatarChoiceModal } from "../components/AvatarChoiceModal";
 import { WelcomeModal } from "../components/WelcomeModal";
 import { LivingMirrorArtifact } from "../components/LivingMirrorArtifact";
+import { ReflectionDataControls } from "../components/ReflectionDataControls";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
 import type { MirrorAvatarVariant } from "../types/avatar";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
@@ -26,6 +27,9 @@ type Props = {
   sessions: MirrorSession[];
   onStart: () => void;
   onResult: (sessionId: string, result: PreviousStartResult) => void;
+  onExport: () => Promise<void>;
+  onDeleteAll: () => void;
+  dataWarning: string | null;
 };
 
 const onboardingStore = new LocalStorageStore();
@@ -67,7 +71,14 @@ function renderResultLabel(result: PreviousStartResult): string {
   return "No";
 }
 
-export function HomeScreen({ sessions, onStart, onResult }: Props) {
+export function HomeScreen({
+  sessions,
+  onStart,
+  onResult,
+  onExport,
+  onDeleteAll,
+  dataWarning,
+}: Props) {
   const initialAvatarVariant = loadAvatarVariant(onboardingStore);
   const initialFirstRunStage = getFirstRunStage(
     onboardingStore,
@@ -138,6 +149,12 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
         </div>
 
         <div style={{ height: 20 }} />
+
+        {dataWarning ? (
+          <div className={styles.notice} role="alert" style={{ marginBottom: 16 }}>
+            {dataWarning}
+          </div>
+        ) : null}
 
         {/* ── CTA ── */}
         <Button label="Step Into the Mirror" onClick={onStart} kind="primary" />
@@ -344,6 +361,13 @@ export function HomeScreen({ sessions, onStart, onResult }: Props) {
             </Card>
           </>
         ) : null}
+
+        <div style={{ height: 16 }} />
+        <ReflectionDataControls
+          reflectionCount={sessions.length}
+          onExport={onExport}
+          onDeleteAll={onDeleteAll}
+        />
 
         <div className={styles.footer}>On-device only · Stored in localStorage</div>
       </div>

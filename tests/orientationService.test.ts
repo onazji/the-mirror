@@ -10,8 +10,14 @@ function memoryStore() {
   const values = new Map<string, string>();
   return {
     getString: (key: string) => values.get(key) ?? null,
-    setString: (key: string, value: string) => values.set(key, value),
-    remove: (key: string) => values.delete(key),
+    setString: (key: string, value: string) => {
+      values.set(key, value);
+      return true;
+    },
+    remove: (key: string) => {
+      values.delete(key);
+      return true;
+    },
   };
 }
 
