@@ -7,6 +7,8 @@ import { AvatarChoiceModal } from "../components/AvatarChoiceModal";
 import { WelcomeModal } from "../components/WelcomeModal";
 import { LivingMirrorArtifact } from "../components/LivingMirrorArtifact";
 import { ReflectionDataControls } from "../components/ReflectionDataControls";
+import { ExploreButton } from "../components/ExploreButton";
+import { ExploreModal } from "../components/ExploreModal";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
 import type { MirrorAvatarVariant } from "../types/avatar";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
@@ -14,6 +16,7 @@ import { getMirrorCard } from "../services/cardEngine";
 import { buildWeeklyLayer } from "../services/weeklyLayer";
 import { buildResetLine } from "../services/nextStepEngine";
 import { computeArtifactStats } from "../services/artifactEngine";
+import { getRecentSessions } from "../services/historyService";
 import { LocalStorageStore } from "../storage/localStorageStore";
 import { loadAvatarVariant, saveAvatarVariant } from "../services/avatarService";
 import {
@@ -85,6 +88,7 @@ export function HomeScreen({
     initialAvatarVariant
   );
   const [showInfo, setShowInfo] = useState(false);
+  const [showExplore, setShowExplore] = useState(false);
   const [showCardReveal, setShowCardReveal] = useState(false);
   const [showAvatarChoice, setShowAvatarChoice] = useState(false);
   const [avatarVariant, setAvatarVariant] =
@@ -113,7 +117,7 @@ export function HomeScreen({
 
   const lastCheckText = last ? formatTimeAgo(now, last.timestamp) : "No reflections yet";
   const missedDays = last ? missedDaysSince(now, last.timestamp) : 0;
-  const history = [...sessions].reverse();
+  const history = getRecentSessions(sessions);
   const card = last ? getMirrorCard(last.energy, last.pace) : null;
   const weekly = buildWeeklyLayer(sessions, now);
   const artifact = computeArtifactStats(sessions, now);
@@ -124,28 +128,33 @@ export function HomeScreen({
 
         {/* ── Header ── */}
         <div className={styles.header}>
-          <LivingMirrorArtifact stats={artifact} />
+          <div className={styles.headerControls}>
+            <ExploreButton onClick={() => setShowExplore(true)} />
+            <LivingMirrorArtifact stats={artifact} />
+          </div>
           <div className={styles.titleBlock}>
             <h1 className={styles.title}>The Mirror</h1>
             <div className={styles.tagline}>Pause. Reflect. Choose your direction.</div>
           </div>
-          <button
-            type="button"
-            className={styles.infoBtn}
-            aria-label="Open Mirror avatar settings"
-            title="Mirror avatar settings"
-            onClick={() => setShowAvatarChoice(true)}
-          >
-            ◐
-          </button>
-          <button
-            type="button"
-            className={styles.infoBtn}
-            aria-label="Open state map"
-            onClick={() => setShowInfo(true)}
-          >
-            ⓘ
-          </button>
+          <div className={styles.headerControls}>
+            <button
+              type="button"
+              className={styles.infoBtn}
+              aria-label="Open Mirror avatar settings"
+              title="Mirror avatar settings"
+              onClick={() => setShowAvatarChoice(true)}
+            >
+              ◐
+            </button>
+            <button
+              type="button"
+              className={styles.infoBtn}
+              aria-label="Open state map"
+              onClick={() => setShowInfo(true)}
+            >
+              ⓘ
+            </button>
+          </div>
         </div>
 
         <div style={{ height: 20 }} />
@@ -465,6 +474,10 @@ export function HomeScreen({
             />
           </div>
         </div>
+      ) : null}
+
+      {showExplore ? (
+        <ExploreModal sessions={sessions} onClose={() => setShowExplore(false)} />
       ) : null}
     </>
   );

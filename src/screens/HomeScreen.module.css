@@ -2,13 +2,23 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   padding-top: 8px;
   margin-bottom: 6px;
 }
 
+.headerControls {
+  width: 86px;
+  flex: 0 0 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
 .titleBlock {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,6 +38,7 @@
   font-size: 13px;
   color: var(--muted);
   letter-spacing: 0.1px;
+  line-height: 1.25;
 }
 
 .infoBtn {
