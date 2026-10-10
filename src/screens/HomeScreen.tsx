@@ -12,6 +12,7 @@ import { ExploreModal } from "../components/ExploreModal";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
 import type { EchoRecord } from "../types/echo";
 import type { MirrorAvatarVariant } from "../types/avatar";
+import type { PremiumAccessLevel } from "../types/entitlement";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
 import { getMirrorCard } from "../services/cardEngine";
 import { buildWeeklyLayer } from "../services/weeklyLayer";
@@ -36,6 +37,7 @@ type Props = {
   onDeleteAll: () => void;
   dataWarning: string | null;
   onOpenEcho: (echo: EchoRecord) => void;
+  accessLevel: PremiumAccessLevel;
 };
 
 const onboardingStore = new LocalStorageStore();
@@ -86,6 +88,7 @@ export function HomeScreen({
   onDeleteAll,
   dataWarning,
   onOpenEcho,
+  accessLevel,
 }: Props) {
   const initialAvatarVariant = loadAvatarVariant(onboardingStore);
   const initialFirstRunStage = getFirstRunStage(
@@ -485,8 +488,7 @@ export function HomeScreen({
         <ExploreModal
           sessions={sessions}
           echoes={echoes}
-          historyAccess="free"
-          echoAccess="free"
+          accessLevel={accessLevel}
           onOpenEcho={(echo) => {
             setShowExplore(false);
             onOpenEcho(echo);

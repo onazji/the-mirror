@@ -5,14 +5,25 @@ import {
   type ReflectionActivityPoint,
 } from "../services/contextService";
 import type { MirrorSession } from "../types/mirror";
+import type { PremiumAccessLevel } from "../types/entitlement";
 import styles from "./ContextDashboard.module.css";
 
 type ActivityMode = "daily" | "cumulative";
 
-export function ContextDashboard({ sessions }: { sessions: MirrorSession[] }) {
+export function ContextDashboard({
+  sessions,
+  accessLevel,
+}: {
+  sessions: MirrorSession[];
+  accessLevel: PremiumAccessLevel;
+}) {
   const [activityMode, setActivityMode] = useState<ActivityMode>("daily");
   const distribution = useMemo(() => buildStateDistribution(sessions), [sessions]);
   const activity = useMemo(() => buildReflectionActivity(sessions), [sessions]);
+
+  if (accessLevel === "free") {
+    return <ContextPreview reflectionCount={sessions.length} />;
+  }
 
   return (
     <div className={styles.dashboard}>
@@ -79,6 +90,34 @@ export function ContextDashboard({ sessions }: { sessions: MirrorSession[] }) {
           <ActivityChart points={activity} mode={activityMode} />
         )}
       </section>
+    </div>
+  );
+}
+
+function ContextPreview({ reflectionCount }: { reflectionCount: number }) {
+  return (
+    <div className={styles.preview}>
+      <div className={styles.previewCount} aria-label={`${reflectionCount} reflections recorded`}>
+        <strong>{reflectionCount}</strong>
+        <span>reflection{reflectionCount === 1 ? "" : "s"} available locally</span>
+      </div>
+      <div>
+        <h2 className={styles.heading}>Context takes shape over time</h2>
+        <p className={styles.copy}>
+          Mirror Premium opens your complete state distribution and reflection activity.
+          Your records remain safely stored on this device either way.
+        </p>
+      </div>
+      <div className={styles.previewFeatures} aria-label="Mirror Premium Context includes">
+        <div>
+          <strong>State distribution</strong>
+          <span>See every recorded state ranked by how often it appeared.</span>
+        </div>
+        <div>
+          <strong>Reflection activity</strong>
+          <span>View daily and cumulative activity from your earliest reflection.</span>
+        </div>
+      </div>
     </div>
   );
 }

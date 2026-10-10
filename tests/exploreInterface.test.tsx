@@ -75,7 +75,7 @@ describe("Explore interface", () => {
     expect(tabs[1].getAttribute("aria-selected")).toBe("true");
     expect(document.activeElement).toBe(tabs[1]);
     expect(container.querySelector('[role="tabpanel"]')?.textContent).toContain(
-      "State distribution"
+      "Context takes shape over time"
     );
   });
 
@@ -111,7 +111,7 @@ describe("Explore interface", () => {
     );
     act(() =>
       root.render(
-        <ExploreModal sessions={sessions} historyAccess="premium" onClose={vi.fn()} />
+        <ExploreModal sessions={sessions} accessLevel="premium" onClose={vi.fn()} />
       )
     );
 
@@ -128,7 +128,9 @@ describe("Explore interface", () => {
   it("switches between factual daily and cumulative Context activity", () => {
     const first = makeSession("first", new Date(2026, 0, 1, 9).getTime());
     const second = makeSession("second", new Date(2026, 0, 3, 9).getTime());
-    act(() => root.render(<ExploreModal sessions={[first, second]} onClose={vi.fn()} />));
+    act(() => root.render(
+      <ExploreModal sessions={[first, second]} accessLevel="premium" onClose={vi.fn()} />
+    ));
 
     const contextTab = [...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')]
       .find((tab) => tab.textContent === "Context");
@@ -146,5 +148,20 @@ describe("Explore interface", () => {
     expect(cumulative?.getAttribute("aria-pressed")).toBe("true");
     expect(container.querySelector('svg[role="img"]')?.getAttribute("aria-label"))
       .toContain("Cumulative reflections");
+  });
+
+  it("shows an honest Context preview without exposing Premium aggregates", () => {
+    const sessions = [makeSession("first", 1), makeSession("second", 2)];
+    act(() => root.render(<ExploreModal sessions={sessions} onClose={vi.fn()} />));
+
+    const contextTab = [...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')]
+      .find((tab) => tab.textContent === "Context");
+    act(() => contextTab?.click());
+
+    expect(container.textContent).toContain("2");
+    expect(container.textContent).toContain("reflections available locally");
+    expect(container.textContent).toContain("Mirror Premium opens your complete state distribution");
+    expect(container.textContent).not.toContain("Pressure");
+    expect(container.querySelector('svg[role="img"]')).toBeNull();
   });
 });

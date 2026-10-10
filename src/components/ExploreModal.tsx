@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import type { HistoryAccessLevel } from "../services/historyService";
-import type { EchoAccessLevel, EchoRecord } from "../types/echo";
+import type { EchoRecord } from "../types/echo";
 import type { MirrorSession } from "../types/mirror";
+import type { PremiumAccessLevel } from "../types/entitlement";
 import { EchoCollection } from "./EchoCollection";
 import { HistoryArchive } from "./HistoryArchive";
 import { ContextDashboard } from "./ContextDashboard";
@@ -14,8 +14,7 @@ type Props = {
   echoes?: EchoRecord[];
   onClose: () => void;
   onOpenEcho?: (echo: EchoRecord) => void;
-  historyAccess?: HistoryAccessLevel;
-  echoAccess?: EchoAccessLevel;
+  accessLevel?: PremiumAccessLevel;
 };
 
 const TABS: readonly { id: ExploreTab; label: string }[] = [
@@ -29,8 +28,7 @@ export function ExploreModal({
   echoes = [],
   onClose,
   onOpenEcho = () => undefined,
-  historyAccess = "free",
-  echoAccess = "free",
+  accessLevel = "free",
 }: Props) {
   const [activeTab, setActiveTab] = useState<ExploreTab>("history");
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -131,14 +129,16 @@ export function ExploreModal({
           className={styles.content}
         >
           {activeTab === "history" ? (
-            <HistoryArchive sessions={sessions} accessLevel={historyAccess} />
+            <HistoryArchive sessions={sessions} accessLevel={accessLevel} />
           ) : null}
-          {activeTab === "context" ? <ContextDashboard sessions={sessions} /> : null}
+          {activeTab === "context" ? (
+            <ContextDashboard sessions={sessions} accessLevel={accessLevel} />
+          ) : null}
           {activeTab === "echoes" ? (
             <EchoCollection
               echoes={echoes}
               sessions={sessions}
-              accessLevel={echoAccess}
+              accessLevel={accessLevel}
               onOpenEcho={onOpenEcho}
             />
           ) : null}

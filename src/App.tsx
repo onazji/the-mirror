@@ -37,6 +37,7 @@ import transitionStyles from "./components/ReflectiveTransition.module.css";
 import { GlassSurface } from "./components/GlassSurface";
 import { EchoInvitation } from "./components/EchoInvitation";
 import { EchoComparison } from "./components/EchoComparison";
+import { loadEntitlementSnapshot } from "./services/entitlementService";
 
 const store = new LocalStorageStore();
 
@@ -47,6 +48,7 @@ function loadWarning(result: SessionLoadResult): string | null {
 }
 
 export default function App() {
+  const [entitlement] = useState(() => loadEntitlementSnapshot(store));
   const [initialLoad] = useState(() => loadSessionsResult(store));
   const [initialEchoLoad] = useState(() =>
     loadEchoStateResult(store, initialLoad.sessions)
@@ -117,7 +119,7 @@ export default function App() {
           store,
           session,
           nextSessions,
-          "free"
+          entitlement.accessLevel
         );
         setEchoes(echoResult.state.records);
         queuedEchoRef.current = echoResult.echo;
@@ -261,6 +263,7 @@ export default function App() {
           onDeleteAll={removeAllReflections}
           dataWarning={dataWarning}
           onOpenEcho={openEcho}
+          accessLevel={entitlement.accessLevel}
         />
       );
       break;
