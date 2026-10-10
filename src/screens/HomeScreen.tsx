@@ -10,6 +10,7 @@ import { ReflectionDataControls } from "../components/ReflectionDataControls";
 import { ExploreButton } from "../components/ExploreButton";
 import { ExploreModal } from "../components/ExploreModal";
 import type { MirrorSession, PreviousStartResult } from "../types/mirror";
+import type { EchoRecord } from "../types/echo";
 import type { MirrorAvatarVariant } from "../types/avatar";
 import { formatTimeAgo, missedDaysSince } from "../services/timeFormat";
 import { getMirrorCard } from "../services/cardEngine";
@@ -28,11 +29,13 @@ import styles from "./HomeScreen.module.css";
 
 type Props = {
   sessions: MirrorSession[];
+  echoes: EchoRecord[];
   onStart: () => void;
   onResult: (sessionId: string, result: PreviousStartResult) => void;
   onExport: () => Promise<void>;
   onDeleteAll: () => void;
   dataWarning: string | null;
+  onOpenEcho: (echo: EchoRecord) => void;
 };
 
 const onboardingStore = new LocalStorageStore();
@@ -76,11 +79,13 @@ function renderResultLabel(result: PreviousStartResult): string {
 
 export function HomeScreen({
   sessions,
+  echoes,
   onStart,
   onResult,
   onExport,
   onDeleteAll,
   dataWarning,
+  onOpenEcho,
 }: Props) {
   const initialAvatarVariant = loadAvatarVariant(onboardingStore);
   const initialFirstRunStage = getFirstRunStage(
@@ -479,7 +484,13 @@ export function HomeScreen({
       {showExplore ? (
         <ExploreModal
           sessions={sessions}
+          echoes={echoes}
           historyAccess="free"
+          echoAccess="free"
+          onOpenEcho={(echo) => {
+            setShowExplore(false);
+            onOpenEcho(echo);
+          }}
           onClose={() => setShowExplore(false)}
         />
       ) : null}

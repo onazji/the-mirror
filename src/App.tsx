@@ -9,6 +9,7 @@ import type {
   MirrorSession,
   PreviousStartResult,
 } from "./types/mirror";
+import type { EchoRecord } from "./types/echo";
 import { LocalStorageStore } from "./storage/localStorageStore";
 import {
   loadSessionsResult,
@@ -19,6 +20,12 @@ import {
   deleteAllSessions,
   type SessionLoadResult,
 } from "./services/sessionService";
+import {
+  deleteAllEchoes,
+  loadEchoStateResult,
+  markEchoViewed,
+  surfaceEchoForSession,
+} from "./services/echoService";
 
 import { HomeScreen } from "./screens/HomeScreen";
 import { CheckScreen } from "./screens/CheckScreen";
@@ -28,6 +35,8 @@ import {
 } from "./components/ReflectiveTransition";
 import transitionStyles from "./components/ReflectiveTransition.module.css";
 import { GlassSurface } from "./components/GlassSurface";
+import { EchoInvitation } from "./components/EchoInvitation";
+import { EchoComparison } from "./components/EchoComparison";
 
 const store = new LocalStorageStore();
 
@@ -39,11 +48,15 @@ function loadWarning(result: SessionLoadResult): string | null {
 
 export default function App() {
   const [initialLoad] = useState(() => loadSessionsResult(store));
+  const [initialEchoLoad] = useState(() =>
+    loadEchoStateResult(store, initialLoad.sessions)
+  );
   const [screen, setScreen] = useState<Screen>(Screen.HOME);
   const [draft, setDraft] = useState<MirrorDraft>(createEmptyDraft());
   const [sessions, setSessions] = useState<MirrorSession[]>(initialLoad.sessions);
+  const [echoes, setEchoes] = useState<EchoRecord[]>(initialEchoLoad.state.records);
   const [dataWarning, setDataWarning] = useState<string | null>(() =>
-    loadWarning(initialLoad)
+    loadWarning(initialLoad) ?? initialEchoLoad.issue
   );
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -52,6 +65,9 @@ export default function App() {
     direction: "down" | "up";
   } | null>(null);
   const transitionTargetRef = useRef<Screen | null>(null);
+  const queuedEchoRef = useRef<EchoRecord | null>(null);
+  const [pendingEcho, setPendingEcho] = useState<EchoRecord | null>(null);
+  const [activeEcho, setActiveEcho] = useState<EchoRecord | null>(null);
 
   const swapToTransitionTarget = useCallback(() => {
     const target = transitionTargetRef.current;
@@ -63,6 +79,10 @@ export default function App() {
   const completeTransition = useCallback(() => {
     transitionTargetRef.current = null;
     setTransition(null);
+    if (queuedEchoRef.current) {
+      setPendingEcho(queuedEchoRef.current);
+      queuedEchoRef.current = null;
+    }
   }, []);
 
   const navigateWithTransition = (target: Screen) => {
@@ -92,6 +112,22 @@ export default function App() {
       const session = createSessionFromDraft(draft, Date.now());
       const nextSessions = appendSession(store, session);
       setSessions(nextSessions);
+      try {
+        const echoResult = surfaceEchoForSession(
+          store,
+          session,
+          nextSessions,
+          "free"
+        );
+        setEchoes(echoResult.state.records);
+        queuedEchoRef.current = echoResult.echo;
+      } catch (echoError) {
+        setDataWarning(
+          echoError instanceof Error
+            ? echoError.message
+            : "Echo data could not be updated. Your reflection was still saved."
+        );
+      }
       await new Promise((resolve) => setTimeout(resolve, 650));
       setDraft(createEmptyDraft());
       navigateWithTransition(Screen.HOME);
@@ -181,7 +217,12 @@ export default function App() {
   const removeAllReflections = () => {
     try {
       deleteAllSessions(store);
+      deleteAllEchoes(store);
       setSessions([]);
+      setEchoes([]);
+      setPendingEcho(null);
+      setActiveEcho(null);
+      queuedEchoRef.current = null;
       setDraft(createEmptyDraft());
       setDataWarning(null);
     } catch (error) {
@@ -193,6 +234,19 @@ export default function App() {
     }
   };
 
+  const openEcho = (echo: EchoRecord) => {
+    try {
+      const nextState = markEchoViewed(store, sessions, echo.id);
+      setEchoes(nextState.records);
+      setActiveEcho({ ...echo, viewed: true });
+      setPendingEcho(null);
+    } catch (error) {
+      setDataWarning(
+        error instanceof Error ? error.message : "The Echo could not be opened."
+      );
+    }
+  };
+
   let screenContent: JSX.Element;
 
   switch (screen) {
@@ -200,11 +254,13 @@ export default function App() {
       screenContent = (
         <HomeScreen
           sessions={sessions}
+          echoes={echoes}
           onStart={() => navigateWithTransition(Screen.CHECK)}
           onResult={updatePreviousStartResult}
           onExport={exportReflections}
           onDeleteAll={removeAllReflections}
           dataWarning={dataWarning}
+          onOpenEcho={openEcho}
         />
       );
       break;
@@ -244,6 +300,19 @@ export default function App() {
           direction={transition.direction}
           onSwap={swapToTransitionTarget}
           onComplete={completeTransition}
+        />
+      ) : null}
+      {pendingEcho && !transition ? (
+        <EchoInvitation
+          onExplore={() => openEcho(pendingEcho)}
+          onDismiss={() => setPendingEcho(null)}
+        />
+      ) : null}
+      {activeEcho ? (
+        <EchoComparison
+          echo={activeEcho}
+          sessions={sessions}
+          onClose={() => setActiveEcho(null)}
         />
       ) : null}
     </>

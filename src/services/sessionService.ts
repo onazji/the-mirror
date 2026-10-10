@@ -9,10 +9,12 @@ import type {
   Pace,
   PreviousStartResult,
 } from "../types/mirror";
+import type { EchoState } from "../types/echo";
+import { loadEchoStateResult } from "./echoService";
 
 export const SESSIONS_KEY = "mirror_sessions_v1";
 export const REFLECTION_EXPORT_FORMAT = "the-mirror-reflections";
-export const REFLECTION_EXPORT_VERSION = 1;
+export const REFLECTION_EXPORT_VERSION = 2;
 
 type SessionFieldIssue = {
   index: number | null;
@@ -32,9 +34,11 @@ export type ReflectionExportDocument = {
   exportedAt: string;
   reflectionCount: number;
   reflections: MirrorSession[];
+  echoes: EchoState;
   recovery: {
     warnings: string[];
     rawStoredValue?: string;
+    rawEchoValue?: string;
   };
 };
 
@@ -339,20 +343,28 @@ export function createReflectionExport(
   exportedAt = new Date()
 ): ReflectionExportDocument {
   const result = loadSessionsResult(store);
+  const echoResult = loadEchoStateResult(store, result.sessions);
   return {
     format: REFLECTION_EXPORT_FORMAT,
     version: REFLECTION_EXPORT_VERSION,
     exportedAt: exportedAt.toISOString(),
     reflectionCount: result.sessions.length,
     reflections: result.sessions,
+    echoes: echoResult.state,
     recovery: {
-      warnings: result.issues.map((issue) =>
-        issue.index === null
-          ? issue.message
-          : `Reflection ${issue.index + 1}: ${issue.message}`
-      ),
+      warnings: [
+        ...result.issues.map((issue) =>
+          issue.index === null
+            ? issue.message
+            : `Reflection ${issue.index + 1}: ${issue.message}`
+        ),
+        ...(echoResult.issue ? [echoResult.issue] : []),
+      ],
       ...(result.issues.length > 0 && result.rawSource !== null
         ? { rawStoredValue: result.rawSource }
+        : {}),
+      ...(echoResult.issue && echoResult.rawSource !== null
+        ? { rawEchoValue: echoResult.rawSource }
         : {}),
     },
   };

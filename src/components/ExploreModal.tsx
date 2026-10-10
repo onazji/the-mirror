@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { HistoryAccessLevel } from "../services/historyService";
+import type { EchoAccessLevel, EchoRecord } from "../types/echo";
 import type { MirrorSession } from "../types/mirror";
+import { EchoCollection } from "./EchoCollection";
 import { HistoryArchive } from "./HistoryArchive";
 import { ContextDashboard } from "./ContextDashboard";
 import styles from "./ExploreModal.module.css";
@@ -9,8 +11,11 @@ type ExploreTab = "history" | "context" | "echoes";
 
 type Props = {
   sessions: MirrorSession[];
+  echoes?: EchoRecord[];
   onClose: () => void;
+  onOpenEcho?: (echo: EchoRecord) => void;
   historyAccess?: HistoryAccessLevel;
+  echoAccess?: EchoAccessLevel;
 };
 
 const TABS: readonly { id: ExploreTab; label: string }[] = [
@@ -19,7 +24,14 @@ const TABS: readonly { id: ExploreTab; label: string }[] = [
   { id: "echoes", label: "Echoes" },
 ];
 
-export function ExploreModal({ sessions, onClose, historyAccess = "free" }: Props) {
+export function ExploreModal({
+  sessions,
+  echoes = [],
+  onClose,
+  onOpenEcho = () => undefined,
+  historyAccess = "free",
+  echoAccess = "free",
+}: Props) {
   const [activeTab, setActiveTab] = useState<ExploreTab>("history");
   const closeRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<Record<ExploreTab, HTMLButtonElement | null>>({
@@ -122,24 +134,18 @@ export function ExploreModal({ sessions, onClose, historyAccess = "free" }: Prop
             <HistoryArchive sessions={sessions} accessLevel={historyAccess} />
           ) : null}
           {activeTab === "context" ? <ContextDashboard sessions={sessions} /> : null}
-          {activeTab === "echoes" ? <EchoesPreview /> : null}
+          {activeTab === "echoes" ? (
+            <EchoCollection
+              echoes={echoes}
+              sessions={sessions}
+              accessLevel={echoAccess}
+              onOpenEcho={onOpenEcho}
+            />
+          ) : null}
         </section>
 
         <div className={styles.privacy}>Your reflections remain on this device.</div>
       </div>
-    </div>
-  );
-}
-
-function EchoesPreview() {
-  return (
-    <div className={styles.centeredPreview}>
-      <div className={styles.depthMark} aria-hidden="true">◌</div>
-      <div className={styles.sectionHeading}>Connections, when they surface</div>
-      <p className={styles.sectionCopy}>
-        Echoes will place two qualifying reflections together. The resemblance is factual; what it means remains yours to notice.
-      </p>
-      <div className={styles.empty}>No Echo has surfaced yet.</div>
     </div>
   );
 }

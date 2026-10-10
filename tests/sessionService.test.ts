@@ -120,10 +120,15 @@ describe("reflection persistence", () => {
 
     expect(exported).toMatchObject({
       format: "the-mirror-reflections",
-      version: 1,
+      version: 2,
       exportedAt: "2026-10-09T12:00:00.000Z",
       reflectionCount: 1,
       reflections: [session],
+      echoes: {
+        version: 1,
+        introductoryEchoUsed: false,
+        records: [],
+      },
       recovery: { warnings: [] },
     });
   });
