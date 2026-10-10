@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { HistoryAccessLevel } from "../services/historyService";
 import type { MirrorSession } from "../types/mirror";
 import { HistoryArchive } from "./HistoryArchive";
+import { ContextDashboard } from "./ContextDashboard";
 import styles from "./ExploreModal.module.css";
 
 type ExploreTab = "history" | "context" | "echoes";
@@ -120,26 +121,11 @@ export function ExploreModal({ sessions, onClose, historyAccess = "free" }: Prop
           {activeTab === "history" ? (
             <HistoryArchive sessions={sessions} accessLevel={historyAccess} />
           ) : null}
-          {activeTab === "context" ? <ContextPreview reflectionCount={sessions.length} /> : null}
+          {activeTab === "context" ? <ContextDashboard sessions={sessions} /> : null}
           {activeTab === "echoes" ? <EchoesPreview /> : null}
         </section>
 
         <div className={styles.privacy}>Your reflections remain on this device.</div>
-      </div>
-    </div>
-  );
-}
-
-function ContextPreview({ reflectionCount }: { reflectionCount: number }) {
-  return (
-    <div className={styles.centeredPreview}>
-      <div className={styles.depthMark} aria-hidden="true">◎</div>
-      <div className={styles.sectionHeading}>See what you recorded over time</div>
-      <p className={styles.sectionCopy}>
-        Context will organize your states and reflection activity without judging what they mean.
-      </p>
-      <div className={styles.factualCount}>
-        {reflectionCount} reflection{reflectionCount === 1 ? "" : "s"} available locally
       </div>
     </div>
   );

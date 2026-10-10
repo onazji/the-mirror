@@ -75,7 +75,7 @@ describe("Explore interface", () => {
     expect(tabs[1].getAttribute("aria-selected")).toBe("true");
     expect(document.activeElement).toBe(tabs[1]);
     expect(container.querySelector('[role="tabpanel"]')?.textContent).toContain(
-      "See what you recorded over time"
+      "State distribution"
     );
   });
 
@@ -123,5 +123,28 @@ describe("Explore interface", () => {
     act(() => (loadMore as HTMLButtonElement).click());
     expect(container.querySelectorAll('button[aria-label^="Open "]')).toHaveLength(35);
     expect(container.textContent).not.toContain("remain safely stored on this device");
+  });
+
+  it("switches between factual daily and cumulative Context activity", () => {
+    const first = makeSession("first", new Date(2026, 0, 1, 9).getTime());
+    const second = makeSession("second", new Date(2026, 0, 3, 9).getTime());
+    act(() => root.render(<ExploreModal sessions={[first, second]} onClose={vi.fn()} />));
+
+    const contextTab = [...container.querySelectorAll<HTMLButtonElement>('[role="tab"]')]
+      .find((tab) => tab.textContent === "Context");
+    act(() => contextTab?.click());
+
+    expect(container.textContent).toContain("State distribution");
+    expect(container.textContent).toContain("Pressure");
+    const daily = [...container.querySelectorAll<HTMLButtonElement>("button")]
+      .find((button) => button.textContent === "Daily");
+    const cumulative = [...container.querySelectorAll<HTMLButtonElement>("button")]
+      .find((button) => button.textContent === "Cumulative");
+    expect(daily?.getAttribute("aria-pressed")).toBe("true");
+
+    act(() => cumulative?.click());
+    expect(cumulative?.getAttribute("aria-pressed")).toBe("true");
+    expect(container.querySelector('svg[role="img"]')?.getAttribute("aria-label"))
+      .toContain("Cumulative reflections");
   });
 });
