@@ -1,4 +1,4 @@
-package com.themirror.app;
+package com.onazji.themirror;
 
 import android.os.Bundle;
 import androidx.core.splashscreen.SplashScreen;

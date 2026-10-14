@@ -1,4 +1,4 @@
-package com.getcapacitor.myapp;
+package com.onazji.themirror;
 
 import static org.junit.Assert.*;
 

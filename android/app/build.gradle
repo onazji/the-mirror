@@ -10,10 +10,10 @@ def mirrorReleaseSigningConfigured = [
 ].every { it }
 
 android {
-    namespace = "com.themirror.app"
+    namespace = "com.onazji.themirror"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId = "com.themirror.app"
+        applicationId = "com.onazji.themirror"
         minSdkVersion = rootProject.ext.minSdkVersion
         targetSdkVersion = rootProject.ext.targetSdkVersion
         versionCode = 1

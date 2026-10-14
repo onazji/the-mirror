@@ -47,16 +47,18 @@ Verify the bundle certificate after every release and confirm that its SHA-256 f
 
 ## Current release baseline
 
-- Package: `com.themirror.app`
+- Package: `com.onazji.themirror`
 - Version code: `1`
 - Version name: `1.0`
 - Minimum SDK: 24
 - Target SDK: 36
-- INTERNET permission: absent
+- INTERNET and ACCESS_NETWORK_STATE permissions: present only through the Google Play Billing dependency
 - VIBRATE permission: intentional
 - Android backup: disabled
 - Cloud backup and device-to-device transfer: excluded
 
 ## Physical-device caution
 
-The current Blackview development installation is signed with Android's debug certificate. A release APK signed with the upload key cannot update that installation in place. Do not uninstall or replace it until its local reflection data is no longer needed or a deliberate migration/export procedure exists. Use a separate test device for release-signed physical validation.
+The previous Blackview development installation uses the former package `com.themirror.app` and keeps its local reflection data in that package's isolated storage. The new `com.onazji.themirror` app installs separately and cannot read or update that data. Preserve the former app until a current export has been completed and the developer explicitly authorizes removal. The current export is a recovery file only; the app does not yet implement import.
+
+A release APK signed with the upload key also cannot update a debug-signed installation of the same package in place. Do not uninstall or clear either development installation while it contains reflections that have not been exported.
